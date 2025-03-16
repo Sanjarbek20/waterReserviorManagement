@@ -10,6 +10,7 @@ import AdminReservoirs from "@/pages/admin/reservoirs";
 import AdminAllocation from "@/pages/admin/allocation";
 import AdminUsers from "@/pages/admin/users";
 import AdminDataManagement from "@/pages/admin/data-management";
+import AdminSurveillance from "@/pages/admin/surveillance";
 import FarmerDashboard from "@/pages/farmer/dashboard";
 import FarmerRequests from "@/pages/farmer/requests";
 import { AuthProvider, useAuth } from "@/lib/auth";
@@ -79,6 +80,9 @@ function Router() {
       </Route>
       <Route path="/admin/data-management">
         <ProtectedRoute component={AdminDataManagement} adminOnly={true} dataAdminAllowed={true} />
+      </Route>
+      <Route path="/admin/surveillance">
+        <ProtectedRoute component={AdminSurveillance} adminOnly={true} dataAdminAllowed={true} />
       </Route>
       
       {/* Farmer Routes */}

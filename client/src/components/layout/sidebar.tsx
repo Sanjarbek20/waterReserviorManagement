@@ -11,7 +11,9 @@ import {
   User,
   Users,
   Database,
-  Download
+  Download,
+  Video,
+  Camera
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -39,6 +41,11 @@ export default function Sidebar() {
       name: "Water Allocation", 
       path: "/admin/allocation", 
       icon: <Share2 className="h-4 w-4 mr-3" /> 
+    },
+    { 
+      name: "Video Surveillance", 
+      path: "/admin/surveillance", 
+      icon: <Video className="h-4 w-4 mr-3" /> 
     },
     { 
       name: "User Management", 
@@ -72,6 +79,11 @@ export default function Sidebar() {
       name: "Download Reports", 
       path: "/admin/data-management", 
       icon: <Download className="h-4 w-4 mr-3" /> 
+    },
+    { 
+      name: "Video Surveillance", 
+      path: "/admin/surveillance", 
+      icon: <Video className="h-4 w-4 mr-3" /> 
     },
     { 
       name: "Reservoirs", 
