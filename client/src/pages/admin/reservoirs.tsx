@@ -44,7 +44,7 @@ export default function AdminReservoirs() {
   });
   
   // Fetch reservoirs data
-  const { data: reservoirs, isLoading } = useQuery({
+  const { data: reservoirs = [], isLoading } = useQuery<any[]>({
     queryKey: ["/api/reservoirs"],
   });
   
