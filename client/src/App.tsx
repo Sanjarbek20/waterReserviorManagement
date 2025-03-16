@@ -8,6 +8,8 @@ import Register from "@/pages/register";
 import AdminDashboard from "@/pages/admin/dashboard";
 import AdminReservoirs from "@/pages/admin/reservoirs";
 import AdminAllocation from "@/pages/admin/allocation";
+import AdminUsers from "@/pages/admin/users";
+import AdminDataManagement from "@/pages/admin/data-management";
 import FarmerDashboard from "@/pages/farmer/dashboard";
 import FarmerRequests from "@/pages/farmer/requests";
 import { AuthProvider, useAuth } from "@/lib/auth";
@@ -64,6 +66,12 @@ function Router() {
       </Route>
       <Route path="/admin/allocation">
         <ProtectedRoute component={AdminAllocation} adminOnly={true} />
+      </Route>
+      <Route path="/admin/users">
+        <ProtectedRoute component={AdminUsers} adminOnly={true} />
+      </Route>
+      <Route path="/admin/data-management">
+        <ProtectedRoute component={AdminDataManagement} adminOnly={true} />
       </Route>
       
       {/* Farmer Routes */}
