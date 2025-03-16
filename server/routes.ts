@@ -93,7 +93,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Auth routes
   app.post('/api/auth/login', (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
+    passport.authenticate('local', (err: any, user: any, info: any) => {
       if (err) {
         return next(err);
       }
@@ -208,11 +208,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       const { level } = req.body;
       
-      if (typeof level !== 'number' || level < 0) {
+      if (!level || level === '') {
         return res.status(400).json({ message: 'Invalid level value' });
       }
       
-      const updatedReservoir = await storage.updateReservoirLevel(id, level);
+      const updatedReservoir = await storage.updateReservoirLevel(id, level.toString());
       
       if (!updatedReservoir) {
         return res.status(404).json({ message: 'Reservoir not found' });
