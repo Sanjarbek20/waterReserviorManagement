@@ -8,7 +8,10 @@ import {
   LogOut,
   BarChart3,
   Share2,
-  User
+  User,
+  Users,
+  Database,
+  Download
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -36,6 +39,16 @@ export default function Sidebar() {
       name: "Water Allocation", 
       path: "/admin/allocation", 
       icon: <Share2 className="h-4 w-4 mr-3" /> 
+    },
+    { 
+      name: "User Management", 
+      path: "/admin/users", 
+      icon: <Users className="h-4 w-4 mr-3" /> 
+    },
+    { 
+      name: "Data Management", 
+      path: "/admin/data-management", 
+      icon: <Database className="h-4 w-4 mr-3" /> 
     },
     { 
       name: "Reports", 
