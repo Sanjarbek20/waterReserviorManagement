@@ -10,7 +10,7 @@ type User = {
   firstName: string;
   lastName: string;
   role: "admin" | "data_admin" | "farmer";
-  fieldSize?: number;
+  fieldSize?: string;
   cropType?: string;
 };
 
@@ -25,7 +25,7 @@ type RegisterData = {
   firstName: string;
   lastName: string;
   role: "admin" | "data_admin" | "farmer";
-  fieldSize?: number;
+  fieldSize?: string;
   cropType?: string;
 };
 
@@ -48,10 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const { data, isLoading } = useQuery({
     queryKey: ["/api/auth/me"],
     queryFn: getQueryFn({ on401: "returnNull" }),
-    retry: false,
-    onSettled: () => {
-      setIsAuthChecked(true);
-    }
+    retry: false
   });
   
   // Set authentication check flag when the query completes

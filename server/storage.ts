@@ -104,22 +104,22 @@ export class MemStorage implements IStorage {
       firstName: "John",
       lastName: "Doe",
       role: "farmer",
-      fieldSize: 50,
+      fieldSize: "50",
       cropType: "Wheat"
     });
     
     // Create some initial reservoirs
     this.createReservoir({
       name: "Main Reservoir",
-      capacity: 1000000,
-      currentLevel: 750000,
+      capacity: "1000000",
+      currentLevel: "750000",
       location: "North Valley"
     });
     
     this.createReservoir({
       name: "East Reservoir",
-      capacity: 500000,
-      currentLevel: 300000,
+      capacity: "500000",
+      currentLevel: "300000",
       location: "East Region"
     });
   }
@@ -162,7 +162,7 @@ export class MemStorage implements IStorage {
     return reservoir;
   }
   
-  async updateReservoirLevel(id: number, level: number): Promise<Reservoir | undefined> {
+  async updateReservoirLevel(id: number, level: string): Promise<Reservoir | undefined> {
     const reservoir = await this.getReservoir(id);
     if (!reservoir) return undefined;
     
@@ -203,13 +203,13 @@ export class MemStorage implements IStorage {
     return allocation;
   }
   
-  async updateAllocation(id: number, used: number): Promise<WaterAllocation | undefined> {
+  async updateAllocation(id: number, usedAmount: string): Promise<WaterAllocation | undefined> {
     const allocation = await this.getAllocation(id);
     if (!allocation) return undefined;
     
     const updated: WaterAllocation = {
       ...allocation,
-      amountUsed: used
+      used: usedAmount
     };
     
     this.waterAllocations.set(id, updated);

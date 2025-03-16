@@ -10,7 +10,7 @@ export const users = pgTable("users", {
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
   role: text("role").notNull(),
-  fieldSize: decimal("field_size", { precision: 10, scale: 2 }),
+  fieldSize: text("field_size"), // Changed from decimal to text to handle string conversion
   cropType: text("crop_type"),
 });
 

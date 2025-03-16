@@ -30,7 +30,7 @@ const formSchema = z
     lastName: z.string().min(1, "Last name is required"),
     username: z.string().min(3, "Username must be at least 3 characters"),
     role: z.enum(["admin", "farmer"]),
-    fieldSize: z.coerce.number().optional(),
+    fieldSize: z.string().optional(),
     cropType: z.string().optional(),
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string().min(1, "Please confirm your password"),
@@ -45,7 +45,7 @@ const formSchema = z
   .refine(
     (data) => {
       if (data.role === "farmer") {
-        return !!data.fieldSize && data.fieldSize > 0;
+        return !!data.fieldSize && parseFloat(data.fieldSize) > 0;
       }
       return true;
     },
@@ -206,7 +206,8 @@ export default function Register() {
                             type="number"
                             step="0.01"
                             {...field}
-                            onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                            onChange={(e) => field.onChange(e.target.value || undefined)}
+                            value={field.value || ""}
                             disabled={isLoading}
                           />
                         </FormControl>
