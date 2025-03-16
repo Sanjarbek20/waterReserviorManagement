@@ -32,9 +32,16 @@ import { Droplet, Edit, RefreshCw, Plus } from "lucide-react";
 
 export default function AdminReservoirs() {
   const { toast } = useToast();
-  const [openDialog, setOpenDialog] = useState(false);
+  const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
+  const [openAddDialog, setOpenAddDialog] = useState(false);
   const [selectedReservoir, setSelectedReservoir] = useState<any>(null);
   const [newLevel, setNewLevel] = useState<number>(0);
+  const [newReservoir, setNewReservoir] = useState({
+    name: "",
+    capacity: "",
+    currentLevel: "",
+    location: ""
+  });
   
   // Fetch reservoirs data
   const { data: reservoirs, isLoading } = useQuery({
@@ -53,13 +60,42 @@ export default function AdminReservoirs() {
         title: "Reservoir updated",
         description: "Water level has been updated successfully.",
       });
-      setOpenDialog(false);
+      setOpenUpdateDialog(false);
     },
     onError: (error: any) => {
       toast({
         variant: "destructive",
         title: "Update failed",
         description: error.message || "Failed to update reservoir level",
+      });
+    },
+  });
+
+  // Create new reservoir mutation
+  const createReservoirMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest("POST", "/api/reservoirs", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/reservoirs"] });
+      toast({
+        title: "Reservoir created",
+        description: "New reservoir has been added successfully.",
+      });
+      setOpenAddDialog(false);
+      setNewReservoir({
+        name: "",
+        capacity: "",
+        currentLevel: "",
+        location: ""
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        variant: "destructive",
+        title: "Creation failed",
+        description: error.message || "Failed to create new reservoir",
       });
     },
   });
@@ -73,10 +109,22 @@ export default function AdminReservoirs() {
     }
   };
   
-  const openUpdateDialog = (reservoir: any) => {
+  const handleAddReservoir = () => {
+    createReservoirMutation.mutate(newReservoir);
+  };
+  
+  const openEditDialog = (reservoir: any) => {
     setSelectedReservoir(reservoir);
     setNewLevel(parseFloat(reservoir.currentLevel));
-    setOpenDialog(true);
+    setOpenUpdateDialog(true);
+  };
+  
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setNewReservoir(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   return (
@@ -96,7 +144,7 @@ export default function AdminReservoirs() {
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Refresh
               </Button>
-              <Button size="sm">
+              <Button size="sm" onClick={() => setOpenAddDialog(true)}>
                 <Plus className="h-4 w-4 mr-2" />
                 Add Reservoir
               </Button>
@@ -131,7 +179,7 @@ export default function AdminReservoirs() {
                         <Button 
                           variant="ghost" 
                           size="icon"
-                          onClick={() => openUpdateDialog(reservoir)}
+                          onClick={() => openEditDialog(reservoir)}
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
@@ -224,7 +272,7 @@ export default function AdminReservoirs() {
                             <Button 
                               variant="ghost" 
                               size="sm"
-                              onClick={() => openUpdateDialog(reservoir)}
+                              onClick={() => openEditDialog(reservoir)}
                             >
                               <Edit className="h-4 w-4 mr-1" />
                               Update
@@ -255,7 +303,8 @@ export default function AdminReservoirs() {
         </TabsContent>
       </Tabs>
       
-      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+      {/* Update Reservoir Dialog */}
+      <Dialog open={openUpdateDialog} onOpenChange={setOpenUpdateDialog}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Update Reservoir Level</DialogTitle>
@@ -312,7 +361,7 @@ export default function AdminReservoirs() {
           )}
           
           <DialogFooter>
-            <Button variant="outline" onClick={() => setOpenDialog(false)}>
+            <Button variant="outline" onClick={() => setOpenUpdateDialog(false)}>
               Cancel
             </Button>
             <Button 
@@ -320,6 +369,76 @@ export default function AdminReservoirs() {
               disabled={updateLevelMutation.isPending}
             >
               {updateLevelMutation.isPending ? "Updating..." : "Update Level"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Add Reservoir Dialog */}
+      <Dialog open={openAddDialog} onOpenChange={setOpenAddDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New Reservoir</DialogTitle>
+            <DialogDescription>
+              Enter the details for the new water reservoir
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="py-4">
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium block mb-2">Reservoir Name:</label>
+                <Input
+                  name="name"
+                  placeholder="Enter reservoir name"
+                  value={newReservoir.name}
+                  onChange={handleInputChange}
+                />
+              </div>
+              
+              <div>
+                <label className="text-sm font-medium block mb-2">Total Capacity (m³):</label>
+                <Input
+                  name="capacity"
+                  type="number"
+                  placeholder="Enter total capacity"
+                  value={newReservoir.capacity}
+                  onChange={handleInputChange}
+                />
+              </div>
+              
+              <div>
+                <label className="text-sm font-medium block mb-2">Current Level (m³):</label>
+                <Input
+                  name="currentLevel"
+                  type="number"
+                  placeholder="Enter current water level"
+                  value={newReservoir.currentLevel}
+                  onChange={handleInputChange}
+                />
+              </div>
+              
+              <div>
+                <label className="text-sm font-medium block mb-2">Location:</label>
+                <Input
+                  name="location"
+                  placeholder="Enter geographical location"
+                  value={newReservoir.location}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOpenAddDialog(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleAddReservoir}
+              disabled={createReservoirMutation.isPending}
+            >
+              {createReservoirMutation.isPending ? "Creating..." : "Add Reservoir"}
             </Button>
           </DialogFooter>
         </DialogContent>
