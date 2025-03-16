@@ -52,11 +52,11 @@ export default function AdminUsers() {
   const [isSelectAll, setIsSelectAll] = useState(false);
 
   // Fetch users data
-  const { data: users = [], isLoading: isLoadingUsers } = useQuery({
+  const { data: users = [], isLoading: isLoadingUsers } = useQuery<any[]>({
     queryKey: ["/api/users"],
   });
   
-  const filteredUsers = users.filter((user: any) => {
+  const filteredUsers = users.filter((user) => {
     if (!searchQuery.trim()) return true;
     
     const query = searchQuery.toLowerCase();
@@ -172,7 +172,7 @@ export default function AdminUsers() {
   // Toggle select all
   const toggleSelectAll = () => {
     setIsSelectAll(!isSelectAll);
-    setSelectedUserIds(isSelectAll ? [] : filteredUsers.map((user: any) => user.id));
+    setSelectedUserIds(isSelectAll ? [] : filteredUsers.map((user) => user.id));
   };
 
   // Download user data as CSV

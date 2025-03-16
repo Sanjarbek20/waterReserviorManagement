@@ -62,6 +62,24 @@ export default function Sidebar() {
     }
   ];
 
+  const dataAdminNavItems = [
+    { 
+      name: "Data Management", 
+      path: "/admin/data-management", 
+      icon: <Database className="h-4 w-4 mr-3" /> 
+    },
+    { 
+      name: "Download Reports", 
+      path: "/admin/data-management", 
+      icon: <Download className="h-4 w-4 mr-3" /> 
+    },
+    { 
+      name: "Reservoirs", 
+      path: "/admin/reservoirs", 
+      icon: <Droplet className="h-4 w-4 mr-3" /> 
+    }
+  ];
+
   const farmerNavItems = [
     { 
       name: "Dashboard", 
@@ -85,7 +103,15 @@ export default function Sidebar() {
     }
   ];
 
-  const navItems = user?.role === "admin" ? adminNavItems : farmerNavItems;
+  // Select navigation items based on user role
+  let navItems;
+  if (user?.role === "admin") {
+    navItems = adminNavItems;
+  } else if (user?.role === "data_admin") {
+    navItems = dataAdminNavItems;
+  } else {
+    navItems = farmerNavItems;
+  }
 
   return (
     <div className="h-full flex flex-col">
@@ -98,13 +124,13 @@ export default function Sidebar() {
           {navItems.map((item) => (
             <li className="mb-1" key={item.path}>
               <Link href={item.path}>
-                <a className={cn(
-                  "flex items-center px-4 py-3 text-sm hover:bg-blue-50 hover:text-blue-800 rounded-lg mx-2",
+                <div className={cn(
+                  "flex items-center px-4 py-3 text-sm hover:bg-blue-50 hover:text-blue-800 rounded-lg mx-2 cursor-pointer",
                   location === item.path ? "bg-blue-50 text-blue-800 font-medium" : "text-gray-600"
                 )}>
                   {item.icon}
                   {item.name}
-                </a>
+                </div>
               </Link>
             </li>
           ))}

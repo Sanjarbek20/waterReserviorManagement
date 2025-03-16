@@ -33,6 +33,7 @@ export interface IStorage {
   getAllocations(): Promise<WaterAllocation[]>;
   getAllocation(id: number): Promise<WaterAllocation | undefined>;
   getUserAllocations(userId: number): Promise<WaterAllocation[]>;
+  getAllocationsByReservoir(reservoirId: number): Promise<WaterAllocation[]>;
   createAllocation(allocation: InsertWaterAllocation): Promise<WaterAllocation>;
   updateAllocation(id: number, used: number): Promise<WaterAllocation | undefined>;
   
@@ -41,7 +42,7 @@ export interface IStorage {
   getRequest(id: number): Promise<WaterRequest | undefined>;
   getUserRequests(userId: number): Promise<WaterRequest[]>;
   createRequest(request: InsertWaterRequest): Promise<WaterRequest>;
-  updateRequestStatus(id: number, status: string): Promise<WaterRequest | undefined>;
+  updateRequestStatus(id: number, status: string, notes?: string): Promise<WaterRequest | undefined>;
   
   // Notification operations
   getNotifications(): Promise<Notification[]>;
@@ -83,15 +84,23 @@ export class MemStorage implements IStorage {
     // Create some initial users
     this.createUser({
       username: "admin",
-      password: "admin123",
+      password: "$2a$10$wqvKVn/fP5KUVdE9NYSZ0eKRyyJO8GVYCbXCeGjVm8I5M8dG5nRsC", // admin123
       firstName: "Admin",
       lastName: "User",
       role: "admin"
     });
     
     this.createUser({
+      username: "data_admin",
+      password: "$2a$10$XlwAIBCxKUEBSzZJm1NuIuMJ9ZvKvHP3E8kJdY1i0/ky2XnvZsibK", // data123
+      firstName: "Data",
+      lastName: "Manager",
+      role: "data_admin"
+    });
+    
+    this.createUser({
       username: "farmer1",
-      password: "farmer123",
+      password: "$2a$10$2EkpEyJQDp7M/6Bt/vyoMugc6TGkYcpU9eMEzR8TZdZeUaBiGivOO", // farmer123
       firstName: "John",
       lastName: "Doe",
       role: "farmer",
@@ -181,6 +190,12 @@ export class MemStorage implements IStorage {
     );
   }
   
+  async getAllocationsByReservoir(reservoirId: number): Promise<WaterAllocation[]> {
+    return Array.from(this.waterAllocations.values()).filter(
+      allocation => allocation.reservoirId === reservoirId
+    );
+  }
+  
   async createAllocation(insertAllocation: InsertWaterAllocation): Promise<WaterAllocation> {
     const id = this.allocationIdCounter++;
     const allocation: WaterAllocation = { ...insertAllocation, id };
@@ -223,13 +238,15 @@ export class MemStorage implements IStorage {
     return request;
   }
   
-  async updateRequestStatus(id: number, status: string): Promise<WaterRequest | undefined> {
+  async updateRequestStatus(id: number, status: string, notes?: string): Promise<WaterRequest | undefined> {
     const request = await this.getRequest(id);
     if (!request) return undefined;
     
     const updated: WaterRequest = {
       ...request,
-      status
+      status,
+      notes: notes || request.notes,
+      responseDate: new Date()
     };
     
     this.waterRequests.set(id, updated);
@@ -260,7 +277,7 @@ export class MemStorage implements IStorage {
     
     const updated: Notification = {
       ...notification,
-      read: true
+      isRead: true
     };
     
     this.notifications.set(id, updated);

@@ -83,6 +83,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.status(403).json({ message: 'Forbidden' });
   };
   
+  const isAdminOrDataAdmin = (req: Request, res: Response, next: any) => {
+    if (req.isAuthenticated() && req.user && 
+       ((req.user as any).role === 'admin' || (req.user as any).role === 'data_admin')) {
+      return next();
+    }
+    res.status(403).json({ message: 'Forbidden' });
+  };
+  
   // Auth routes
   app.post('/api/auth/login', (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
@@ -222,12 +230,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = (req.user as any).id;
       const role = (req.user as any).role;
       
-      if (role === 'admin' && req.query.reservoirId) {
+      if ((role === 'admin' || role === 'data_admin') && req.query.reservoirId) {
         const reservoirId = parseInt(req.query.reservoirId as string);
         const allocations = await storage.getAllocationsByReservoir(reservoirId);
         return res.json(allocations);
+      } else if (role === 'admin' || role === 'data_admin') {
+        // Get all allocations for admins or data_admins
+        const allocations = await storage.getAllocations();
+        return res.json(allocations);
       } else {
-        const allocations = await storage.getAllocations(userId);
+        const allocations = await storage.getUserAllocations(userId);
         return res.json(allocations);
       }
     } catch (error) {
@@ -240,8 +252,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const user = req.user as any;
       
-      if (user.role === 'admin') {
-        const requests = await storage.getAllRequests();
+      if (user.role === 'admin' || user.role === 'data_admin') {
+        const requests = await storage.getRequests();
         return res.json(requests);
       } else {
         const requests = await storage.getUserRequests(user.id);

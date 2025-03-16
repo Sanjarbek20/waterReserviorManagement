@@ -17,10 +17,12 @@ import { AuthProvider, useAuth } from "@/lib/auth";
 function ProtectedRoute({ 
   component: Component, 
   adminOnly = false,
+  dataAdminAllowed = false,
   ...rest 
 }: { 
   component: React.ComponentType<any>, 
   adminOnly?: boolean,
+  dataAdminAllowed?: boolean,
   [x: string]: any 
 }) {
   const { user, isLoading, isAuthChecked } = useAuth();
@@ -33,8 +35,13 @@ function ProtectedRoute({
     return <Redirect to="/login" />;
   }
   
-  if (adminOnly && user.role !== "admin") {
-    return <Redirect to="/dashboard" />;
+  if (adminOnly) {
+    // Allow data admins if specified
+    if (dataAdminAllowed && user.role === "data_admin") {
+      // Data admins can access this page
+    } else if (user.role !== "admin") {
+      return <Redirect to="/dashboard" />;
+    }
   }
   
   return <Component {...rest} />;
@@ -71,7 +78,7 @@ function Router() {
         <ProtectedRoute component={AdminUsers} adminOnly={true} />
       </Route>
       <Route path="/admin/data-management">
-        <ProtectedRoute component={AdminDataManagement} adminOnly={true} />
+        <ProtectedRoute component={AdminDataManagement} adminOnly={true} dataAdminAllowed={true} />
       </Route>
       
       {/* Farmer Routes */}
@@ -86,9 +93,14 @@ function Router() {
       <Route path="/dashboard">
         {() => {
           if (!user) return <Redirect to="/login" />;
-          return user.role === "admin" 
-            ? <Redirect to="/admin/dashboard" />
-            : <Redirect to="/farmer/dashboard" />;
+          
+          if (user.role === "admin") {
+            return <Redirect to="/admin/dashboard" />;
+          } else if (user.role === "data_admin") {
+            return <Redirect to="/admin/data-management" />;
+          } else {
+            return <Redirect to="/farmer/dashboard" />;
+          }
         }}
       </Route>
       

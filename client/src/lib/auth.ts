@@ -9,7 +9,7 @@ type User = {
   username: string;
   firstName: string;
   lastName: string;
-  role: "admin" | "farmer";
+  role: "admin" | "data_admin" | "farmer";
   fieldSize?: number;
   cropType?: string;
 };
@@ -24,7 +24,7 @@ type RegisterData = {
   password: string;
   firstName: string;
   lastName: string;
-  role: "admin" | "farmer";
+  role: "admin" | "data_admin" | "farmer";
   fieldSize?: number;
   cropType?: string;
 };
@@ -49,6 +49,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     queryKey: ["/api/auth/me"],
     queryFn: getQueryFn({ on401: "returnNull" }),
     retry: false,
+    onSettled: () => {
+      setIsAuthChecked(true);
+    }
   });
   
   // Set authentication check flag when the query completes
@@ -60,7 +63,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (data) {
+      console.log("Auth data received:", data);
       setUser(data as User);
+    } else {
+      console.log("No auth data received");
+      setUser(null);
     }
   }, [data]);
 
