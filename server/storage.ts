@@ -27,7 +27,7 @@ export interface IStorage {
   getAllReservoirs(): Promise<Reservoir[]>;
   getReservoir(id: number): Promise<Reservoir | undefined>;
   createReservoir(reservoir: InsertReservoir): Promise<Reservoir>;
-  updateReservoirLevel(id: number, level: number): Promise<Reservoir | undefined>;
+  updateReservoirLevel(id: number, level: string): Promise<Reservoir | undefined>;
   
   // Water allocation operations
   getAllocations(): Promise<WaterAllocation[]>;
@@ -35,7 +35,7 @@ export interface IStorage {
   getUserAllocations(userId: number): Promise<WaterAllocation[]>;
   getAllocationsByReservoir(reservoirId: number): Promise<WaterAllocation[]>;
   createAllocation(allocation: InsertWaterAllocation): Promise<WaterAllocation>;
-  updateAllocation(id: number, used: number): Promise<WaterAllocation | undefined>;
+  updateAllocation(id: number, used: string): Promise<WaterAllocation | undefined>;
   
   // Water request operations
   getRequests(): Promise<WaterRequest[]>;

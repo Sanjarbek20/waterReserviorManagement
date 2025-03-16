@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, decimal } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, decimal, sql } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -18,9 +18,10 @@ export const users = pgTable("users", {
 export const reservoirs = pgTable("reservoirs", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
-  capacity: decimal("capacity", { precision: 12, scale: 2 }).notNull(),
-  currentLevel: decimal("current_level", { precision: 12, scale: 2 }).notNull(),
-  lastUpdated: timestamp("last_updated").notNull(),
+  capacity: text("capacity").notNull(),
+  currentLevel: text("current_level").notNull(),
+  location: text("location"),
+  lastUpdated: timestamp("last_updated"),
 });
 
 // WaterAllocation model
@@ -28,10 +29,10 @@ export const waterAllocations = pgTable("water_allocations", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull(),
   reservoirId: integer("reservoir_id").notNull(),
-  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+  amount: text("amount").notNull(),
   startDate: timestamp("start_date").notNull(),
   endDate: timestamp("end_date").notNull(),
-  used: decimal("used", { precision: 10, scale: 2 }).notNull(),
+  used: text("used").notNull(),
 });
 
 // WaterRequest model
@@ -39,7 +40,7 @@ export const waterRequests = pgTable("water_requests", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull(),
   type: text("type").notNull(),
-  amount: decimal("amount", { precision: 10, scale: 2 }),
+  amount: text("amount"),
   status: text("status").notNull(),
   requestDate: timestamp("request_date").notNull(),
   responseDate: timestamp("response_date"),
