@@ -141,7 +141,12 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.userIdCounter++;
-    const user: User = { ...insertUser, id };
+    const user: User = { 
+      ...insertUser, 
+      id,
+      fieldSize: insertUser.fieldSize || null,
+      cropType: insertUser.cropType || null
+    };
     this.users.set(id, user);
     return user;
   }
@@ -157,7 +162,12 @@ export class MemStorage implements IStorage {
   
   async createReservoir(insertReservoir: InsertReservoir): Promise<Reservoir> {
     const id = this.reservoirIdCounter++;
-    const reservoir: Reservoir = { ...insertReservoir, id };
+    const reservoir: Reservoir = { 
+      ...insertReservoir, 
+      id,
+      location: insertReservoir.location || null,
+      lastUpdated: new Date()
+    };
     this.reservoirs.set(id, reservoir);
     return reservoir;
   }
@@ -168,7 +178,8 @@ export class MemStorage implements IStorage {
     
     const updated: Reservoir = {
       ...reservoir,
-      currentLevel: level
+      currentLevel: level,
+      lastUpdated: new Date()
     };
     
     this.reservoirs.set(id, updated);
@@ -233,7 +244,14 @@ export class MemStorage implements IStorage {
   
   async createRequest(insertRequest: InsertWaterRequest): Promise<WaterRequest> {
     const id = this.requestIdCounter++;
-    const request: WaterRequest = { ...insertRequest, id };
+    const request: WaterRequest = { 
+      ...insertRequest, 
+      id,
+      amount: insertRequest.amount || null,
+      requestDate: new Date(),
+      responseDate: null,
+      notes: insertRequest.notes || null
+    };
     this.waterRequests.set(id, request);
     return request;
   }
@@ -266,7 +284,12 @@ export class MemStorage implements IStorage {
   
   async createNotification(insertNotification: InsertNotification): Promise<Notification> {
     const id = this.notificationIdCounter++;
-    const notification: Notification = { ...insertNotification, id };
+    const notification: Notification = { 
+      ...insertNotification, 
+      id,
+      isRead: false,
+      createdAt: new Date()
+    };
     this.notifications.set(id, notification);
     return notification;
   }
