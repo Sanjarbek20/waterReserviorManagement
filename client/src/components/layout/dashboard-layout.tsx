@@ -22,7 +22,7 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100">
       {/* Mobile Nav Drawer Overlay */}
       {sidebarOpen && (
         <div 
@@ -35,13 +35,13 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
       <div className={`
         fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-30 transform transition-transform duration-300 ease-in-out
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
-        lg:translate-x-0 lg:static lg:z-0
+        lg:translate-x-0 lg:relative lg:z-0
       `}>
         <Sidebar />
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-h-screen lg:ml-64">
+      <div className="flex-1 flex flex-col min-h-screen">
         {/* Header */}
         <header className="bg-white shadow-sm py-4 px-6 flex items-center sticky top-0 z-10">
           <Button
