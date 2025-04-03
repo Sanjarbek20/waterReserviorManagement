@@ -34,13 +34,66 @@ export default function Settings() {
   const handleSaveSettings = (settingType: string) => {
     setIsSubmitting(true);
     
-    // Simulate saving settings
+    // In a real app, you would send settings to the server here
+    // For demo purposes, we'll create a settings object based on the current state
+    const settings = {
+      videoGrid,
+      emailNotifications,
+      smsNotifications,
+      pushNotifications,
+      dataRetention,
+      backupFrequency,
+      timestamp: new Date().toISOString()
+    };
+    
+    // Log the settings that would be saved
+    console.log(`Saving ${settingType} Settings:`, settings);
+    
+    // Create a visualizable representation of settings for demonstration
+    const settingsText = Object.entries(settings)
+      .map(([key, value]) => `${key}: ${value}`)
+      .join('\n');
+    
+    // Show a more detailed toast with some of the actual settings
     setTimeout(() => {
-      setIsSubmitting(false);
       toast({
         title: "Settings Saved",
-        description: `${settingType} settings have been updated successfully.`,
+        description: (
+          <div className="space-y-2">
+            <p>{`${settingType} settings have been updated successfully.`}</p>
+            <p className="text-xs text-gray-500">Settings will take effect immediately.</p>
+          </div>
+        ),
       });
+      
+      // You could also add a second toast that shows some of the settings that were saved
+      if (settingType === "Surveillance") {
+        toast({
+          title: "Surveillance Settings Applied",
+          description: `Video grid layout set to ${videoGrid} configuration`,
+          variant: "default"
+        });
+      } else if (settingType === "Notification") {
+        const enabledChannels = [
+          emailNotifications && "Email",
+          smsNotifications && "SMS",
+          pushNotifications && "Push"
+        ].filter(Boolean).join(", ");
+        
+        toast({
+          title: "Notification Channels Updated",
+          description: `Enabled channels: ${enabledChannels || "None"}`,
+          variant: "default"
+        });
+      } else if (settingType === "Data Management") {
+        toast({
+          title: "Data Retention Updated",
+          description: `Sensor data will be retained for ${dataRetention} days with ${backupFrequency} backups`,
+          variant: "default"
+        });
+      }
+      
+      setIsSubmitting(false);
     }, 1500);
   };
 
