@@ -51,16 +51,113 @@ export default function Reports() {
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  // Generate dummy data for export
+  const generateExportData = () => {
+    // CSV format data
+    let csvData = 'Month,Usage,Target\n';
+    waterUsageData.forEach(item => {
+      csvData += `${item.month},${item.usage},${item.target}\n`;
+    });
+    
+    return {
+      csv: csvData,
+      // Simple representations for other formats
+      pdf: 'PDF data would be generated here',
+      excel: 'Excel data would be generated here'
+    };
+  };
+
+  // Helper function to trigger file download
+  const downloadFile = (data: string, filename: string, mimeType: string) => {
+    // Create a blob with the data and appropriate MIME type
+    const blob = new Blob([data], { type: mimeType });
+    
+    // Create a link element
+    const link = document.createElement('a');
+    
+    // Create a URL for the blob
+    const url = URL.createObjectURL(blob);
+    
+    // Set link properties
+    link.href = url;
+    link.download = filename;
+    
+    // Append the link to the body
+    document.body.appendChild(link);
+    
+    // Trigger the download
+    link.click();
+    
+    // Clean up
+    URL.revokeObjectURL(url);
+    document.body.removeChild(link);
+  };
+
   const handleExport = (format: string) => {
     setIsLoading(true);
-    // Simulate export process
+    
+    // Get the current date for the filename
+    const date = new Date();
+    const dateStr = date.toISOString().split('T')[0];
+    
+    // Generate the export data
+    const exportData = generateExportData();
+    
+    // Wait a bit to simulate processing
     setTimeout(() => {
-      setIsLoading(false);
-      toast({
-        title: "Export Successful",
-        description: `Report has been exported in ${format.toUpperCase()} format.`,
-      });
-    }, 1500);
+      try {
+        if (format === 'csv') {
+          downloadFile(
+            exportData.csv,
+            `water-usage-report-${dateStr}.csv`,
+            'text/csv;charset=utf-8;'
+          );
+        } else if (format === 'excel') {
+          // For Excel, we're just simulating with a CSV for demo
+          // In a real implementation, you'd use a library like xlsx
+          downloadFile(
+            exportData.csv,
+            `water-usage-report-${dateStr}.xlsx`,
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+          );
+        } else if (format === 'pdf') {
+          // For PDF, we're just simulating
+          // In a real implementation, you'd use a library like jsPDF
+          const pdfData = 
+            '%PDF-1.4\n' +
+            '1 0 obj\n' +
+            '<<\n/Title (Water Usage Report)\n/Author (Water Management System)\n/Creator (System)\n>>\nendobj\n' +
+            '2 0 obj\n<<\n/Type /Catalog\n/Pages 3 0 R\n>>\nendobj\n' +
+            '3 0 obj\n<<\n/Type /Pages\n/Count 1\n/Kids [4 0 R]\n>>\nendobj\n' +
+            '4 0 obj\n<<\n/Type /Page\n/Parent 3 0 R\n/Resources <<\n/Font <<\n/F1 5 0 R\n>>\n>>\n' +
+            '/Contents 6 0 R\n>>\nendobj\n' +
+            '5 0 obj\n<<\n/Type /Font\n/Subtype /Type1\n/BaseFont /Helvetica\n>>\nendobj\n' +
+            '6 0 obj\n<<\n/Length 44\n>>\nstream\nBT\n/F1 12 Tf\n100 700 Td\n(Water Usage Report) Tj\nET\nendstream\nendobj\n' +
+            'xref\n0 7\n0000000000 65535 f\n0000000009 00000 n\n0000000098 00000 n\n0000000147 00000 n\n' +
+            '0000000206 00000 n\n0000000302 00000 n\n0000000370 00000 n\ntrailer\n<<\n/Size 7\n/Root 2 0 R\n' +
+            '/Info 1 0 R\n>>\nstartxref\n465\n%%EOF\n';
+          
+          downloadFile(
+            pdfData,
+            `water-usage-report-${dateStr}.pdf`,
+            'application/pdf'
+          );
+        }
+        
+        toast({
+          title: "Export Successful",
+          description: `Report has been exported in ${format.toUpperCase()} format.`,
+        });
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Export Failed",
+          description: `There was an error exporting the report: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    }, 1000);
   };
 
   const handleRefresh = () => {
