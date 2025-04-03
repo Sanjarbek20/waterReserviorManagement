@@ -8,6 +8,7 @@ import MemoryStore from "memorystore";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
+import { WebSocketServer, WebSocket } from "ws";
 
 const SessionStore = MemoryStore(session);
 
@@ -467,5 +468,107 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   const httpServer = createServer(app);
+  
+  // Set up WebSocket server
+  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  
+  // Connected clients for broadcasting
+  const clients = new Set<WebSocket>();
+  
+  // Handle new WebSocket connections
+  wss.on('connection', (ws) => {
+    console.log('WebSocket client connected');
+    
+    // Add client to the set
+    clients.add(ws);
+    
+    // Send initial reservoir data
+    sendReservoirData(ws);
+    
+    // Handle messages from clients
+    ws.on('message', (message) => {
+      console.log('WebSocket message received:', message.toString());
+      try {
+        const parsedMessage = JSON.parse(message.toString());
+        
+        // Handle different message types
+        if (parsedMessage.type === 'get_reservoirs') {
+          sendReservoirData(ws);
+        }
+      } catch (error) {
+        console.error('Error parsing WebSocket message:', error);
+      }
+    });
+    
+    // Handle disconnection
+    ws.on('close', () => {
+      console.log('WebSocket client disconnected');
+      clients.delete(ws);
+    });
+    
+    // Handle errors
+    ws.on('error', (error) => {
+      console.error('WebSocket error:', error);
+      clients.delete(ws);
+    });
+  });
+  
+  // Function to send reservoir data to a specific client
+  async function sendReservoirData(ws: WebSocket) {
+    try {
+      if (ws.readyState === WebSocket.OPEN) {
+        const reservoirs = await storage.getAllReservoirs();
+        const reservoirData = {
+          type: 'reservoir_data',
+          data: reservoirs
+        };
+        ws.send(JSON.stringify(reservoirData));
+      }
+    } catch (error) {
+      console.error('Error sending reservoir data:', error);
+    }
+  }
+  
+  // Function to broadcast reservoir data to all connected clients
+  async function broadcastReservoirData() {
+    try {
+      const reservoirs = await storage.getAllReservoirs();
+      const reservoirData = {
+        type: 'reservoir_data',
+        data: reservoirs
+      };
+      
+      const messageStr = JSON.stringify(reservoirData);
+      
+      clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(messageStr);
+        }
+      });
+    } catch (error) {
+      console.error('Error broadcasting reservoir data:', error);
+    }
+  }
+  
+  // Broadcast updates when reservoir data changes
+  const originalCreateReservoir = storage.createReservoir.bind(storage);
+  storage.createReservoir = async (data) => {
+    const result = await originalCreateReservoir(data);
+    broadcastReservoirData();
+    return result;
+  };
+  
+  const originalUpdateReservoirLevel = storage.updateReservoirLevel.bind(storage);
+  storage.updateReservoirLevel = async (id, level) => {
+    const result = await originalUpdateReservoirLevel(id, level);
+    broadcastReservoirData();
+    return result;
+  };
+  
+  // Set up a timer to send regular updates (simulate real-time data)
+  setInterval(() => {
+    broadcastReservoirData();
+  }, 10000); // Update every 10 seconds
+  
   return httpServer;
 }

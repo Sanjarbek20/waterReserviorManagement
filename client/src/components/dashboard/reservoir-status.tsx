@@ -1,8 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Droplet, MapPin, Clock, AlertTriangle } from "lucide-react";
+import { Droplet, MapPin, Clock, AlertTriangle, RefreshCw } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 type ReservoirData = {
   id: number;
@@ -14,10 +17,112 @@ type ReservoirData = {
 };
 
 export default function ReservoirStatus() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isRealTimeEnabled, setIsRealTimeEnabled] = useState(true);
+  const socketRef = useRef<WebSocket | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  
   // Fetch reservoirs data
-  const { data: reservoirs, isLoading: isLoadingReservoirs } = useQuery({
+  const { data: reservoirs, isLoading: isLoadingReservoirs, refetch } = useQuery({
     queryKey: ["/api/reservoirs"],
   });
+  
+  // Setup WebSocket connection
+  useEffect(() => {
+    if (isRealTimeEnabled) {
+      // Create WebSocket connection
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${protocol}//${window.location.host}/ws`;
+      
+      const socket = new WebSocket(wsUrl);
+      socketRef.current = socket;
+      
+      // Connection opened
+      socket.addEventListener('open', () => {
+        console.log('WebSocket connected');
+        // Request initial data
+        socket.send(JSON.stringify({ type: 'get_reservoirs' }));
+      });
+      
+      // Listen for messages
+      socket.addEventListener('message', (event) => {
+        try {
+          const message = JSON.parse(event.data);
+          
+          if (message.type === 'reservoir_data') {
+            // Update React Query cache with the latest data
+            queryClient.setQueryData(['/api/reservoirs'], message.data);
+            setLastUpdated(new Date());
+            
+            // Show toast for updates occasionally (not on every update to avoid spam)
+            if (Math.random() < 0.3) { // Show toast ~30% of the time
+              toast({
+                title: "Data Updated",
+                description: "Reservoir information has been updated in real-time.",
+              });
+            }
+          }
+        } catch (error) {
+          console.error('Error parsing WebSocket message:', error);
+        }
+      });
+      
+      // Connection closed
+      socket.addEventListener('close', () => {
+        console.log('WebSocket disconnected');
+        // Attempt to reconnect after delay if still enabled
+        if (isRealTimeEnabled) {
+          setTimeout(() => {
+            if (socketRef.current?.readyState !== WebSocket.OPEN) {
+              // Only try to reconnect if we haven't already reconnected
+              socketRef.current = null;
+            }
+          }, 3000);
+        }
+      });
+      
+      // Handle errors
+      socket.addEventListener('error', (error) => {
+        console.error('WebSocket error:', error);
+      });
+      
+      // Cleanup on unmount
+      return () => {
+        if (socket.readyState === WebSocket.OPEN) {
+          socket.close();
+        }
+      };
+    } else if (socketRef.current) {
+      // Close socket if real-time is disabled
+      if (socketRef.current.readyState === WebSocket.OPEN) {
+        socketRef.current.close();
+      }
+      socketRef.current = null;
+    }
+  }, [isRealTimeEnabled, queryClient, toast]);
+  
+  // Handle manual refresh
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      await refetch();
+      setLastUpdated(new Date());
+      toast({
+        title: "Data Refreshed",
+        description: "Reservoir data has been manually refreshed.",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Refresh Failed",
+        description: "Could not refresh reservoir data.",
+      });
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   // Default data for demonstration when API data is not available
   const defaultReservoirs: ReservoirData[] = [
@@ -108,10 +213,40 @@ export default function ReservoirStatus() {
 
   return (
     <Card>
-      <CardHeader className="pb-2">
+      <CardHeader className="pb-2 flex flex-row items-center justify-between">
         <CardTitle className="text-lg md:text-xl font-semibold">Reservoir Status</CardTitle>
+        <div className="flex space-x-2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+          >
+            <RefreshCw className={`h-4 w-4 mr-1 ${isRefreshing ? 'animate-spin' : ''}`} />
+            {isRefreshing ? 'Refreshing...' : 'Refresh'}
+          </Button>
+          <Button 
+            variant={isRealTimeEnabled ? "default" : "outline"} 
+            size="sm"
+            onClick={() => {
+              setIsRealTimeEnabled(!isRealTimeEnabled);
+              toast({
+                title: isRealTimeEnabled ? "Real-time Updates Disabled" : "Real-time Updates Enabled",
+                description: isRealTimeEnabled 
+                  ? "You will no longer receive automatic updates." 
+                  : "You will now receive automatic updates.",
+              });
+            }}
+          >
+            {isRealTimeEnabled ? "Real-time: ON" : "Real-time: OFF"}
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
+        <div className="mb-4 text-sm text-gray-500 flex items-center justify-end">
+          <Clock className="h-3.5 w-3.5 mr-1" />
+          <span>Last updated: {formatRelativeTime(lastUpdated)}</span>
+        </div>
         <div className="space-y-6">
           {reservoirsWithStatus.map((reservoir) => (
             <div key={reservoir.id} className="border rounded-lg p-4">
