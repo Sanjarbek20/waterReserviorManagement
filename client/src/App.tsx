@@ -16,6 +16,8 @@ import AdminReports from "@/pages/admin/reports";
 import AdminSettings from "@/pages/admin/settings";
 import FarmerDashboard from "@/pages/farmer/dashboard";
 import FarmerRequests from "@/pages/farmer/requests";
+import FarmerProfile from "@/pages/farmer/profile";
+import FarmerReports from "@/pages/farmer/reports";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import { useEffect } from "react";
 
@@ -126,6 +128,12 @@ function Router() {
       </Route>
       <Route path="/farmer/requests">
         <ProtectedRoute component={FarmerRequests} />
+      </Route>
+      <Route path="/farmer/profile">
+        <ProtectedRoute component={FarmerProfile} />
+      </Route>
+      <Route path="/farmer/reports">
+        <ProtectedRoute component={FarmerReports} />
       </Route>
       
       {/* Common Routes */}
