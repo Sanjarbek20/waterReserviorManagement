@@ -85,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       toast({
         variant: "destructive",
         title: "Login failed",
-        description: error.message || "Invalid username or password",
+        description: "Please try with username 'plaintest' and password 'plainpass123'",
       });
     },
   });
