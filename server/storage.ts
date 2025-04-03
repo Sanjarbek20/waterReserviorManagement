@@ -107,7 +107,7 @@ export class MemStorage implements IStorage {
       role: "admin"
     });
     
-    // Add plaintext password test user for development testing
+    // Add plaintext password test users for development testing
     this.createUser({
       username: "plaintest",
       password: "plainpass123", // Plain text password for testing
@@ -116,6 +116,34 @@ export class MemStorage implements IStorage {
       role: "farmer",
       fieldSize: "25",
       cropType: "Cotton"
+    });
+    
+    // Add easy to remember credentials for testing
+    this.createUser({
+      username: "user",
+      password: "password", // Plain text password for testing
+      firstName: "Test",
+      lastName: "User",
+      role: "farmer",
+      fieldSize: "30",
+      cropType: "Corn"
+    });
+    
+    // Plain text admin accounts for testing
+    this.createUser({
+      username: "admin_test",
+      password: "admin123", // Plain text password for testing
+      firstName: "Admin",
+      lastName: "Test",
+      role: "admin"
+    });
+    
+    this.createUser({
+      username: "data_test",
+      password: "data123", // Plain text password for testing
+      firstName: "Data",
+      lastName: "Test",
+      role: "data_admin"
     });
     
     this.createUser({
