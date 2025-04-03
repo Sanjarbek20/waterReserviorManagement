@@ -1,7 +1,7 @@
-import express, { type Express, Request, Response } from "express";
+import express, { type Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertUserSchema, insertWaterRequestSchema } from "@shared/schema";
+import { insertUserSchema, insertWaterRequestSchema, insertReservoirSchema } from "@shared/schema";
 import { z } from "zod";
 import session from "express-session";
 import MemoryStore from "memorystore";
@@ -42,7 +42,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return done(null, false, { message: 'Invalid username or password' });
         }
         
-        // In a real app, we'd use bcrypt to compare passwords
+        // Compare passwords
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
           return done(null, false, { message: 'Invalid username or password' });
@@ -69,26 +69,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Auth middleware
-  const isAuthenticated = (req: Request, res: Response, next: any) => {
+  const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
     if (req.isAuthenticated()) {
       return next();
     }
     res.status(401).json({ message: 'Unauthorized' });
   };
   
-  const isAdmin = (req: Request, res: Response, next: any) => {
+  const isAdmin = (req: Request, res: Response, next: NextFunction) => {
     if (req.isAuthenticated() && req.user && (req.user as any).role === 'admin') {
       return next();
     }
     res.status(403).json({ message: 'Forbidden' });
   };
   
-  const isAdminOrDataAdmin = (req: Request, res: Response, next: any) => {
+  const isAdminOrDataAdmin = (req: Request, res: Response, next: NextFunction) => {
     if (req.isAuthenticated() && req.user && 
        ((req.user as any).role === 'admin' || (req.user as any).role === 'data_admin')) {
       return next();
     }
     res.status(403).json({ message: 'Forbidden' });
+  };
+  
+  // Handle ZodError consistently
+  const handleZodError = (error: any, res: Response) => {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ 
+        message: 'Invalid data', 
+        errors: error.errors.map(err => ({
+          code: err.code,
+          message: err.message,
+          path: err.path
+        }))
+      });
+    }
+    console.error('Server error:', error);
+    return res.status(500).json({ message: 'Server error' });
   };
   
   // Auth routes
@@ -152,10 +168,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       });
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: 'Invalid data', errors: error.errors });
-      }
-      res.status(500).json({ message: 'Server error' });
+      return handleZodError(error, res);
     }
   });
   
@@ -178,6 +191,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
   
+  // User routes
+  app.get('/api/users', isAdmin, async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      const safeUsers = users.map(user => ({
+        id: user.id,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+        fieldSize: user.fieldSize,
+        cropType: user.cropType
+      }));
+      res.json(safeUsers);
+    } catch (error) {
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+  
+  app.post('/api/users', isAdmin, async (req, res) => {
+    try {
+      let userData = { ...req.body };
+      
+      // Convert numbers to strings where needed
+      if (userData.fieldSize && typeof userData.fieldSize === 'number') {
+        userData.fieldSize = userData.fieldSize.toString();
+      }
+      
+      const validatedData = insertUserSchema.parse(userData);
+      
+      // Check if user already exists
+      const existingUser = await storage.getUserByUsername(validatedData.username);
+      if (existingUser) {
+        return res.status(400).json({ message: 'Username already exists' });
+      }
+      
+      // Hash password
+      const hashedPassword = await bcrypt.hash(validatedData.password, 10);
+      
+      // Create user with hashed password
+      const user = await storage.createUser({
+        ...validatedData,
+        password: hashedPassword
+      });
+      
+      return res.json({
+        id: user.id,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+        fieldSize: user.fieldSize,
+        cropType: user.cropType
+      });
+    } catch (error) {
+      return handleZodError(error, res);
+    }
+  });
+  
   // Reservoir routes
   app.get('/api/reservoirs', isAuthenticated, async (req, res) => {
     try {
@@ -185,6 +257,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(reservoirs);
     } catch (error) {
       res.status(500).json({ message: 'Server error' });
+    }
+  });
+  
+  app.post('/api/reservoirs', isAdmin, async (req, res) => {
+    try {
+      // Convert number values to strings if they're numbers
+      let reservoirData = { ...req.body };
+      if (typeof reservoirData.capacity === 'number') {
+        reservoirData.capacity = reservoirData.capacity.toString();
+      }
+      if (typeof reservoirData.currentLevel === 'number') {
+        reservoirData.currentLevel = reservoirData.currentLevel.toString();
+      }
+      
+      const createdReservoir = await storage.createReservoir({
+        name: reservoirData.name,
+        capacity: reservoirData.capacity,
+        currentLevel: reservoirData.currentLevel,
+        location: reservoirData.location,
+        lastUpdated: new Date()
+      });
+      
+      res.json(createdReservoir);
+    } catch (error) {
+      return handleZodError(error, res);
     }
   });
   
@@ -208,11 +305,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       const { level } = req.body;
       
-      if (!level || level === '') {
+      if (level === undefined || level === null || level === '') {
         return res.status(400).json({ message: 'Invalid level value' });
       }
       
-      const updatedReservoir = await storage.updateReservoirLevel(id, level.toString());
+      // Ensure level is stored as string
+      const levelString = typeof level === 'number' ? level.toString() : level;
+      
+      const updatedReservoir = await storage.updateReservoirLevel(id, levelString);
       
       if (!updatedReservoir) {
         return res.status(404).json({ message: 'Reservoir not found' });
@@ -220,6 +320,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json(updatedReservoir);
     } catch (error) {
+      console.error('Error updating reservoir level:', error);
       res.status(500).json({ message: 'Server error' });
     }
   });
@@ -268,9 +369,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const user = req.user as any;
       
+      // Ensure amount is treated as a string
+      let requestBody = { ...req.body };
+      if (typeof requestBody.amount === 'number') {
+        requestBody.amount = requestBody.amount.toString();
+      }
+      
       // Validate request data
       const requestData = insertWaterRequestSchema.parse({
-        ...req.body,
+        ...requestBody,
         userId: user.id,
         requestDate: new Date(),
         status: 'pending'
@@ -294,10 +401,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.status(201).json(request);
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: 'Invalid data', errors: error.errors });
-      }
-      res.status(500).json({ message: 'Server error' });
+      return handleZodError(error, res);
     }
   });
   

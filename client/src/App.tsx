@@ -1,4 +1,4 @@
-import { Switch, Route, Redirect } from "wouter";
+import { Switch, Route, Redirect, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -14,6 +14,7 @@ import AdminSurveillance from "@/pages/admin/surveillance";
 import FarmerDashboard from "@/pages/farmer/dashboard";
 import FarmerRequests from "@/pages/farmer/requests";
 import { AuthProvider, useAuth } from "@/lib/auth";
+import { useEffect } from "react";
 
 function ProtectedRoute({ 
   component: Component, 
@@ -27,13 +28,20 @@ function ProtectedRoute({
   [x: string]: any 
 }) {
   const { user, isLoading, isAuthChecked } = useAuth();
+  const [, setLocation] = useLocation();
+  
+  useEffect(() => {
+    if (isAuthChecked && !isLoading && !user) {
+      setLocation("/login");
+    }
+  }, [user, isLoading, isAuthChecked, setLocation]);
   
   if (isLoading || !isAuthChecked) {
     return <div className="flex h-screen items-center justify-center">Loading...</div>;
   }
   
   if (!user) {
-    return <Redirect to="/login" />;
+    return null; // Redirect will happen via useEffect
   }
   
   if (adminOnly) {
@@ -49,10 +57,27 @@ function ProtectedRoute({
 }
 
 function Router() {
-  const { user, isAuthChecked } = useAuth();
+  const { user, isAuthChecked, isLoading } = useAuth();
+  const [location, setLocation] = useLocation();
+  
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    // Wait for auth check to complete
+    if (!isAuthChecked) return;
+    
+    // If user is not logged in and not on login or register page, redirect to login
+    if (!user && location !== "/login" && location !== "/register") {
+      setLocation("/login");
+    }
+    
+    // If user is logged in and on the root or login page, redirect to dashboard
+    if (user && (location === "/" || location === "/login")) {
+      setLocation("/dashboard");
+    }
+  }, [user, isAuthChecked, location, setLocation]);
   
   // Show a loading indicator while checking authentication status
-  if (!isAuthChecked) {
+  if (!isAuthChecked || isLoading) {
     return <div className="flex h-screen items-center justify-center">Loading...</div>;
   }
   
@@ -109,7 +134,7 @@ function Router() {
       </Route>
       
       <Route path="/">
-        <Redirect to="/dashboard" />
+        {!user ? <Redirect to="/login" /> : <Redirect to="/dashboard" />}
       </Route>
       
       {/* Fallback to 404 */}
