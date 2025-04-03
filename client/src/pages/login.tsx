@@ -31,8 +31,8 @@ export default function Login() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
-      password: "",
+      username: "admin",
+      password: "admin123",
       rememberMe: false,
     },
   });
@@ -105,7 +105,6 @@ export default function Login() {
                       <FormControl>
                         <Input 
                           placeholder="Enter 'admin'" 
-                          defaultValue="admin"
                           {...field} 
                           disabled={isLoading}
                         />
@@ -125,7 +124,6 @@ export default function Login() {
                         <Input 
                           type="password" 
                           placeholder="Enter 'admin123'" 
-                          defaultValue="admin123"
                           {...field} 
                           disabled={isLoading}
                         />
@@ -153,11 +151,9 @@ export default function Login() {
                     )}
                   />
                   <div className="text-sm">
-                    <Link href="/forgot-password">
-                      <a className="font-medium text-blue-500 hover:text-blue-700">
-                        Forgot password?
-                      </a>
-                    </Link>
+                    <span className="font-medium text-blue-500 hover:text-blue-700 cursor-pointer">
+                      Forgot password?
+                    </span>
                   </div>
                 </div>
 
@@ -175,9 +171,9 @@ export default function Login() {
               <p className="text-sm text-gray-500">
                 Don't have an account?{" "}
                 <Link href="/register">
-                  <a className="font-medium text-blue-500 hover:text-blue-700">
+                  <span className="font-medium text-blue-500 hover:text-blue-700 cursor-pointer">
                     Register now
-                  </a>
+                  </span>
                 </Link>
               </p>
             </div>
