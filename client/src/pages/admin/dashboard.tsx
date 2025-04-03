@@ -17,6 +17,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import ReservoirStatus from "@/components/dashboard/reservoir-status";
+import WaterAllocation from "@/components/dashboard/water-allocation";
 
 export default function AdminDashboard() {
   // Fetch reservoirs data
@@ -147,85 +149,15 @@ export default function AdminDashboard() {
       
       {/* Reservoir Level & Allocation */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <Card className="lg:col-span-2">
-          <CardContent className="p-5">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-medium text-gray-800">Reservoir Status</h2>
-              <div className="flex space-x-2">
-                <Button variant="ghost" size="icon">
-                  <Settings className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-            
-            <div className="h-[200px] w-full bg-gray-100 rounded-lg mb-4">
-              {/* This is where you would integrate a chart.js component */}
-              <div className="h-full flex items-center justify-center text-gray-400">
-                <BarChart3 className="h-8 w-8 mr-2" />
-                <span>Water Level Chart</span>
-              </div>
-            </div>
-            
-            <div className="mt-4 grid grid-cols-3 gap-4">
-              {reservoirs ? reservoirs.map((reservoir: any) => (
-                <div key={reservoir.id} className="p-3 border rounded-md text-center">
-                  <p className="text-sm font-medium text-gray-700">{reservoir.name}</p>
-                  <div className="flex items-center justify-center mt-1">
-                    <span className="text-xl font-semibold text-blue-500">
-                      {Math.round((reservoir.currentLevel / reservoir.capacity) * 100)}%
-                    </span>
-                    {(reservoir.currentLevel / reservoir.capacity) > 0.7 ? (
-                      <ArrowUp className="h-4 w-4 text-green-500 ml-1" />
-                    ) : (
-                      <ArrowDown className="h-4 w-4 text-amber-500 ml-1" />
-                    )}
-                  </div>
-                </div>
-              )) : (
-                Array(3).fill(0).map((_, i) => (
-                  <div key={i} className="p-3 border rounded-md text-center animate-pulse">
-                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                    <div className="h-6 w-12 bg-gray-200 rounded mx-auto"></div>
-                  </div>
-                ))
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        <div className="lg:col-span-2">
+          {/* Import the new ReservoirStatus component */}
+          <ReservoirStatus />
+        </div>
         
-        <Card>
-          <CardContent className="p-5">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-medium text-gray-800">Water Allocation</h2>
-              <Button variant="ghost" size="icon">
-                <Settings className="h-4 w-4" />
-              </Button>
-            </div>
-            
-            <div className="space-y-4">
-              {waterAllocations.map((allocation, index) => (
-                <div key={index}>
-                  <div className="flex items-center">
-                    <div className={`w-2 h-2 rounded-full ${allocation.color} mr-2`}></div>
-                    <span className="text-sm text-gray-700">{allocation.name}</span>
-                    <div className="ml-auto text-sm font-medium">{allocation.percentage}%</div>
-                  </div>
-                  <Progress 
-                    value={allocation.percentage} 
-                    className="h-2 mt-1"
-                    indicatorClassName={allocation.color}
-                  />
-                </div>
-              ))}
-            </div>
-            
-            <div className="mt-6">
-              <Button className="w-full">
-                Adjust Allocation
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <div>
+          {/* Import the new WaterAllocation component */}
+          <WaterAllocation />
+        </div>
       </div>
       
       {/* Recent Activity & Alerts */}

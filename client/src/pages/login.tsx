@@ -104,7 +104,8 @@ export default function Login() {
                       <FormLabel>Username</FormLabel>
                       <FormControl>
                         <Input 
-                          placeholder="your.username" 
+                          placeholder="Enter 'admin'" 
+                          defaultValue="admin"
                           {...field} 
                           disabled={isLoading}
                         />
@@ -123,7 +124,8 @@ export default function Login() {
                       <FormControl>
                         <Input 
                           type="password" 
-                          placeholder="••••••••" 
+                          placeholder="Enter 'admin123'" 
+                          defaultValue="admin123"
                           {...field} 
                           disabled={isLoading}
                         />
