@@ -70,8 +70,20 @@ export default function FarmerRequests() {
   const { toast } = useToast();
   const [openDialog, setOpenDialog] = useState(false);
   
+  // Define the request type
+  type WaterRequestResponse = {
+    id: number;
+    userId: number;
+    type: string;
+    amount: string | null;
+    status: string;
+    requestDate: string;
+    responseDate: string | null;
+    notes: string | null;
+  };
+
   // Fetch requests data
-  const { data: requests, isLoading: isLoadingRequests } = useQuery({
+  const { data: requests = [], isLoading: isLoadingRequests } = useQuery<WaterRequestResponse[]>({
     queryKey: ["/api/requests"],
   });
   
@@ -91,7 +103,12 @@ export default function FarmerRequests() {
   // Create request mutation
   const createRequestMutation = useMutation({
     mutationFn: async (requestData: z.infer<typeof waterRequestSchema>) => {
-      const res = await apiRequest("POST", "/api/requests", requestData);
+      // Convert amount to string for backend storage if it exists
+      const formattedData = {
+        ...requestData,
+        amount: requestData.amount !== null ? String(requestData.amount) : null
+      };
+      const res = await apiRequest("POST", "/api/requests", formattedData);
       return res.json();
     },
     onSuccess: () => {
@@ -194,8 +211,8 @@ export default function FarmerRequests() {
                   </TableHeader>
                   <TableBody>
                     {requests
-                      .filter((request: any) => request.status === 'pending')
-                      .map((request: any) => (
+                      .filter((request) => request.status === 'pending')
+                      .map((request) => (
                         <TableRow key={request.id}>
                           <TableCell className="font-medium capitalize">
                             {formatRequestType(request.type)}
@@ -256,11 +273,11 @@ export default function FarmerRequests() {
                   </TableHeader>
                   <TableBody>
                     {requests
-                      .filter((request: any) => request.status !== 'pending')
-                      .sort((a: any, b: any) => 
+                      .filter((request) => request.status !== 'pending')
+                      .sort((a, b) => 
                         new Date(b.requestDate).getTime() - new Date(a.requestDate).getTime()
                       )
-                      .map((request: any) => (
+                      .map((request) => (
                         <TableRow key={request.id}>
                           <TableCell className="font-medium capitalize">
                             {formatRequestType(request.type)}
@@ -344,8 +361,11 @@ export default function FarmerRequests() {
                           type="number" 
                           placeholder="Enter water amount" 
                           {...field}
-                          value={field.value || ''}
-                          onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
+                          value={field.value === null ? '' : field.value}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            field.onChange(value === '' ? null : parseFloat(value));
+                          }}
                         />
                       </FormControl>
                       <FormDescription>
