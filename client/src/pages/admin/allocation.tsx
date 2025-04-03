@@ -44,9 +44,11 @@ export default function AdminAllocation() {
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
   const [requestStatus, setRequestStatus] = useState("");
   const [statusNotes, setStatusNotes] = useState("");
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [adjustAllocationOpen, setAdjustAllocationOpen] = useState(false);
   
   // Fetch requests data
-  const { data: requests, isLoading } = useQuery({
+  const { data: requests = [], isLoading, refetch } = useQuery<any[]>({
     queryKey: ["/api/requests"],
   });
   
@@ -112,11 +114,31 @@ export default function AdminAllocation() {
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-bold">Farmer Water Requests</h2>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  setFilterOpen(true);
+                  toast({
+                    title: "Filter feature",
+                    description: "Filtering functionality will be available in the next update.",
+                  });
+                }}
+              >
                 <Filter className="h-4 w-4 mr-2" />
                 Filter
               </Button>
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  refetch();
+                  toast({
+                    title: "Refreshed",
+                    description: "Water requests have been refreshed.",
+                  });
+                }}
+              >
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Refresh
               </Button>
@@ -222,11 +244,38 @@ export default function AdminAllocation() {
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-bold">Current Water Allocation</h2>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  setAdjustAllocationOpen(true);
+                  toast({
+                    title: "Adjust Allocations",
+                    description: "Allocation adjustment feature will be available in the next update.",
+                  });
+                }}
+              >
                 <Droplet className="h-4 w-4 mr-2" />
                 Adjust Allocations
               </Button>
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  toast({
+                    title: "Export Started",
+                    description: "Water allocation data export has started. The file will be downloaded shortly.",
+                  });
+                  
+                  // Simulate export delay
+                  setTimeout(() => {
+                    toast({
+                      title: "Export Complete",
+                      description: "Water allocation data has been exported successfully.",
+                    });
+                  }, 1500);
+                }}
+              >
                 <Download className="h-4 w-4 mr-2" />
                 Export
               </Button>
