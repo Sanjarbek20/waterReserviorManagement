@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import DashboardLayout from "@/components/layout/dashboard-layout";
 import { useAuth } from "@/lib/auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import WaterLevel from "@/components/ui/water-level";
 import { format, addMonths } from "date-fns";
 import { 
@@ -18,11 +21,66 @@ import {
 
 export default function FarmerDashboard() {
   const { user } = useAuth();
+  const { toast } = useToast();
+  const [, setLocation] = useLocation();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isMarkingRead, setIsMarkingRead] = useState(false);
   
   // Fetch allocations data
-  const { data: allocations, isLoading: isLoadingAllocations } = useQuery({
+  const { data: allocations, isLoading: isLoadingAllocations, refetch: refetchAllocations } = useQuery({
     queryKey: ["/api/allocations"],
   });
+  
+  // Fetch user requests
+  const { data: requests = [], refetch: refetchRequests } = useQuery({
+    queryKey: ["/api/requests"],
+  });
+  
+  // Handle refresh data button click
+  const handleRefreshData = async () => {
+    setIsRefreshing(true);
+    try {
+      await refetchAllocations();
+      toast({
+        title: "Data refreshed",
+        description: "Usage data has been updated",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Refresh failed",
+        description: "Could not refresh usage data",
+      });
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+  
+  // Handle mark all notifications as read
+  const handleMarkAllRead = async () => {
+    setIsMarkingRead(true);
+    try {
+      // In a real app, we would call an API to mark notifications as read
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      toast({
+        title: "Notifications marked as read",
+        description: "All notifications have been marked as read",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Action failed",
+        description: "Could not mark notifications as read. Please try again",
+      });
+    } finally {
+      setIsMarkingRead(false);
+    }
+  };
+  
+  // Navigate to requests page
+  const navigateToRequests = () => {
+    setLocation("/farmer/requests");
+  };
   
   // Mock data for UI elements that would typically be fetched from API
   const allocationData = {
@@ -102,7 +160,10 @@ export default function FarmerDashboard() {
               </div>
               
               <div className="mt-4">
-                <Button className="w-full">
+                <Button 
+                  className="w-full"
+                  onClick={() => setLocation("/farmer/requests/new")}
+                >
                   Request Additional Allocation
                 </Button>
               </div>
@@ -128,9 +189,14 @@ export default function FarmerDashboard() {
               <span className="text-gray-400">Usage chart will appear here</span>
             </div>
             <div className="mt-4 flex justify-end">
-              <Button variant="outline" size="sm">
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Refresh Data
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={handleRefreshData}
+                disabled={isRefreshing}
+              >
+                <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+                {isRefreshing ? 'Refreshing...' : 'Refresh Data'}
               </Button>
             </div>
           </CardContent>
@@ -172,7 +238,12 @@ export default function FarmerDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-lg">Recent Water Requests</CardTitle>
-            <Button variant="link" size="sm" className="text-blue-500">
+            <Button 
+              variant="link" 
+              size="sm" 
+              className="text-blue-500"
+              onClick={navigateToRequests}
+            >
               View All
             </Button>
           </CardHeader>
@@ -221,8 +292,14 @@ export default function FarmerDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-lg">Notifications</CardTitle>
-            <Button variant="link" size="sm" className="text-blue-500">
-              Mark All Read
+            <Button 
+              variant="link" 
+              size="sm" 
+              className="text-blue-500"
+              onClick={handleMarkAllRead}
+              disabled={isMarkingRead}
+            >
+              {isMarkingRead ? 'Marking...' : 'Mark All Read'}
             </Button>
           </CardHeader>
           <CardContent>
