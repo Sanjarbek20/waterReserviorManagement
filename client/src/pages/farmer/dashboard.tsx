@@ -9,13 +9,22 @@ import { useToast } from "@/hooks/use-toast";
 import WaterLevel from "@/components/ui/water-level";
 import { format, addMonths } from "date-fns";
 import { 
+  BarChart, 
+  Bar,
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  Legend,
+  ResponsiveContainer
+} from "recharts";
+import { 
   SunIcon, 
   Droplet, 
   ThumbsUp,
   LightbulbIcon,
   CalendarIcon,
   RefreshCw,
-  BarChart3,
   ChevronRight
 } from "lucide-react";
 
@@ -184,9 +193,28 @@ export default function FarmerDashboard() {
             </select>
           </CardHeader>
           <CardContent>
-            <div className="h-[200px] w-full bg-gray-100 rounded-lg flex items-center justify-center">
-              <BarChart3 className="h-8 w-8 text-gray-400 mr-2" />
-              <span className="text-gray-400">Usage chart will appear here</span>
+            <div className="h-[200px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={[
+                    { month: 'Mar', used: 2200, allocated: 3000 },
+                    { month: 'Apr', used: 2600, allocated: 3000 },
+                    { month: 'May', used: 2800, allocated: 3000 },
+                    { month: 'Jun', used: 2700, allocated: 3500 },
+                    { month: 'Jul', used: 3200, allocated: 3500 },
+                    { month: 'Aug', used: 2925, allocated: 4500 },
+                  ]}
+                  margin={{ top: 10, right: 5, left: -20, bottom: 0 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip formatter={(value) => `${value.toLocaleString()} m³`} />
+                  <Legend />
+                  <Bar dataKey="used" name="Used" fill="#3b82f6" />
+                  <Bar dataKey="allocated" name="Allocated" fill="#22c55e" />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
             <div className="mt-4 flex justify-end">
               <Button 
