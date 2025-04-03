@@ -31,8 +31,8 @@ export default function Login() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "admin",
-      password: "admin123",
+      username: "",
+      password: "",
       rememberMe: false,
     },
   });
@@ -169,12 +169,7 @@ export default function Login() {
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-500">
-                Don't have an account?{" "}
-                <Link href="/register">
-                  <span className="font-medium text-blue-500 hover:text-blue-700 cursor-pointer">
-                    Register now
-                  </span>
-                </Link>
+                Need an account? Please contact your system administrator.
               </p>
             </div>
           </div>

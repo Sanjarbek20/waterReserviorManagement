@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import Login from "@/pages/login";
+// Register page is disabled - only admins can create users
 import Register from "@/pages/register";
 import AdminDashboard from "@/pages/admin/dashboard";
 import AdminReservoirs from "@/pages/admin/reservoirs";
@@ -67,8 +68,8 @@ function Router() {
     // Wait for auth check to complete
     if (!isAuthChecked) return;
     
-    // If user is not logged in and not on login or register page, redirect to login
-    if (!user && location !== "/login" && location !== "/register") {
+    // If user is not logged in and not on login page, redirect to login
+    if (!user && location !== "/login") {
       setLocation("/login");
     }
     
@@ -88,8 +89,9 @@ function Router() {
       <Route path="/login">
         {user ? <Redirect to="/dashboard" /> : <Login />}
       </Route>
+      {/* Register route disabled - only admins can create users */}
       <Route path="/register">
-        {user ? <Redirect to="/dashboard" /> : <Register />}
+        {() => <Redirect to="/login" />}
       </Route>
       
       {/* Admin Routes */}

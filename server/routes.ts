@@ -3,71 +3,13 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertUserSchema, insertWaterRequestSchema, insertReservoirSchema } from "@shared/schema";
 import { z } from "zod";
-import session from "express-session";
-import MemoryStore from "memorystore";
 import passport from "passport";
-import { Strategy as LocalStrategy } from "passport-local";
-import bcrypt from "bcryptjs";
 import { WebSocketServer, WebSocket } from "ws";
-
-const SessionStore = MemoryStore(session);
+import { setupAuth, hashPassword } from "./auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Setup session
-  app.use(session({
-    secret: process.env.SESSION_SECRET || "water-management-secret",
-    resave: false,
-    saveUninitialized: false,
-    store: new SessionStore({
-      checkPeriod: 86400000 // prune expired entries every 24h
-    }),
-    cookie: {
-      maxAge: 24 * 60 * 60 * 1000 // 24 hours
-    }
-  }));
-
-  // Setup passport
-  app.use(passport.initialize());
-  app.use(passport.session());
-  
-  // Configure passport local strategy
-  passport.use(new LocalStrategy(
-    {
-      usernameField: 'username',
-      passwordField: 'password'
-    },
-    async (username, password, done) => {
-      try {
-        const user = await storage.getUserByUsername(username);
-        if (!user) {
-          return done(null, false, { message: 'Invalid username or password' });
-        }
-        
-        // Compare passwords
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-          return done(null, false, { message: 'Invalid username or password' });
-        }
-        
-        return done(null, user);
-      } catch (error) {
-        return done(error);
-      }
-    }
-  ));
-  
-  passport.serializeUser((user: any, done) => {
-    done(null, user.id);
-  });
-  
-  passport.deserializeUser(async (id: number, done) => {
-    try {
-      const user = await storage.getUser(id);
-      done(null, user);
-    } catch (error) {
-      done(error);
-    }
-  });
+  // Setup authentication
+  setupAuth(app);
   
   // Auth middleware
   const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
@@ -109,7 +51,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   };
   
   // Auth routes
-  app.post('/api/auth/login', (req, res, next) => {
+  app.post('/api/login', (req, res, next) => {
     passport.authenticate('local', (err: any, user: any, info: any) => {
       if (err) {
         return next(err);
@@ -134,7 +76,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     })(req, res, next);
   });
   
-  app.post('/api/auth/register', async (req, res) => {
+  app.post('/api/register', async (req, res) => {
     try {
       const userData = insertUserSchema.parse(req.body);
       
@@ -145,7 +87,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Hash password
-      const hashedPassword = await bcrypt.hash(userData.password, 10);
+      const hashedPassword = await hashPassword(userData.password);
       
       // Create user with hashed password
       const user = await storage.createUser({
@@ -173,13 +115,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  app.post('/api/auth/logout', (req, res) => {
+  app.post('/api/logout', (req, res) => {
     req.logout(() => {
       res.json({ message: 'Logged out successfully' });
     });
   });
   
-  app.get('/api/auth/me', isAuthenticated, (req, res) => {
+  app.get('/api/user', isAuthenticated, (req, res) => {
     const user = req.user as any;
     res.json({
       id: user.id,
@@ -229,7 +171,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Hash password
-      const hashedPassword = await bcrypt.hash(validatedData.password, 10);
+      const hashedPassword = await hashPassword(validatedData.password);
       
       // Create user with hashed password
       const user = await storage.createUser({
