@@ -135,13 +135,64 @@ export default function FarmerReports() {
       description: `Exporting report as ${format.toUpperCase()}...`,
     });
     
-    // Simulate export process
+    // Create sample data for the export
+    const data = sampleUsageData.map(item => ({
+      period: item.date,
+      allocated: item.allocated,
+      used: item.used,
+      percentage: Math.round((item.used / item.allocated) * 100) + '%'
+    }));
+    
+    // Convert data to the appropriate format
+    let fileContent = '';
+    let fileName = '';
+    let mimeType = '';
+    
+    if (format === 'csv') {
+      // Create CSV content
+      const headers = Object.keys(data[0]).join(',');
+      const rows = data.map(row => Object.values(row).join(','));
+      fileContent = `${headers}\n${rows.join('\n')}`;
+      fileName = `water_usage_report_${new Date().toISOString().split('T')[0]}.csv`;
+      mimeType = 'text/csv';
+    } else if (format === 'excel') {
+      // Create a simple Excel (TSV) format for demonstration
+      const headers = Object.keys(data[0]).join('\t');
+      const rows = data.map(row => Object.values(row).join('\t'));
+      fileContent = `${headers}\n${rows.join('\n')}`;
+      fileName = `water_usage_report_${new Date().toISOString().split('T')[0]}.xls`;
+      mimeType = 'application/vnd.ms-excel';
+    } else {
+      // Create a simple text representation for PDF (in real app, would use PDF generation library)
+      fileContent = `Water Usage Report\n\n`;
+      fileContent += `Generated: ${new Date().toLocaleString()}\n\n`;
+      fileContent += `Period\tAllocated\tUsed\tPercentage\n`;
+      data.forEach(row => {
+        fileContent += `${row.period}\t${row.allocated}\t${row.used}\t${row.percentage}\n`;
+      });
+      fileName = `water_usage_report_${new Date().toISOString().split('T')[0]}.txt`;
+      mimeType = 'text/plain';
+      // Note: In a real app, you would use a PDF library to generate actual PDF files
+    }
+    
+    // Create a blob and download link
+    const blob = new Blob([fileContent], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    
+    // Clean up
     setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
       toast({
         title: "Export Complete",
-        description: `Your report has been downloaded as ${format.toUpperCase()}.`,
+        description: `Your report has been downloaded as ${fileName}.`,
       });
-    }, 1500);
+    }, 1000);
   };
   
   // Handle export button click
