@@ -171,7 +171,7 @@ export default function FarmerDashboard() {
               <div className="mt-4">
                 <Button 
                   className="w-full"
-                  onClick={() => setLocation("/farmer/requests/new")}
+                  onClick={() => setLocation("/farmer/requests")}
                 >
                   Request Additional Allocation
                 </Button>
