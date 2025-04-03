@@ -9,7 +9,7 @@ type ReservoirData = {
   name: string;
   currentLevel: string;
   capacity: string;
-  lastUpdated: Date;
+  lastUpdated: Date | string;
   location?: string;
 };
 
@@ -84,18 +84,26 @@ export default function ReservoirStatus() {
   };
 
   // Format date to relative time
-  const formatRelativeTime = (date: Date) => {
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / (1000 * 60));
-    
-    if (diffMins < 1) return "Just now";
-    if (diffMins < 60) return `${diffMins} minutes ago`;
-    
-    const diffHours = Math.floor(diffMins / 60);
-    if (diffHours < 24) return `${diffHours} hours ago`;
-    
-    return date.toLocaleDateString();
+  const formatRelativeTime = (date: Date | string) => {
+    try {
+      // Convert to Date object if it's not already
+      const dateObj = (typeof date === 'string') ? new Date(date) : date;
+      
+      const now = new Date();
+      const diffMs = now.getTime() - dateObj.getTime();
+      const diffMins = Math.floor(diffMs / (1000 * 60));
+      
+      if (diffMins < 1) return "Just now";
+      if (diffMins < 60) return `${diffMins} minutes ago`;
+      
+      const diffHours = Math.floor(diffMins / 60);
+      if (diffHours < 24) return `${diffHours} hours ago`;
+      
+      return dateObj.toLocaleDateString();
+    } catch (error) {
+      // If there's any error in date parsing or calculation, return a fallback
+      return "Recently";
+    }
   };
 
   return (
