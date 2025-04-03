@@ -1,7 +1,7 @@
 import express, { type Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertUserSchema, insertWaterRequestSchema, insertReservoirSchema } from "@shared/schema";
+import { insertUserSchema, insertWaterRequestSchema, insertReservoirSchema, type User } from "@shared/schema";
 import { z } from "zod";
 import passport from "passport";
 import { WebSocketServer, WebSocket } from "ws";
@@ -405,6 +405,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json(notification);
     } catch (error) {
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+  
+  // User profile update route
+  app.patch('/api/user/profile', isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.user as any).id;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      // Update only the fields that are provided
+      const updates: Partial<User> = {};
+      
+      if (req.body.firstName !== undefined) {
+        updates.firstName = req.body.firstName;
+      }
+      
+      if (req.body.lastName !== undefined) {
+        updates.lastName = req.body.lastName;
+      }
+      
+      if (req.body.fieldSize !== undefined) {
+        // Convert to string if it's a number
+        updates.fieldSize = typeof req.body.fieldSize === 'number' 
+          ? req.body.fieldSize.toString() 
+          : req.body.fieldSize;
+      }
+      
+      if (req.body.cropType !== undefined) {
+        updates.cropType = req.body.cropType;
+      }
+      
+      // Update the user record in the session
+      Object.assign(user, updates);
+      
+      // In a real app with a database, you would update the user in the database here
+      // For our in-memory storage, we'll rely on the fact that objects are passed by reference
+      
+      // Update the session
+      req.login(user, (err) => {
+        if (err) {
+          return res.status(500).json({ message: 'Error updating session' });
+        }
+        
+        // Send back updated user
+        res.json({
+          id: user.id,
+          username: user.username,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role,
+          fieldSize: user.fieldSize,
+          cropType: user.cropType
+        });
+      });
+    } catch (error) {
+      console.error('Error updating user profile:', error);
       res.status(500).json({ message: 'Server error' });
     }
   });
