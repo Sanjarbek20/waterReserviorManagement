@@ -3,6 +3,7 @@ import Sidebar from "./sidebar";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Menu, Bell, HelpCircle } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -12,6 +13,13 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children, title }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user } = useAuth();
+  
+  // Fetch notifications
+  const { data: notifications = [] } = useQuery({
+    queryKey: ["/api/notifications"],
+    // Only fetch if user is authenticated
+    enabled: !!user
+  });
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -60,9 +68,11 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
           <div className="flex items-center space-x-4">
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                3
-              </span>
+              {notifications && notifications.length > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                  {notifications.filter(n => !n.isRead).length}
+                </span>
+              )}
             </Button>
 
             <Button variant="ghost" size="icon">
