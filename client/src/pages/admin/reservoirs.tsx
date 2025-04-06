@@ -28,12 +28,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { format } from "date-fns";
-import { Droplet, Edit, RefreshCw, Plus } from "lucide-react";
+import { Droplet, Edit, RefreshCw, Plus, Trash } from "lucide-react";
 
 export default function AdminReservoirs() {
   const { toast } = useToast();
   const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
   const [openAddDialog, setOpenAddDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false); 
   const [selectedReservoir, setSelectedReservoir] = useState<any>(null);
   const [newLevel, setNewLevel] = useState<number>(0);
   const [newReservoir, setNewReservoir] = useState({
@@ -100,6 +101,29 @@ export default function AdminReservoirs() {
     },
   });
   
+  // Delete reservoir mutation
+  const deleteReservoirMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const res = await apiRequest("DELETE", `/api/reservoirs/${id}`);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/reservoirs"] });
+      toast({
+        title: "Reservoir deleted",
+        description: "Reservoir has been deleted successfully.",
+      });
+      setOpenDeleteDialog(false);
+    },
+    onError: (error: any) => {
+      toast({
+        variant: "destructive",
+        title: "Deletion failed",
+        description: error.message || "Failed to delete reservoir",
+      });
+    },
+  });
+  
   const handleUpdateLevel = () => {
     if (selectedReservoir) {
       updateLevelMutation.mutate({
@@ -111,6 +135,19 @@ export default function AdminReservoirs() {
   
   const handleAddReservoir = () => {
     createReservoirMutation.mutate(newReservoir);
+  };
+  
+  const [reservoirToDelete, setReservoirToDelete] = useState<any>(null);
+  
+  const handleDeleteReservoir = (reservoir: any) => {
+    setReservoirToDelete(reservoir);
+    setOpenDeleteDialog(true);
+  };
+  
+  const confirmDeleteReservoir = () => {
+    if (reservoirToDelete) {
+      deleteReservoirMutation.mutate(reservoirToDelete.id);
+    }
   };
   
   const openEditDialog = (reservoir: any) => {
@@ -176,13 +213,23 @@ export default function AdminReservoirs() {
                     <CardHeader className="pb-2">
                       <CardTitle className="flex justify-between items-center">
                         <span>{reservoir.name}</span>
-                        <Button 
-                          variant="ghost" 
-                          size="icon"
-                          onClick={() => openEditDialog(reservoir)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
+                        <div className="flex space-x-1">
+                          <Button 
+                            variant="ghost" 
+                            size="icon"
+                            onClick={() => openEditDialog(reservoir)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="icon"
+                            onClick={() => handleDeleteReservoir(reservoir)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <Trash className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -269,14 +316,25 @@ export default function AdminReservoirs() {
                             {format(new Date(reservoir.lastUpdated), 'MMM d, yyyy h:mm a')}
                           </TableCell>
                           <TableCell>
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              onClick={() => openEditDialog(reservoir)}
-                            >
-                              <Edit className="h-4 w-4 mr-1" />
-                              Update
-                            </Button>
+                            <div className="flex space-x-2">
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => openEditDialog(reservoir)}
+                              >
+                                <Edit className="h-4 w-4 mr-1" />
+                                Update
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => handleDeleteReservoir(reservoir)}
+                                className="text-red-500 hover:text-red-700"
+                              >
+                                <Trash className="h-4 w-4 mr-1" />
+                                Delete
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                       );
@@ -439,6 +497,54 @@ export default function AdminReservoirs() {
               disabled={createReservoirMutation.isPending}
             >
               {createReservoirMutation.isPending ? "Creating..." : "Add Reservoir"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Delete Reservoir Dialog */}
+      <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Reservoir</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete {reservoirToDelete?.name}? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="py-4">
+            {reservoirToDelete && (
+              <div className="space-y-4">
+                <div className="flex justify-between text-sm">
+                  <span className="font-medium">Name:</span>
+                  <span>{reservoirToDelete.name}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="font-medium">Current Level:</span>
+                  <span>{Number(reservoirToDelete.currentLevel).toLocaleString()} m³</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="font-medium">Capacity:</span>
+                  <span>{Number(reservoirToDelete.capacity).toLocaleString()} m³</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="font-medium">Location:</span>
+                  <span>{reservoirToDelete.location || "N/A"}</span>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOpenDeleteDialog(false)}>
+              Cancel
+            </Button>
+            <Button 
+              variant="destructive"
+              onClick={confirmDeleteReservoir}
+              disabled={deleteReservoirMutation.isPending}
+            >
+              {deleteReservoirMutation.isPending ? "Deleting..." : "Delete Reservoir"}
             </Button>
           </DialogFooter>
         </DialogContent>

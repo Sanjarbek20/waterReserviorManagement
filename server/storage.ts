@@ -28,6 +28,7 @@ export interface IStorage {
   getReservoir(id: number): Promise<Reservoir | undefined>;
   createReservoir(reservoir: InsertReservoir): Promise<Reservoir>;
   updateReservoirLevel(id: number, level: string): Promise<Reservoir | undefined>;
+  deleteReservoir(id: number): Promise<Reservoir | undefined>;
   
   // Water allocation operations
   getAllocations(): Promise<WaterAllocation[]>;
@@ -232,6 +233,14 @@ export class MemStorage implements IStorage {
     
     this.reservoirs.set(id, updated);
     return updated;
+  }
+  
+  async deleteReservoir(id: number): Promise<Reservoir | undefined> {
+    const reservoir = await this.getReservoir(id);
+    if (!reservoir) return undefined;
+    
+    this.reservoirs.delete(id);
+    return reservoir;
   }
   
   // Water allocation operations
