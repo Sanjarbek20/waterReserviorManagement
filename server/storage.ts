@@ -22,6 +22,7 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   getAllUsers(): Promise<User[]>;
   createUser(user: InsertUser): Promise<User>;
+  deleteUser(id: number): Promise<User | undefined>;
   
   // Reservoir operations
   getAllReservoirs(): Promise<Reservoir[]>;
@@ -197,6 +198,14 @@ export class MemStorage implements IStorage {
       cropType: insertUser.cropType || null
     };
     this.users.set(id, user);
+    return user;
+  }
+  
+  async deleteUser(id: number): Promise<User | undefined> {
+    const user = await this.getUser(id);
+    if (!user) return undefined;
+    
+    this.users.delete(id);
     return user;
   }
   
