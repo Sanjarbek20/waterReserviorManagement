@@ -212,7 +212,7 @@ export default function ReservoirStatus() {
   };
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
         <CardTitle className="text-lg md:text-xl font-semibold">Reservoir Status</CardTitle>
         <div className="flex space-x-2">
@@ -247,10 +247,10 @@ export default function ReservoirStatus() {
           <Clock className="h-3.5 w-3.5 mr-1" />
           <span>Last updated: {formatRelativeTime(lastUpdated)}</span>
         </div>
-        <div className="space-y-6">
+        <div className="space-y-6 w-full">
           {reservoirsWithStatus.map((reservoir) => (
-            <div key={reservoir.id} className="border rounded-lg p-4">
-              <div className="flex flex-wrap justify-between items-start mb-2">
+            <div key={reservoir.id} className="border rounded-lg p-4 w-full">
+              <div className="flex flex-wrap justify-between items-start mb-2 w-full">
                 <div>
                   <h3 className="text-lg font-medium">{reservoir.name}</h3>
                   <div className="flex items-center text-gray-500 text-sm mt-1">
@@ -268,16 +268,16 @@ export default function ReservoirStatus() {
                 </Badge>
               </div>
               
-              <div className="mt-3 space-y-3">
-                <div>
+              <div className="mt-3 space-y-3 w-full">
+                <div className="w-full">
                   <Progress 
                     value={reservoir.fillPercentage} 
-                    className="h-3"
+                    className="h-3 w-full"
                     indicatorClassName={reservoir.statusColor}
                   />
                 </div>
                 
-                <div className="grid grid-cols-2 gap-2 text-sm">
+                <div className="grid grid-cols-2 gap-2 text-sm w-full">
                   <div className="flex items-center">
                     <Droplet className="h-4 w-4 mr-2 text-blue-500" />
                     <div>
@@ -295,7 +295,7 @@ export default function ReservoirStatus() {
                   </div>
                 </div>
                 
-                <div className="flex items-center justify-between text-xs text-gray-500">
+                <div className="flex items-center justify-between text-xs text-gray-500 w-full">
                   <div className="flex items-center">
                     <Clock className="h-3.5 w-3.5 mr-1" />
                     <span>Updated {formatRelativeTime(reservoir.lastUpdated)}</span>
