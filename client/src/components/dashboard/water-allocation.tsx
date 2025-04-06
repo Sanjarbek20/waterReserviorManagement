@@ -211,7 +211,24 @@ export default function WaterAllocation() {
   const totalWaterAvailable = waterValues.totalAllocated + waterValues.additionalApproved;
   
   // Use API data if available, otherwise use default data
-  const allocations: Allocation[] = [];
+  const allocations: Allocation[] = Array.isArray(allocationsData) && allocationsData.length > 0 ? 
+    [
+      { 
+        id: 1, 
+        name: "Used Water", 
+        percentage: Math.round((waterValues.totalUsed / totalWaterAvailable) * 100), 
+        color: "bg-blue-500" 
+      },
+      { 
+        id: 2, 
+        name: "Available Water", 
+        percentage: Math.round(((totalWaterAvailable - waterValues.totalUsed) / totalWaterAvailable) * 100), 
+        color: "bg-green-500" 
+      }
+    ] : [
+      { id: 1, name: "Used Water", percentage: 65, color: "bg-blue-500" },
+      { id: 2, name: "Available Water", percentage: 35, color: "bg-green-500" }
+    ];
 
   return (
     <Card>
