@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
-type Theme = "light" | "dark" | "system";
+type ThemeMode = "light" | "dark" | "system";
+type DarkVariant = "standard" | "deep" | "twilight";
+type Theme = ThemeMode | `dark-${DarkVariant}`;
 
 type ThemeProviderProps = {
   children: ReactNode;
@@ -11,11 +13,15 @@ type ThemeProviderProps = {
 type ThemeProviderState = {
   theme: Theme;
   setTheme: (theme: Theme) => void;
+  isDarkMode: boolean;
+  darkVariant: DarkVariant;
 };
 
 const initialState: ThemeProviderState = {
   theme: "system",
   setTheme: () => null,
+  isDarkMode: false,
+  darkVariant: "standard"
 };
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
@@ -37,13 +43,24 @@ export function ThemeProvider({
     }
   );
 
+  // Determine if the current theme is a dark mode
+  const isDarkMode = theme === "dark" || 
+                    theme.startsWith("dark-") || 
+                    (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+  // Extract the dark variant (if applicable)
+  const darkVariant: DarkVariant = theme.startsWith("dark-") 
+                                ? theme.split("-")[1] as DarkVariant 
+                                : "standard";
+
   useEffect(() => {
     // Skip effect on server side
     if (typeof window === 'undefined') return;
 
     const root = window.document.documentElement;
     
-    root.classList.remove("light", "dark");
+    // Remove all theme classes
+    root.classList.remove("light", "dark", "dark-standard", "dark-deep", "dark-twilight");
     
     if (theme === "system") {
       const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
@@ -55,6 +72,7 @@ export function ThemeProvider({
       return;
     }
     
+    // Add the theme class
     root.classList.add(theme);
   }, [theme]);
 
@@ -68,6 +86,8 @@ export function ThemeProvider({
       }
       setTheme(theme);
     },
+    isDarkMode,
+    darkVariant
   };
 
   return (
