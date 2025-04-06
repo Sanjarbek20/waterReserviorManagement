@@ -1,5 +1,29 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+
+// Define types for our data
+interface UsageData {
+  date: string;
+  allocated: number;
+  used: number;
+}
+
+interface AllocationData {
+  date: string;
+  amount: number;
+  used: number;
+  remaining: number;
+  percentUsed: number;
+}
+
+interface RequestData {
+  id: number;
+  date: string;
+  type: string;
+  amount?: string;
+  status: string;
+  notes?: string;
+}
 import DashboardLayout from "@/components/layout/dashboard-layout";
 import { useAuth } from "@/lib/auth";
 import { format, subMonths, startOfMonth, endOfMonth } from "date-fns";
@@ -60,52 +84,22 @@ export default function FarmerReports() {
   const [exportFormat, setExportFormat] = useState<string>("pdf");
   
   // Query for water usage data
-  const { data: usageData = [], isLoading: isLoadingUsage, refetch: refetchUsage } = useQuery({
+  const { data: usageData = [] as UsageData[], isLoading: isLoadingUsage, refetch: refetchUsage } = useQuery<UsageData[]>({
     queryKey: ["/api/reports/usage", dateRange?.from, dateRange?.to],
     enabled: false, // We'll trigger this manually
   });
   
   // Query for allocation data
-  const { data: allocationData = [], isLoading: isLoadingAllocation, refetch: refetchAllocation } = useQuery({
+  const { data: allocationData = [] as AllocationData[], isLoading: isLoadingAllocation, refetch: refetchAllocation } = useQuery<AllocationData[]>({
     queryKey: ["/api/reports/allocation", dateRange?.from, dateRange?.to],
     enabled: false, // We'll trigger this manually
   });
   
-  // Sample water usage data for chart
-  const sampleUsageData = [
-    { date: "Week 1", used: 245, allocated: 300 },
-    { date: "Week 2", used: 320, allocated: 300 },
-    { date: "Week 3", used: 278, allocated: 300 },
-    { date: "Week 4", used: 290, allocated: 300 },
-  ];
-  
-  // Sample water request history
-  const sampleRequestHistory = [
-    { 
-      id: 1, 
-      date: "2025-03-15", 
-      type: "Additional Water", 
-      amount: "500", 
-      status: "Approved", 
-      notes: "For extended dry period" 
-    },
-    { 
-      id: 2, 
-      date: "2025-03-05", 
-      type: "Schedule Change", 
-      amount: null, 
-      status: "Approved", 
-      notes: "Requested earlier irrigation time" 
-    },
-    { 
-      id: 3, 
-      date: "2025-02-28", 
-      type: "Emergency", 
-      amount: "300", 
-      status: "Denied", 
-      notes: "Insufficient reservoir levels" 
-    },
-  ];
+  // Query for requests history data
+  const { data: requestsData = [] as RequestData[], isLoading: isLoadingRequests, refetch: refetchRequests } = useQuery<RequestData[]>({
+    queryKey: ['/api/reports/requests', dateRange?.from, dateRange?.to],
+    enabled: false, // We'll trigger this manually
+  });
   
   // Generate report function
   const generateReport = () => {
@@ -116,6 +110,8 @@ export default function FarmerReports() {
       refetchUsage();
     } else if (reportType === "allocation") {
       refetchAllocation();
+    } else if (reportType === "requests") {
+      refetchRequests();
     }
     
     // Simulate report generation
@@ -135,13 +131,33 @@ export default function FarmerReports() {
       description: `Exporting report as ${format.toUpperCase()}...`,
     });
     
-    // Create sample data for the export
-    const data = sampleUsageData.map(item => ({
-      period: item.date,
-      allocated: item.allocated,
-      used: item.used,
-      percentage: Math.round((item.used / item.allocated) * 100) + '%'
-    }));
+    // Create data for the export based on report type
+    let data: any[] = [];
+    
+    if (reportType === "usage") {
+      data = usageData.map((item: UsageData) => ({
+        period: item.date,
+        allocated: item.allocated,
+        used: item.used,
+        percentage: Math.round((item.used / item.allocated) * 100) + '%'
+      }));
+    } else if (reportType === "allocation") {
+      data = allocationData.map((item: AllocationData) => ({
+        date: new Date(item.date).toLocaleDateString(),
+        amount: item.amount,
+        used: item.used,
+        remaining: item.remaining,
+        percentUsed: item.percentUsed + '%'
+      }));
+    } else if (reportType === "requests") {
+      data = requestsData.map((item: RequestData) => ({
+        date: new Date(item.date).toLocaleDateString(),
+        type: item.type,
+        amount: item.amount || 'N/A',
+        status: item.status,
+        notes: item.notes || 'None'
+      }));
+    }
     
     // Convert data to the appropriate format
     let fileContent = '';
@@ -252,7 +268,7 @@ export default function FarmerReports() {
                   <div className="h-80">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart
-                        data={sampleUsageData}
+                        data={usageData}
                         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                       >
                         <CartesianGrid strokeDasharray="3 3" />
@@ -279,32 +295,40 @@ export default function FarmerReports() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {sampleUsageData.map((item, index) => (
-                        <TableRow key={index}>
-                          <TableCell className="font-medium">{item.date}</TableCell>
-                          <TableCell>{item.allocated}</TableCell>
-                          <TableCell>{item.used}</TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                <div 
-                                  className={`h-full ${
-                                    (item.used / item.allocated) > 1 
-                                      ? 'bg-red-500' 
-                                      : (item.used / item.allocated) > 0.8 
-                                        ? 'bg-amber-500' 
-                                        : 'bg-green-500'
-                                  }`}
-                                  style={{ width: `${Math.min(100, (item.used / item.allocated) * 100)}%` }}
-                                />
+                      {usageData.length > 0 ? (
+                        usageData.map((item: UsageData, index: number) => (
+                          <TableRow key={index}>
+                            <TableCell className="font-medium">{item.date}</TableCell>
+                            <TableCell>{item.allocated}</TableCell>
+                            <TableCell>{item.used}</TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                  <div 
+                                    className={`h-full ${
+                                      (item.used / item.allocated) > 1 
+                                        ? 'bg-red-500' 
+                                        : (item.used / item.allocated) > 0.8 
+                                          ? 'bg-amber-500' 
+                                          : 'bg-green-500'
+                                    }`}
+                                    style={{ width: `${Math.min(100, (item.used / item.allocated) * 100)}%` }}
+                                  />
+                                </div>
+                                <span className="text-sm">
+                                  {Math.round((item.used / item.allocated) * 100)}%
+                                </span>
                               </div>
-                              <span className="text-sm">
-                                {Math.round((item.used / item.allocated) * 100)}%
-                              </span>
-                            </div>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={4} className="text-center py-4 text-gray-500">
+                            No data available. Generate a report to view usage details.
                           </TableCell>
                         </TableRow>
-                      ))}
+                      )}
                     </TableBody>
                   </Table>
                 </div>
@@ -524,31 +548,39 @@ export default function FarmerReports() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {sampleRequestHistory.map((request) => (
-                        <TableRow key={request.id}>
-                          <TableCell className="font-medium">
-                            {format(new Date(request.date), "MMM d, yyyy")}
-                          </TableCell>
-                          <TableCell>{request.type}</TableCell>
-                          <TableCell>{request.amount || "--"}</TableCell>
-                          <TableCell>
-                            <span 
-                              className={`px-2 py-1 text-xs rounded-full ${
-                                request.status === "Approved" 
-                                  ? "bg-green-100 text-green-800" 
-                                  : request.status === "Denied" 
-                                    ? "bg-red-100 text-red-800" 
-                                    : "bg-amber-100 text-amber-800"
-                              }`}
-                            >
-                              {request.status}
-                            </span>
-                          </TableCell>
-                          <TableCell className="max-w-xs truncate">
-                            {request.notes}
+                      {requestsData.length > 0 ? (
+                        requestsData.map((request: RequestData) => (
+                          <TableRow key={request.id}>
+                            <TableCell className="font-medium">
+                              {format(new Date(request.date), "MMM d, yyyy")}
+                            </TableCell>
+                            <TableCell>{request.type}</TableCell>
+                            <TableCell>{request.amount || "--"}</TableCell>
+                            <TableCell>
+                              <span 
+                                className={`px-2 py-1 text-xs rounded-full ${
+                                  request.status === "approved" 
+                                    ? "bg-green-100 text-green-800" 
+                                    : request.status === "denied" 
+                                      ? "bg-red-100 text-red-800" 
+                                      : "bg-amber-100 text-amber-800"
+                                }`}
+                              >
+                                {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                              </span>
+                            </TableCell>
+                            <TableCell className="max-w-xs truncate">
+                              {request.notes || "No notes"}
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={5} className="text-center py-4 text-gray-500">
+                            No request history available. Generate a report to view your requests.
                           </TableCell>
                         </TableRow>
-                      ))}
+                      )}
                     </TableBody>
                   </Table>
                 </div>
@@ -560,7 +592,7 @@ export default function FarmerReports() {
                       <CardContent className="pt-6">
                         <div className="text-center">
                           <p className="text-sm text-gray-500">Total Requests</p>
-                          <p className="text-3xl font-bold mt-1">12</p>
+                          <p className="text-3xl font-bold mt-1">{requestsData.length}</p>
                         </div>
                       </CardContent>
                     </Card>
@@ -568,7 +600,13 @@ export default function FarmerReports() {
                       <CardContent className="pt-6">
                         <div className="text-center">
                           <p className="text-sm text-gray-500">Approval Rate</p>
-                          <p className="text-3xl font-bold mt-1">75%</p>
+                          {requestsData.length > 0 ? (
+                            <p className="text-3xl font-bold mt-1">
+                              {Math.round((requestsData.filter((r: RequestData) => r.status === "approved").length / requestsData.length) * 100)}%
+                            </p>
+                          ) : (
+                            <p className="text-3xl font-bold mt-1">0%</p>
+                          )}
                         </div>
                       </CardContent>
                     </Card>
@@ -576,7 +614,16 @@ export default function FarmerReports() {
                       <CardContent className="pt-6">
                         <div className="text-center">
                           <p className="text-sm text-gray-500">Additional Water</p>
-                          <p className="text-3xl font-bold mt-1">2,500 m³</p>
+                          {requestsData.length > 0 ? (
+                            <p className="text-3xl font-bold mt-1">
+                              {requestsData
+                                .filter((r: RequestData) => r.type === "Additional Water" && r.status === "approved")
+                                .reduce((sum: number, r: RequestData) => sum + (parseInt(r.amount || '0') || 0), 0)
+                                .toLocaleString()} m³
+                            </p>
+                          ) : (
+                            <p className="text-3xl font-bold mt-1">0 m³</p>
+                          )}
                         </div>
                       </CardContent>
                     </Card>
