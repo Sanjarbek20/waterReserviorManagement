@@ -94,22 +94,22 @@ export default function Sidebar() {
 
   const farmerNavItems = [
     { 
-      name: "Boshqaruv paneli", 
+      name: "Dashboard", 
       path: "/farmer/dashboard", 
       icon: <Home className="h-4 w-4 mr-3" /> 
     },
     { 
-      name: "Suv so'rovlari", 
+      name: "Water Requests", 
       path: "/farmer/requests", 
       icon: <Droplet className="h-4 w-4 mr-3" /> 
     },
     { 
-      name: "Hisobotlar", 
+      name: "Reports", 
       path: "/farmer/reports", 
       icon: <BarChart3 className="h-4 w-4 mr-3" /> 
     },
     { 
-      name: "Profil", 
+      name: "Profile", 
       path: "/farmer/profile", 
       icon: <User className="h-4 w-4 mr-3" /> 
     }
@@ -126,12 +126,12 @@ export default function Sidebar() {
   }
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-screen flex flex-col">
       <div className="p-4 border-b">
-        <h2 className="text-lg font-medium text-blue-800">Suv Omborini Boshqarish</h2>
+        <h2 className="text-lg font-medium text-blue-800">Water Reservoir Management</h2>
       </div>
       
-      <nav className="mt-4 flex-1">
+      <nav className="mt-4 flex-1 overflow-y-auto">
         <ul>
           {navItems.map((item) => (
             <li className="mb-1" key={item.path}>
@@ -162,9 +162,7 @@ export default function Sidebar() {
               {user ? `${user.firstName} ${user.lastName}` : "User"}
             </p>
             <p className="text-xs text-gray-500 capitalize">
-              {user?.role === "farmer" ? "Fermer" : 
-               user?.role === "admin" ? "Administrator" : 
-               user?.role === "data_admin" ? "Ma'lumotlar administratori" : "Foydalanuvchi"}
+              {user?.role || "User"}
             </p>
           </div>
           <Button 

@@ -83,7 +83,7 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
 
       {/* Sidebar */}
       <div className={`
-        fixed top-0 left-0 h-full w-64 bg-white dark:bg-gray-800 shadow-lg z-30 transform transition-transform duration-300 ease-in-out
+        fixed top-0 left-0 bottom-0 w-64 bg-white dark:bg-gray-800 shadow-lg z-30 transform transition-transform duration-300 ease-in-out
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0 lg:relative lg:z-0
       `}>
