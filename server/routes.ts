@@ -268,6 +268,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Delete reservoir endpoint
+  app.delete('/api/reservoirs/:id', isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deletedReservoir = await storage.deleteReservoir(id);
+      
+      if (!deletedReservoir) {
+        return res.status(404).json({ message: 'Reservoir not found' });
+      }
+      
+      res.json(deletedReservoir);
+    } catch (error) {
+      console.error('Error deleting reservoir:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+  
   // Water allocation routes
   app.get('/api/allocations', isAuthenticated, async (req, res) => {
     try {
