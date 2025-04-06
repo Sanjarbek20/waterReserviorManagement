@@ -128,11 +128,6 @@ export default function Sidebar() {
       icon: <Droplet className="h-4 w-4 mr-3" /> 
     },
     { 
-      name: t("water_prediction.title"), 
-      path: "/water-predictions", 
-      icon: <LineChart className="h-4 w-4 mr-3" /> 
-    },
-    { 
       name: "Reports", 
       path: "/farmer/reports", 
       icon: <BarChart3 className="h-4 w-4 mr-3" /> 

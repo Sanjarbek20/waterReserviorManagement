@@ -130,7 +130,7 @@ function Router() {
       </Route>
       
       <Route path="/water-predictions">
-        <ProtectedRoute component={WaterPredictions} />
+        <ProtectedRoute component={WaterPredictions} adminOnly={true} dataAdminAllowed={true} />
       </Route>
       
       {/* Farmer Routes */}
