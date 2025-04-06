@@ -675,11 +675,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       if (ws.readyState === WebSocket.OPEN) {
         const reservoirs = await storage.getAllReservoirs();
-        const reservoirData = {
-          type: 'reservoir_data',
-          data: reservoirs
+        const users = await storage.getAllUsers();
+        const farmerCount = users.filter(user => user.role === 'farmer').length;
+        
+        // Calculate reservoir statistics
+        let totalCapacity = 0;
+        let currentLevel = 0;
+        reservoirs.forEach(reservoir => {
+          totalCapacity += parseInt(reservoir.capacity);
+          currentLevel += parseInt(reservoir.currentLevel);
+        });
+        
+        // Calculate allocation data
+        const allocations = [
+          { name: "Rice Fields", percentage: 45, color: "bg-blue-500" },
+          { name: "Vegetable Farms", percentage: 30, color: "bg-green-500" },
+          { name: "Wheat Fields", percentage: 15, color: "bg-blue-400" },
+          { name: "Other Crops", percentage: 10, color: "bg-amber-500" }
+        ];
+        
+        const dashboardData = {
+          type: 'dashboard_data',
+          reservoirs: reservoirs,
+          stats: {
+            totalCapacity: totalCapacity,
+            currentLevel: currentLevel,
+            dailyOutflow: 2845,
+            activeFarmers: farmerCount
+          },
+          allocations: allocations
         };
-        ws.send(JSON.stringify(reservoirData));
+        
+        ws.send(JSON.stringify(dashboardData));
       }
     } catch (error) {
       console.error('Error sending reservoir data:', error);
@@ -690,12 +717,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
   async function broadcastReservoirData() {
     try {
       const reservoirs = await storage.getAllReservoirs();
-      const reservoirData = {
-        type: 'reservoir_data',
-        data: reservoirs
+      const users = await storage.getAllUsers();
+      const farmerCount = users.filter(user => user.role === 'farmer').length;
+      
+      // Calculate reservoir statistics
+      let totalCapacity = 0;
+      let currentLevel = 0;
+      reservoirs.forEach(reservoir => {
+        totalCapacity += parseInt(reservoir.capacity);
+        currentLevel += parseInt(reservoir.currentLevel);
+      });
+      
+      // Calculate allocation data
+      const allocations = [
+        { name: "Rice Fields", percentage: 45, color: "bg-blue-500" },
+        { name: "Vegetable Farms", percentage: 30, color: "bg-green-500" },
+        { name: "Wheat Fields", percentage: 15, color: "bg-blue-400" },
+        { name: "Other Crops", percentage: 10, color: "bg-amber-500" }
+      ];
+      
+      const dashboardData = {
+        type: 'dashboard_data',
+        reservoirs: reservoirs,
+        stats: {
+          totalCapacity: totalCapacity,
+          currentLevel: currentLevel,
+          dailyOutflow: 2845,
+          activeFarmers: farmerCount
+        },
+        allocations: allocations
       };
       
-      const messageStr = JSON.stringify(reservoirData);
+      const messageStr = JSON.stringify(dashboardData);
       
       clients.forEach(client => {
         if (client.readyState === WebSocket.OPEN) {

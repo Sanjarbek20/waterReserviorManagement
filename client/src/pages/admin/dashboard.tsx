@@ -21,16 +21,48 @@ import ReservoirStatus from "@/components/dashboard/reservoir-status";
 import WaterAllocation from "@/components/dashboard/water-allocation";
 
 export default function AdminDashboard() {
-  // Fetch reservoirs data
+  // Fetch data
   const { data: reservoirs, isLoading: isLoadingReservoirs } = useQuery({
     queryKey: ["/api/reservoirs"],
   });
 
-  // Mock data for UI elements that would typically be fetched from API
+  const { data: users = [] } = useQuery<any[]>({
+    queryKey: ["/api/users"],
+  });
+
+  // Calculate total capacity and current level from reservoir data
+  const calculateReservoirStats = () => {
+    if (!reservoirs || !Array.isArray(reservoirs) || reservoirs.length === 0) {
+      return {
+        totalCapacity: 0,
+        currentLevel: 0,
+        percentageFilled: 0
+      };
+    }
+
+    let capacity = 0;
+    let level = 0;
+
+    reservoirs.forEach(reservoir => {
+      capacity += parseInt(reservoir.capacity);
+      level += parseInt(reservoir.currentLevel);
+    });
+
+    return {
+      totalCapacity: capacity,
+      currentLevel: level,
+      percentageFilled: Math.round((level / capacity) * 100)
+    };
+  };
+
+  const stats = calculateReservoirStats();
+  const farmerCount = users.filter((user: any) => user.role === 'farmer').length || 0;
+
+  // Real-time data based on api responses
   const summaryCards = [
     {
       title: "Total Capacity",
-      value: "124,000",
+      value: stats.totalCapacity.toLocaleString(),
       unit: "m³",
       icon: <Droplet className="h-5 w-5 text-blue-500" />,
       trend: "+3%",
@@ -38,7 +70,7 @@ export default function AdminDashboard() {
     },
     {
       title: "Current Level",
-      value: "87,540",
+      value: stats.currentLevel.toLocaleString(),
       unit: "m³",
       icon: <Droplet className="h-5 w-5 text-blue-500" />,
       trend: "+5%",
@@ -54,7 +86,7 @@ export default function AdminDashboard() {
     },
     {
       title: "Active Farmers",
-      value: "243",
+      value: farmerCount.toString(),
       unit: "",
       icon: <Users className="h-5 w-5 text-green-500" />,
       trend: "+12",
