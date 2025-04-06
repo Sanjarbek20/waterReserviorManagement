@@ -231,7 +231,7 @@ export default function WaterAllocation() {
     ];
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
         <CardTitle className="text-lg md:text-xl font-semibold">Water Allocation</CardTitle>
         <div className="flex space-x-2">
@@ -270,9 +270,9 @@ export default function WaterAllocation() {
           {/* Allocated Water Display */}
           <div className="space-y-1">
             <h3 className="text-sm font-medium">Monthly Water Allocation</h3>
-            <div className="bg-gray-100 h-32 rounded-md relative overflow-hidden flex flex-col">
+            <div className="bg-gray-100 h-32 rounded-md relative overflow-hidden flex flex-col w-full">
               {/* Total Allocation */}
-              <div className="flex-1 bg-green-100 border-b border-gray-300 flex items-center justify-center relative">
+              <div className="flex-1 bg-green-100 border-b border-gray-300 flex items-center justify-center relative w-full">
                 <div className="text-center">
                   <span className="text-xl font-semibold text-green-700">{waterValues.totalAllocated.toLocaleString()} m³</span>
                   <div className="text-xs text-green-600">Base Allocation</div>
@@ -286,7 +286,7 @@ export default function WaterAllocation() {
               
               {/* Total with Additional */}
               {waterValues.additionalApproved > 0 && (
-                <div className="bg-green-50 py-2 text-center border-t border-green-200">
+                <div className="bg-green-50 py-2 text-center border-t border-green-200 w-full">
                   <span className="text-sm font-medium text-green-700">Total: {totalWaterAvailable.toLocaleString()} m³</span>
                 </div>
               )}
@@ -296,8 +296,8 @@ export default function WaterAllocation() {
           {/* Used Water Display */}
           <div className="space-y-1">
             <h3 className="text-sm font-medium">Current Water Usage</h3>
-            <div className="bg-gray-100 rounded-md relative overflow-hidden">
-              <div className="h-24 flex items-center">
+            <div className="bg-gray-100 rounded-md relative overflow-hidden w-full">
+              <div className="h-24 flex items-center w-full">
                 <div 
                   className="h-full bg-blue-500 flex items-center justify-center"
                   style={{ width: `${Math.min(100, (waterValues.totalUsed / totalWaterAvailable) * 100)}%` }}
@@ -323,7 +323,7 @@ export default function WaterAllocation() {
                   )}
                 </div>
               </div>
-              <div className="px-4 py-2 text-sm text-center border-t border-gray-200">
+              <div className="px-4 py-2 text-sm text-center border-t border-gray-200 w-full">
                 <span className="font-medium">{waterValues.totalUsed.toLocaleString()} m³</span> used of <span className="font-medium">{totalWaterAvailable.toLocaleString()} m³</span> total allocation
               </div>
             </div>
