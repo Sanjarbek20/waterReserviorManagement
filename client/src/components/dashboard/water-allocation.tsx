@@ -270,62 +270,41 @@ export default function WaterAllocation() {
           {/* Allocated Water Display */}
           <div className="space-y-1">
             <h3 className="text-sm font-medium">Monthly Water Allocation</h3>
-            <div className="bg-gray-100 h-32 rounded-md relative overflow-hidden flex flex-col w-full">
-              {/* Total Allocation */}
-              <div className="flex-1 bg-green-100 border-b border-gray-300 flex items-center justify-center relative w-full">
-                <div className="text-center">
-                  <span className="text-xl font-semibold text-green-700">{waterValues.totalAllocated.toLocaleString()} m³</span>
-                  <div className="text-xs text-green-600">Base Allocation</div>
-                </div>
-                {waterValues.additionalApproved > 0 && (
-                  <div className="absolute bottom-0 left-0 right-0 bg-green-200 py-1.5 text-center border-t border-green-300">
-                    <span className="text-sm font-medium text-green-700">+{waterValues.additionalApproved.toLocaleString()} m³ Additional</span>
-                  </div>
-                )}
+            <div className="bg-green-100 h-32 rounded-md flex items-center justify-center">
+              <div className="text-center">
+                <span className="text-2xl font-semibold text-green-700">{waterValues.totalAllocated.toLocaleString()} m³</span>
+                <div className="text-sm text-green-600">Base Allocation</div>
               </div>
-              
-              {/* Total with Additional */}
-              {waterValues.additionalApproved > 0 && (
-                <div className="bg-green-50 py-2 text-center border-t border-green-200 w-full">
-                  <span className="text-sm font-medium text-green-700">Total: {totalWaterAvailable.toLocaleString()} m³</span>
-                </div>
-              )}
             </div>
           </div>
           
           {/* Used Water Display */}
           <div className="space-y-1">
             <h3 className="text-sm font-medium">Current Water Usage</h3>
-            <div className="bg-gray-100 rounded-md relative overflow-hidden w-full">
-              <div className="h-24 flex items-center w-full">
-                <div 
-                  className="h-full bg-blue-500 flex items-center justify-center"
-                  style={{ width: `${Math.min(100, (waterValues.totalUsed / totalWaterAvailable) * 100)}%` }}
-                >
-                  <div className="text-center text-white">
-                    <div className="text-lg font-semibold">
-                      {Math.round((waterValues.totalUsed / totalWaterAvailable) * 100)}%
-                    </div>
-                    <div className="text-xs">Used</div>
+            <div className="flex h-24 bg-muted rounded-md overflow-hidden">
+              <div 
+                className="flex items-center justify-center bg-blue-500 text-white"
+                style={{ width: `${Math.min(100, allocations[0].percentage)}%` }}
+              >
+                <div className="text-center">
+                  <div className="text-lg font-semibold">{allocations[0].percentage}%</div>
+                  <div className="text-xs">Used</div>
+                </div>
+              </div>
+              <div 
+                className="flex items-center justify-center"
+                style={{ width: `${Math.max(0, allocations[1].percentage)}%` }}
+              >
+                {allocations[1].percentage > 15 && (
+                  <div className="text-center text-gray-600">
+                    <div className="text-lg font-semibold">{allocations[1].percentage}%</div>
+                    <div className="text-xs">Available</div>
                   </div>
-                </div>
-                <div 
-                  className="h-full flex items-center justify-center"
-                  style={{ width: `${Math.max(0, 100 - (waterValues.totalUsed / totalWaterAvailable) * 100)}%` }}
-                >
-                  {(100 - (waterValues.totalUsed / totalWaterAvailable) * 100) > 15 && (
-                    <div className="text-center text-gray-600">
-                      <div className="text-lg font-semibold">
-                        {Math.round(100 - (waterValues.totalUsed / totalWaterAvailable) * 100)}%
-                      </div>
-                      <div className="text-xs">Available</div>
-                    </div>
-                  )}
-                </div>
+                )}
               </div>
-              <div className="px-4 py-2 text-sm text-center border-t border-gray-200 w-full">
-                <span className="font-medium">{waterValues.totalUsed.toLocaleString()} m³</span> used of <span className="font-medium">{totalWaterAvailable.toLocaleString()} m³</span> total allocation
-              </div>
+            </div>
+            <div className="py-2 text-sm text-center bg-gray-50 rounded-md mt-1 border border-gray-100">
+              <span className="font-medium">{waterValues.totalUsed.toLocaleString()} m³</span> used of <span className="font-medium">{waterValues.totalAllocated.toLocaleString()} m³</span> total allocation
             </div>
           </div>
         </div>
