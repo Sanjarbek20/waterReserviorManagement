@@ -231,7 +231,7 @@ export default function WaterAllocation() {
     ];
 
   return (
-    <Card className="w-full">
+    <Card className="w-full overflow-visible max-w-full">
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
         <CardTitle className="text-lg md:text-xl font-semibold">Water Allocation</CardTitle>
         <div className="flex space-x-2">
@@ -240,13 +240,15 @@ export default function WaterAllocation() {
             size="sm" 
             onClick={handleRefresh}
             disabled={isRefreshing}
+            className="whitespace-nowrap"
           >
             <RefreshCw className={`h-4 w-4 mr-1 ${isRefreshing ? 'animate-spin' : ''}`} />
-            {isRefreshing ? 'Refreshing...' : 'Refresh'}
+            Refresh
           </Button>
           <Button 
             variant={isRealTimeEnabled ? "default" : "outline"} 
             size="sm"
+            className="whitespace-nowrap"
             onClick={() => {
               setIsRealTimeEnabled(!isRealTimeEnabled);
               toast({
@@ -314,7 +316,7 @@ export default function WaterAllocation() {
         </div>
         
         <div className="border-t pt-4">
-          <h4 className="text-sm font-medium mb-3">Allocation Efficiency</h4>
+          <h4 className="text-sm font-medium">Allocation Efficiency</h4>
         </div>
       </CardContent>
     </Card>
