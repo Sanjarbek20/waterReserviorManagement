@@ -9,11 +9,16 @@ interface UsageData {
 }
 
 interface AllocationData {
-  date: string;
-  amount: number;
-  used: number;
-  remaining: number;
-  percentUsed: number;
+  date?: string;
+  month?: string;
+  amount?: number;
+  baseAllocation?: string;
+  adjustments?: string;
+  totalAllocation?: string;
+  allocation?: number;
+  used?: number;
+  remaining?: number;
+  percentUsed?: number;
 }
 
 interface RequestData {
@@ -142,13 +147,19 @@ export default function FarmerReports() {
         percentage: Math.round((item.used / item.allocated) * 100) + '%'
       }));
     } else if (reportType === "allocation") {
-      data = allocationData.map((item: AllocationData) => ({
-        date: new Date(item.date).toLocaleDateString(),
-        amount: item.amount,
-        used: item.used,
-        remaining: item.remaining,
-        percentUsed: item.percentUsed + '%'
-      }));
+      data = allocationData.map((item: AllocationData) => {
+        const monthValue = item.month || 'Current Month';
+        const baseValue = item.baseAllocation || '4500';
+        const adjustValue = item.adjustments || '0';
+        const totalValue = item.totalAllocation || '4500';
+        
+        return {
+          month: monthValue,
+          baseAllocation: baseValue,
+          adjustments: adjustValue,
+          totalAllocation: totalValue
+        };
+      });
     } else if (reportType === "requests") {
       data = requestsData.map((item: RequestData) => ({
         date: new Date(item.date).toLocaleDateString(),
@@ -443,30 +454,26 @@ export default function FarmerReports() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      <TableRow>
-                        <TableCell className="font-medium">January 2025</TableCell>
-                        <TableCell>4500</TableCell>
-                        <TableCell>+300</TableCell>
-                        <TableCell>4800</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">February 2025</TableCell>
-                        <TableCell>4500</TableCell>
-                        <TableCell>0</TableCell>
-                        <TableCell>4500</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">March 2025</TableCell>
-                        <TableCell>4500</TableCell>
-                        <TableCell>+500</TableCell>
-                        <TableCell>5000</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">April 2025</TableCell>
-                        <TableCell>4500</TableCell>
-                        <TableCell>+700</TableCell>
-                        <TableCell>5200</TableCell>
-                      </TableRow>
+                      {allocationData.length > 0 ? (
+                        allocationData.map((item: AllocationData, index: number) => (
+                          <TableRow key={index}>
+                            <TableCell className="font-medium">{item.month || `Month ${index+1}`}</TableCell>
+                            <TableCell>{parseInt(item.baseAllocation || '4500').toLocaleString()}</TableCell>
+                            <TableCell>
+                              {parseInt(item.adjustments || '0') > 0 
+                                ? `+${parseInt(item.adjustments || '0').toLocaleString()}` 
+                                : parseInt(item.adjustments || '0').toLocaleString()}
+                            </TableCell>
+                            <TableCell>{parseInt(item.totalAllocation || '4500').toLocaleString()}</TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={4} className="text-center py-4 text-gray-500">
+                            No allocation history available. Generate a report to view details.
+                          </TableCell>
+                        </TableRow>
+                      )}
                     </TableBody>
                   </Table>
                 </div>
