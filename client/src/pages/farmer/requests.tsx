@@ -100,6 +100,17 @@ export default function FarmerRequests() {
   // Get the type to conditionally render amount field
   const requestType = form.watch("type");
   
+  // Mark all notifications as read mutation
+  const markAllNotificationsReadMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", "/api/notifications/mark-all-read", {});
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/notifications"] });
+    }
+  });
+  
   // Create request mutation
   const createRequestMutation = useMutation({
     mutationFn: async (requestData: z.infer<typeof waterRequestSchema>) => {
@@ -112,7 +123,12 @@ export default function FarmerRequests() {
       return res.json();
     },
     onSuccess: () => {
+      // Invalidate requests to refresh the list
       queryClient.invalidateQueries({ queryKey: ["/api/requests"] });
+      
+      // Mark all notifications as read
+      markAllNotificationsReadMutation.mutate();
+      
       toast({
         title: "Request submitted",
         description: "Your water request has been submitted successfully",

@@ -342,6 +342,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
+      // Mark all user's notifications as read
+      const userNotifications = await storage.getUserNotifications(user.id);
+      for (const notification of userNotifications) {
+        if (!notification.isRead) {
+          await storage.markNotificationAsRead(notification.id);
+        }
+      }
+      
       res.status(201).json(request);
     } catch (error) {
       return handleZodError(error, res);
@@ -404,6 +412,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       res.json(notification);
+    } catch (error) {
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+  
+  // Mark all notifications as read
+  app.post('/api/notifications/mark-all-read', isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.user as any).id;
+      const userNotifications = await storage.getUserNotifications(userId);
+      const updatedNotifications = [];
+      
+      for (const notification of userNotifications) {
+        if (!notification.isRead) {
+          const updated = await storage.markNotificationAsRead(notification.id);
+          if (updated) {
+            updatedNotifications.push(updated);
+          }
+        }
+      }
+      
+      res.json({ 
+        message: 'All notifications marked as read',
+        count: updatedNotifications.length 
+      });
     } catch (error) {
       res.status(500).json({ message: 'Server error' });
     }
