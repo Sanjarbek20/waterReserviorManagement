@@ -153,6 +153,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Delete a user
+  app.delete('/api/users/:id', isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      
+      // Don't allow deleting the user that is currently logged in
+      if (id === (req.user as any).id) {
+        return res.status(400).json({ message: 'You cannot delete your own account' });
+      }
+      
+      const deletedUser = await storage.deleteUser(id);
+      
+      if (!deletedUser) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      // Return a safe version of the user without the password
+      res.json({
+        id: deletedUser.id,
+        username: deletedUser.username,
+        firstName: deletedUser.firstName,
+        lastName: deletedUser.lastName,
+        role: deletedUser.role,
+        fieldSize: deletedUser.fieldSize,
+        cropType: deletedUser.cropType
+      });
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+  
   app.post('/api/users', isAdmin, async (req, res) => {
     try {
       let userData = { ...req.body };
