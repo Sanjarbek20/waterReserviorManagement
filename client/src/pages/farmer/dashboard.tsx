@@ -112,22 +112,22 @@ export default function FarmerDashboard() {
     {
       icon: <SunIcon className="h-5 w-5 text-amber-500" />,
       title: "Expected Dry Period",
-      value: "Aug 15-25",
+      value: "May 10-20",
       description: "Plan your irrigation schedule accordingly"
     },
     {
       icon: <Droplet className="h-5 w-5 text-blue-500" />,
       title: "Reservoir Level Trend",
-      value: "-3%",
-      valueColor: "text-red-500",
-      description: "Gradual decrease expected over next month"
+      value: "+5%",
+      valueColor: "text-green-500",
+      description: "Increase expected due to spring rains"
     },
     {
       icon: <ThumbsUp className="h-5 w-5 text-green-500" />,
       title: "Allocation Sufficiency",
-      value: "Good",
+      value: "Excellent",
       valueColor: "text-green-500",
-      description: "Current allocation should meet your needs"
+      description: "Allocation increased for growing season"
     }
   ];
 
@@ -250,12 +250,12 @@ export default function FarmerDashboard() {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={[
-                    { month: 'Mar', used: 2200, allocated: 3000 },
-                    { month: 'Apr', used: 2600, allocated: 3000 },
-                    { month: 'May', used: 2800, allocated: 3000 },
-                    { month: 'Jun', used: 2700, allocated: 3500 },
-                    { month: 'Jul', used: 3200, allocated: 3500 },
-                    { month: 'Aug', used: 2925, allocated: 4500 },
+                    { month: 'Nov', used: 2100, allocated: 3000 },
+                    { month: 'Dec', used: 1900, allocated: 3000 },
+                    { month: 'Jan', used: 2200, allocated: 3000 },
+                    { month: 'Feb', used: 2400, allocated: 3000 },
+                    { month: 'Mar', used: 2600, allocated: 3000 },
+                    { month: 'Apr', used: 1200, allocated: 3500 },
                   ]}
                   margin={{ top: 10, right: 5, left: -20, bottom: 0 }}
                 >
@@ -306,7 +306,7 @@ export default function FarmerDashboard() {
               <div className="mt-4 p-3 bg-blue-50 rounded-md">
                 <p className="text-sm text-blue-700 flex items-start">
                   <LightbulbIcon className="h-4 w-4 mr-2 mt-0.5" />
-                  <span>Tip: Consider drip irrigation to optimize your water usage during the upcoming dry period.</span>
+                  <span>Tip: Start preparing your irrigation systems now for the dry period forecasted for mid-May.</span>
                 </p>
               </div>
             </div>
@@ -436,7 +436,7 @@ export default function FarmerDashboard() {
                 <div className="mt-2 flex justify-between items-center">
                   <p className="text-xs text-blue-500 flex items-center">
                     <CalendarIcon className="h-3 w-3 mr-1" />
-                    Aug 10, 2023
+                    Apr 02, 2025
                   </p>
                   <Button variant="ghost" size="sm" className="h-7 px-2">
                     <ChevronRight className="h-4 w-4" />
