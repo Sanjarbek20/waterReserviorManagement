@@ -27,10 +27,20 @@ export function ThemeProvider({
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
+    () => {
+      try {
+        return (localStorage.getItem(storageKey) as Theme) || defaultTheme;
+      } catch (error) {
+        // Handle localStorage not being available (e.g., during SSR)
+        return defaultTheme;
+      }
+    }
   );
 
   useEffect(() => {
+    // Skip effect on server side
+    if (typeof window === 'undefined') return;
+
     const root = window.document.documentElement;
     
     root.classList.remove("light", "dark");
@@ -51,7 +61,11 @@ export function ThemeProvider({
   const value = {
     theme,
     setTheme: (theme: Theme) => {
-      localStorage.setItem(storageKey, theme);
+      try {
+        localStorage.setItem(storageKey, theme);
+      } catch (error) {
+        // Ignore localStorage errors
+      }
       setTheme(theme);
     },
   };
