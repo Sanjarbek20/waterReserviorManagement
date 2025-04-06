@@ -144,13 +144,49 @@ export default function FarmerDashboard() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col md:flex-row items-center">
-            <div className="w-full md:w-1/3 p-4">
-              <WaterLevel percentage={percentage} />
-              <p className="text-center mt-2 text-sm text-gray-500">Current Allocation Used</p>
+          <div className="flex flex-col space-y-4">
+            {/* New water allocation display */}
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="w-full md:w-1/2 space-y-2">
+                <div className="space-y-1">
+                  <h3 className="text-sm font-medium">Monthly Water Allocation</h3>
+                  <div className="bg-gray-100 h-32 rounded-md relative overflow-hidden flex flex-col">
+                    {/* Total Allocation */}
+                    <div className="flex-1 bg-green-100 border-b border-gray-300 flex items-center justify-center relative">
+                      <div className="text-center">
+                        <span className="text-xl font-semibold text-green-700">{allocationData.monthly.toLocaleString()} m³</span>
+                        <div className="text-xs text-green-600">Base Allocation</div>
+                      </div>
+                      {requests && Array.isArray(requests) && requests.some((req: any) => req.status === 'approved') && (
+                        <div className="absolute bottom-0 left-0 right-0 bg-green-200 py-1.5 text-center border-t border-green-300">
+                          <span className="text-sm font-medium text-green-700">
+                            +{requests
+                              .filter((req: any) => req.status === 'approved')
+                              .reduce((sum: number, req: any) => sum + parseInt(req.amount || '0'), 0)
+                              .toLocaleString()} m³ Additional
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="w-full md:w-1/2">
+                <div className="space-y-1">
+                  <h3 className="text-sm font-medium">Current Water Usage</h3>
+                  <div className="bg-gray-100 h-32 rounded-md relative overflow-hidden">
+                    <WaterLevel percentage={percentage} height="h-32" />
+                    <div className="px-4 py-2 text-sm text-center border-t border-gray-200 absolute bottom-0 left-0 right-0 bg-white bg-opacity-70">
+                      <span className="font-medium">{allocationData.used.toLocaleString()} m³</span> used of <span className="font-medium">{allocationData.monthly.toLocaleString()} m³</span> allocation
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             
-            <div className="w-full md:w-2/3 p-4">
+            {/* Allocation details table */}
+            <div className="bg-gray-50 rounded-md p-4">
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-500">Monthly Allocation:</span>
@@ -164,6 +200,17 @@ export default function FarmerDashboard() {
                   <span className="text-sm text-gray-500">Remaining:</span>
                   <span className="text-sm font-medium text-blue-500">{allocationData.remaining.toLocaleString()} m³</span>
                 </div>
+                {requests && Array.isArray(requests) && requests.some((req: any) => req.status === 'approved') && (
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-500">Additional Approved:</span>
+                    <span className="text-sm font-medium text-green-600">
+                      +{requests
+                        .filter((req: any) => req.status === 'approved')
+                        .reduce((sum: number, req: any) => sum + parseInt(req.amount || '0'), 0)
+                        .toLocaleString()} m³
+                    </span>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-500">Crop Type:</span>
                   <span className="text-sm font-medium capitalize">{user?.cropType || 'Not specified'}</span>
