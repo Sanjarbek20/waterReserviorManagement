@@ -277,7 +277,7 @@ export default function WaterAllocation() {
           </div>
         </div>
         
-        <div className="mb-6">
+        <div>
           <h3 className="text-sm font-medium mb-2">Current Water Usage</h3>
           <div className="flex h-24">
             <div 
@@ -303,60 +303,6 @@ export default function WaterAllocation() {
           </div>
           <div className="py-2 text-sm text-center bg-gray-50 mt-1">
             <span className="font-medium">{waterValues.totalUsed.toLocaleString()} m³</span> used of <span className="font-medium">{waterValues.totalAllocated.toLocaleString()} m³</span> total allocation
-          </div>
-        </div>
-        
-        <div className="border-t pt-4 mb-6">
-          <h4 className="text-sm font-medium mb-3">Water Allocation Details</h4>
-          <div className="space-y-2.5">
-            <div className="flex justify-between">
-              <div className="flex items-center">
-                <Check className="h-4 w-4 text-green-500 mr-1.5" />
-                <span className="text-sm">Monthly Allocation</span>
-              </div>
-              <span className="text-sm font-medium">{waterValues.totalAllocated.toLocaleString()} m³</span>
-            </div>
-            <div className="flex justify-between">
-              <div className="flex items-center">
-                <Check className="h-4 w-4 text-blue-500 mr-1.5" />
-                <span className="text-sm">Used This Month</span>
-              </div>
-              <span className="text-sm font-medium">{waterValues.totalUsed.toLocaleString()} m³</span>
-            </div>
-            <div className="flex justify-between">
-              <div className="flex items-center">
-                <Check className="h-4 w-4 text-green-500 mr-1.5" />
-                <span className="text-sm">Remaining Water</span>
-              </div>
-              <span className="text-sm font-medium">{(totalWaterAvailable - waterValues.totalUsed).toLocaleString()} m³</span>
-            </div>
-          </div>
-        </div>
-        
-        <div className="border-t pt-4">
-          <h4 className="text-sm font-medium mb-3">Allocation Efficiency</h4>
-          <div className="space-y-2.5">
-            <div className="flex justify-between">
-              <div className="flex items-center">
-                <Check className="h-4 w-4 text-green-500 mr-1.5" />
-                <span className="text-sm">Current Usage Rate</span>
-              </div>
-              <span className="text-sm font-medium">{allocationStats.usageRate.toFixed(1)}%</span>
-            </div>
-            <div className="flex justify-between">
-              <div className="flex items-center">
-                <Check className="h-4 w-4 text-green-500 mr-1.5" />
-                <span className="text-sm">Loss Rate</span>
-              </div>
-              <span className="text-sm font-medium">{allocationStats.lossRate.toFixed(1)}%</span>
-            </div>
-            <div className="flex justify-between">
-              <div className="flex items-center">
-                <Check className="h-4 w-4 text-green-500 mr-1.5" />
-                <span className="text-sm">Reserve Capacity</span>
-              </div>
-              <span className="text-sm font-medium">{allocationStats.reserveCapacity.toFixed(1)}%</span>
-            </div>
           </div>
         </div>
       </CardContent>
