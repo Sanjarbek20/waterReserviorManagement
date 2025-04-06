@@ -10,4 +10,74 @@
   body {
     @apply font-sans antialiased bg-background text-foreground;
   }
+
+  /* Standard Dark Theme */
+  .dark,
+  .dark-standard {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+  }
+
+  /* Deep Dark Theme - darker with higher contrast */
+  .dark-deep {
+    --background: 240 10% 2%;
+    --foreground: 0 0% 100%;
+    --card: 240 10% 2%;
+    --card-foreground: 0 0% 100%;
+    --popover: 240 10% 2%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 240 3.7% 11%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 240 3.7% 11%;
+    --muted-foreground: 240 5% 75%;
+    --accent: 240 3.7% 11%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 3.7% 20%;
+    --input: 240 3.7% 11%;
+    --ring: 240 4.9% 83.9%;
+  }
+
+  /* Twilight Dark Theme - more blue/purple tones */
+  .dark-twilight {
+    --background: 232 14% 5%;
+    --foreground: 220 10% 98%;
+    --card: 232 14% 5%;
+    --card-foreground: 220 10% 98%;
+    --popover: 232 14% 5%;
+    --popover-foreground: 220 10% 98%;
+    --primary: 250 95% 60%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 232 14% 15%;
+    --secondary-foreground: 220 10% 98%;
+    --muted: 232 14% 15%;
+    --muted-foreground: 220 10% 70%;
+    --accent: 232 14% 15%;
+    --accent-foreground: 220 10% 98%;
+    --destructive: 350 80% 35%;
+    --destructive-foreground: 220 10% 98%;
+    --border: 232 14% 20%;
+    --input: 232 14% 15%;
+    --ring: 250 95% 60%;
+  }
 }

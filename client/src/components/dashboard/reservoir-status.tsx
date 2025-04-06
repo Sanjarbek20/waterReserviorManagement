@@ -213,14 +213,15 @@ export default function ReservoirStatus() {
 
   return (
     <Card className="w-full">
-      <CardHeader className="pb-2 flex flex-row items-center justify-between">
+      <CardHeader className="pb-2 flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0">
         <CardTitle className="text-lg md:text-xl font-semibold">Reservoir Status</CardTitle>
-        <div className="flex space-x-2">
+        <div className="flex flex-wrap gap-2">
           <Button 
             variant="outline" 
             size="sm" 
             onClick={handleRefresh}
             disabled={isRefreshing}
+            className="whitespace-nowrap"
           >
             <RefreshCw className={`h-4 w-4 mr-1 ${isRefreshing ? 'animate-spin' : ''}`} />
             {isRefreshing ? 'Refreshing...' : 'Refresh'}
@@ -228,6 +229,7 @@ export default function ReservoirStatus() {
           <Button 
             variant={isRealTimeEnabled ? "default" : "outline"} 
             size="sm"
+            className="whitespace-nowrap"
             onClick={() => {
               setIsRealTimeEnabled(!isRealTimeEnabled);
               toast({
@@ -243,7 +245,7 @@ export default function ReservoirStatus() {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="mb-4 text-sm text-gray-500 flex items-center justify-end">
+        <div className="mb-4 text-sm text-muted-foreground flex items-center justify-end">
           <Clock className="h-3.5 w-3.5 mr-1" />
           <span>Last updated: {formatRelativeTime(lastUpdated)}</span>
         </div>
@@ -251,18 +253,18 @@ export default function ReservoirStatus() {
           {reservoirsWithStatus.map((reservoir) => (
             <div key={reservoir.id} className="border rounded-lg p-4 w-full">
               <div className="flex flex-wrap justify-between items-start mb-2 w-full">
-                <div>
-                  <h3 className="text-lg font-medium">{reservoir.name}</h3>
-                  <div className="flex items-center text-gray-500 text-sm mt-1">
-                    <MapPin className="h-3.5 w-3.5 mr-1" />
-                    <span>{reservoir.location || "Unknown location"}</span>
+                <div className="mr-2">
+                  <h3 className="text-lg font-medium truncate max-w-full">{reservoir.name}</h3>
+                  <div className="flex items-center text-muted-foreground text-sm mt-1">
+                    <MapPin className="h-3.5 w-3.5 mr-1 flex-shrink-0" />
+                    <span className="truncate">{reservoir.location || "Unknown location"}</span>
                   </div>
                 </div>
                 <Badge 
                   variant={reservoir.status === "low" ? "destructive" : 
                           reservoir.status === "warning" ? "outline" : 
                           "default"}
-                  className="ml-auto"
+                  className="ml-auto flex-shrink-0"
                 >
                   {reservoir.fillPercentage}% Filled
                 </Badge>
@@ -277,33 +279,33 @@ export default function ReservoirStatus() {
                   />
                 </div>
                 
-                <div className="grid grid-cols-2 gap-2 text-sm w-full">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm w-full">
                   <div className="flex items-center">
-                    <Droplet className="h-4 w-4 mr-2 text-blue-500" />
+                    <Droplet className="h-4 w-4 mr-2 text-blue-500 flex-shrink-0" />
                     <div>
-                      <p className="text-gray-500">Current Level</p>
+                      <p className="text-muted-foreground">Current Level</p>
                       <p className="font-medium">{formatNumber(reservoir.currentLevel)} m³</p>
                     </div>
                   </div>
                   
                   <div className="flex items-center">
-                    <Droplet className="h-4 w-4 mr-2 text-blue-500" />
+                    <Droplet className="h-4 w-4 mr-2 text-blue-500 flex-shrink-0" />
                     <div>
-                      <p className="text-gray-500">Capacity</p>
+                      <p className="text-muted-foreground">Capacity</p>
                       <p className="font-medium">{formatNumber(reservoir.capacity)} m³</p>
                     </div>
                   </div>
                 </div>
                 
-                <div className="flex items-center justify-between text-xs text-gray-500 w-full">
+                <div className="flex flex-wrap items-center justify-between text-xs text-muted-foreground w-full gap-2">
                   <div className="flex items-center">
-                    <Clock className="h-3.5 w-3.5 mr-1" />
+                    <Clock className="h-3.5 w-3.5 mr-1 flex-shrink-0" />
                     <span>Updated {formatRelativeTime(reservoir.lastUpdated)}</span>
                   </div>
                   
                   {reservoir.status === "low" && (
                     <div className="flex items-center text-red-500">
-                      <AlertTriangle className="h-3.5 w-3.5 mr-1" />
+                      <AlertTriangle className="h-3.5 w-3.5 mr-1 flex-shrink-0" />
                       <span>Low water level</span>
                     </div>
                   )}

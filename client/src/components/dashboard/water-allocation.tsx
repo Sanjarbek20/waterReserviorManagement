@@ -232,9 +232,9 @@ export default function WaterAllocation() {
 
   return (
     <Card className="w-full overflow-visible max-w-full">
-      <CardHeader className="pb-2 flex flex-row items-center justify-between">
+      <CardHeader className="pb-2 flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0">
         <CardTitle className="text-lg md:text-xl font-semibold">Water Allocation</CardTitle>
-        <div className="flex space-x-2">
+        <div className="flex flex-wrap gap-2">
           <Button 
             variant="outline" 
             size="sm" 
@@ -264,7 +264,7 @@ export default function WaterAllocation() {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="mb-4 text-sm text-gray-500 flex items-center justify-end">
+        <div className="mb-4 text-sm text-muted-foreground flex items-center justify-end">
           <Clock className="h-3.5 w-3.5 mr-1" />
           <span>Last updated: {formatRelativeTime(lastUpdated)}</span>
         </div>
@@ -277,7 +277,7 @@ export default function WaterAllocation() {
             </div>
             <span className="text-sm font-medium">45%</span>
           </div>
-          <div className="w-full bg-gray-100 rounded-full h-2">
+          <div className="w-full bg-secondary rounded-full h-2">
             <div className="bg-blue-500 h-2 rounded-full" style={{ width: '45%' }}></div>
           </div>
           
@@ -288,7 +288,7 @@ export default function WaterAllocation() {
             </div>
             <span className="text-sm font-medium">30%</span>
           </div>
-          <div className="w-full bg-gray-100 rounded-full h-2">
+          <div className="w-full bg-secondary rounded-full h-2">
             <div className="bg-green-500 h-2 rounded-full" style={{ width: '30%' }}></div>
           </div>
           
@@ -299,7 +299,7 @@ export default function WaterAllocation() {
             </div>
             <span className="text-sm font-medium">15%</span>
           </div>
-          <div className="w-full bg-gray-100 rounded-full h-2">
+          <div className="w-full bg-secondary rounded-full h-2">
             <div className="bg-blue-400 h-2 rounded-full" style={{ width: '15%' }}></div>
           </div>
           
@@ -310,13 +310,17 @@ export default function WaterAllocation() {
             </div>
             <span className="text-sm font-medium">10%</span>
           </div>
-          <div className="w-full bg-gray-100 rounded-full h-2">
+          <div className="w-full bg-secondary rounded-full h-2">
             <div className="bg-amber-500 h-2 rounded-full" style={{ width: '10%' }}></div>
           </div>
         </div>
         
         <div className="border-t pt-4">
           <h4 className="text-sm font-medium">Allocation Efficiency</h4>
+          
+          <div className="mt-3 text-sm text-muted-foreground">
+            <p>April current period water usage shown above</p>
+          </div>
         </div>
       </CardContent>
     </Card>
