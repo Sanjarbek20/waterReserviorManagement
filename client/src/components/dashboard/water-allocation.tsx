@@ -171,21 +171,60 @@ export default function WaterAllocation() {
     }
   };
   
+  // Query for approved water requests
+  const { data: requestsData } = useQuery({
+    queryKey: ["/api/requests"],
+  });
+  
+  // Track total allocation and used values
+  const [waterValues, setWaterValues] = useState({
+    totalAllocated: 4500,
+    totalUsed: 2925,
+    additionalApproved: 0
+  });
+  
+  // Process approved water requests to add to total allocation
+  useEffect(() => {
+    if (requestsData && Array.isArray(requestsData)) {
+      const approvedRequests = requestsData.filter((request: any) => 
+        request.status === 'approved' && 
+        (request.type === 'additional' || request.type === 'Additional Water')
+      );
+      
+      if (approvedRequests.length > 0) {
+        // Calculate additional allocation from approved requests
+        const additionalAllocation = approvedRequests.reduce((sum: number, request: any) => {
+          return sum + (parseInt(request.amount) || 0);
+        }, 0);
+        
+        // Update the water values
+        setWaterValues(prev => ({
+          ...prev,
+          additionalApproved: additionalAllocation,
+          totalAllocated: prev.totalAllocated + additionalAllocation
+        }));
+      }
+    }
+  }, [requestsData]);
+
   // Use API data if available, otherwise use default data
   const allocations: Allocation[] = Array.isArray(allocationsData) && allocationsData.length > 0 ? 
-    allocationsData.map((item: any, index: number) => {
-      const colors = ["bg-blue-500", "bg-green-500", "bg-sky-500", "bg-amber-500", "bg-indigo-500", "bg-purple-500"];
-      return {
-        id: item.id || index + 1,
-        name: item.name || `Allocation ${index + 1}`,
-        percentage: parseInt(item.percentage) || Math.floor(Math.random() * 40) + 10,
-        color: colors[index % colors.length]
-      };
-    }) : [
-      { id: 1, name: "Rice Fields", percentage: 45, color: "bg-blue-500" },
-      { id: 2, name: "Vegetable Farms", percentage: 30, color: "bg-green-500" },
-      { id: 3, name: "Wheat Fields", percentage: 15, color: "bg-sky-500" },
-      { id: 4, name: "Other Crops", percentage: 10, color: "bg-amber-500" }
+    [
+      { 
+        id: 1, 
+        name: "Used Water", 
+        percentage: Math.round((waterValues.totalUsed / waterValues.totalAllocated) * 100), 
+        color: "bg-blue-500" 
+      },
+      { 
+        id: 2, 
+        name: "Available Water", 
+        percentage: Math.round(((waterValues.totalAllocated - waterValues.totalUsed) / waterValues.totalAllocated) * 100), 
+        color: "bg-green-500" 
+      }
+    ] : [
+      { id: 1, name: "Used Water", percentage: 65, color: "bg-blue-500" },
+      { id: 2, name: "Available Water", percentage: 35, color: "bg-green-500" }
     ];
 
   return (
@@ -246,6 +285,42 @@ export default function WaterAllocation() {
         </div>
         
         <div className="mt-6 border-t pt-4">
+          <h4 className="text-sm font-medium mb-3">Water Allocation Details</h4>
+          <div className="space-y-2.5">
+            <div className="flex justify-between">
+              <div className="flex items-center">
+                <Check className="h-4 w-4 text-green-500 mr-1.5" />
+                <span className="text-sm">Monthly Allocation</span>
+              </div>
+              <span className="text-sm font-medium">{waterValues.totalAllocated.toLocaleString()} m³</span>
+            </div>
+            <div className="flex justify-between">
+              <div className="flex items-center">
+                <Check className="h-4 w-4 text-blue-500 mr-1.5" />
+                <span className="text-sm">Used This Month</span>
+              </div>
+              <span className="text-sm font-medium">{waterValues.totalUsed.toLocaleString()} m³</span>
+            </div>
+            <div className="flex justify-between">
+              <div className="flex items-center">
+                <Check className="h-4 w-4 text-green-500 mr-1.5" />
+                <span className="text-sm">Remaining Water</span>
+              </div>
+              <span className="text-sm font-medium">{(waterValues.totalAllocated - waterValues.totalUsed).toLocaleString()} m³</span>
+            </div>
+            {waterValues.additionalApproved > 0 && (
+              <div className="flex justify-between">
+                <div className="flex items-center">
+                  <Check className="h-4 w-4 text-green-500 mr-1.5" />
+                  <span className="text-sm">Additional Approved</span>
+                </div>
+                <span className="text-sm font-medium text-green-600">+{waterValues.additionalApproved.toLocaleString()} m³</span>
+              </div>
+            )}
+          </div>
+        </div>
+        
+        <div className="mt-4 border-t pt-4">
           <h4 className="text-sm font-medium mb-3">Allocation Efficiency</h4>
           <div className="space-y-2.5">
             <div className="flex justify-between">

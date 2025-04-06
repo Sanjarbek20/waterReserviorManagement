@@ -91,7 +91,13 @@ export default function FarmerDashboard() {
     setLocation("/farmer/requests");
   };
   
-  // Mock data for UI elements that would typically be fetched from API
+  // Fetch water requests data
+  const { data: requestsData = [] } = useQuery<any[]>({
+    queryKey: ["/api/requests"],
+    enabled: !!user
+  });
+
+  // Allocation data (will be replaced with API data when available)
   const allocationData = {
     monthly: 4500,
     used: 2925,
@@ -287,30 +293,47 @@ export default function FarmerDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="border-b">
-                    <td className="py-2 px-4 text-sm">Aug 10, 2023</td>
-                    <td className="py-2 px-4 text-sm">Additional</td>
-                    <td className="py-2 px-4 text-sm">500 m³</td>
-                    <td className="py-2 px-4 text-sm">
-                      <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">Approved</span>
-                    </td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="py-2 px-4 text-sm">Jul 24, 2023</td>
-                    <td className="py-2 px-4 text-sm">Schedule Change</td>
-                    <td className="py-2 px-4 text-sm">--</td>
-                    <td className="py-2 px-4 text-sm">
-                      <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">Approved</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-2 px-4 text-sm">Jun 15, 2023</td>
-                    <td className="py-2 px-4 text-sm">Additional</td>
-                    <td className="py-2 px-4 text-sm">300 m³</td>
-                    <td className="py-2 px-4 text-sm">
-                      <span className="px-2 py-1 rounded-full text-xs bg-red-100 text-red-800">Denied</span>
-                    </td>
-                  </tr>
+                  {requestsData && requestsData.length > 0 ? (
+                    requestsData.slice(0, 3).map((request: any) => (
+                      <tr key={request.id} className="border-b">
+                        <td className="py-2 px-4 text-sm">
+                          {request.date 
+                            ? format(new Date(request.date), 'MMM dd, yyyy')
+                            : format(new Date(), 'MMM dd, yyyy')
+                          }
+                        </td>
+                        <td className="py-2 px-4 text-sm">{request.type || 'Additional'}</td>
+                        <td className="py-2 px-4 text-sm">
+                          {request.amount ? `${request.amount} m³` : '--'}
+                        </td>
+                        <td className="py-2 px-4 text-sm">
+                          {request.status === 'approved' ? (
+                            <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
+                              Approved
+                            </span>
+                          ) : request.status === 'denied' ? (
+                            <span className="px-2 py-1 rounded-full text-xs bg-red-100 text-red-800">
+                              Denied
+                            </span>
+                          ) : request.status === 'pending' ? (
+                            <span className="px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-800">
+                              Pending
+                            </span>
+                          ) : (
+                            <span className="px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-800">
+                              {request.status || 'Unknown'}
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={4} className="py-4 px-4 text-center text-sm text-gray-500">
+                        No water requests found
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
