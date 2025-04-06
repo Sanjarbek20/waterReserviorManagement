@@ -126,12 +126,12 @@ export default function Sidebar() {
   }
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-full flex flex-col">
       <div className="p-4 border-b">
         <h2 className="text-lg font-medium text-blue-800">Water Reservoir Management</h2>
       </div>
       
-      <nav className="mt-4 flex-1 overflow-y-auto">
+      <nav className="mt-4 flex-1">
         <ul>
           {navItems.map((item) => (
             <li className="mb-1" key={item.path}>
