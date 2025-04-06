@@ -92,16 +92,6 @@ export default function Login() {
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-blue-800">Sign In</h2>
               <p className="text-gray-500 mt-2">Access your dashboard</p>
-              <div className="mt-2 p-2 bg-blue-50 text-blue-800 rounded-md text-sm">
-                <p><strong>Test users:</strong></p>
-                <p className="font-semibold mt-1">Admin Accounts:</p>
-                <p>- <code className="bg-blue-100 px-1">admin_test</code> / <code className="bg-blue-100 px-1">admin123</code> (Admin)</p>
-                <p>- <code className="bg-blue-100 px-1">data_test</code> / <code className="bg-blue-100 px-1">data123</code> (Data Admin)</p>
-                <p className="font-semibold mt-1">Farmer Accounts:</p>
-                <p>- <code className="bg-blue-100 px-1">user</code> / <code className="bg-blue-100 px-1">password</code> (Farmer)</p>
-                <p>- <code className="bg-blue-100 px-1">plaintest</code> / <code className="bg-blue-100 px-1">plainpass123</code> (Farmer)</p>
-                <p>- <code className="bg-blue-100 px-1">farmer1</code> / <code className="bg-blue-100 px-1">farmer123</code> (Farmer)</p>
-              </div>
             </div>
 
             <Form {...form}>
