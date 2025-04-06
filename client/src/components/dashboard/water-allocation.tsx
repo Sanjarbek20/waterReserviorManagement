@@ -197,29 +197,32 @@ export default function WaterAllocation() {
           return sum + (parseInt(request.amount) || 0);
         }, 0);
         
-        // Update the water values
+        // Update the water values WITHOUT adding to totalAllocated yet
+        // We'll display it separately first
         setWaterValues(prev => ({
           ...prev,
-          additionalApproved: additionalAllocation,
-          totalAllocated: prev.totalAllocated + additionalAllocation
+          additionalApproved: additionalAllocation
         }));
       }
     }
   }, [requestsData]);
 
+  // Calculate total water (basic + additional approved)
+  const totalWaterAvailable = waterValues.totalAllocated + waterValues.additionalApproved;
+  
   // Use API data if available, otherwise use default data
   const allocations: Allocation[] = Array.isArray(allocationsData) && allocationsData.length > 0 ? 
     [
       { 
         id: 1, 
         name: "Used Water", 
-        percentage: Math.round((waterValues.totalUsed / waterValues.totalAllocated) * 100), 
+        percentage: Math.round((waterValues.totalUsed / totalWaterAvailable) * 100), 
         color: "bg-blue-500" 
       },
       { 
         id: 2, 
         name: "Available Water", 
-        percentage: Math.round(((waterValues.totalAllocated - waterValues.totalUsed) / waterValues.totalAllocated) * 100), 
+        percentage: Math.round(((totalWaterAvailable - waterValues.totalUsed) / totalWaterAvailable) * 100), 
         color: "bg-green-500" 
       }
     ] : [
@@ -306,7 +309,7 @@ export default function WaterAllocation() {
                 <Check className="h-4 w-4 text-green-500 mr-1.5" />
                 <span className="text-sm">Remaining Water</span>
               </div>
-              <span className="text-sm font-medium">{(waterValues.totalAllocated - waterValues.totalUsed).toLocaleString()} m³</span>
+              <span className="text-sm font-medium">{(totalWaterAvailable - waterValues.totalUsed).toLocaleString()} m³</span>
             </div>
             {waterValues.additionalApproved > 0 && (
               <div className="flex justify-between">
@@ -315,6 +318,15 @@ export default function WaterAllocation() {
                   <span className="text-sm">Additional Approved</span>
                 </div>
                 <span className="text-sm font-medium text-green-600">+{waterValues.additionalApproved.toLocaleString()} m³</span>
+              </div>
+            )}
+            {waterValues.additionalApproved > 0 && (
+              <div className="flex justify-between">
+                <div className="flex items-center">
+                  <Check className="h-4 w-4 text-green-500 mr-1.5" />
+                  <span className="text-sm">Total Available Water</span>
+                </div>
+                <span className="text-sm font-medium text-green-600">{totalWaterAvailable.toLocaleString()} m³</span>
               </div>
             )}
           </div>
