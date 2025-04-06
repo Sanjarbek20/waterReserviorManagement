@@ -267,43 +267,54 @@ export default function WaterAllocation() {
           <span>Last updated: {formatRelativeTime(lastUpdated)}</span>
         </div>
         
-        <div className="mb-6">
-          <h3 className="text-sm font-medium mb-2">Monthly Water Allocation</h3>
-          <div className="bg-green-100 rounded-md p-6 flex items-center justify-center">
-            <div className="text-center">
-              <span className="text-2xl font-semibold text-green-700">{waterValues.totalAllocated.toLocaleString()} m³</span>
-              <div className="text-sm text-green-600">Base Allocation</div>
+        <div className="space-y-4 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="w-3 h-3 rounded-full bg-blue-500 mr-2"></div>
+              <span className="text-sm font-medium">Rice Fields</span>
             </div>
+            <span className="text-sm font-medium">45%</span>
+          </div>
+          <div className="w-full bg-gray-100 rounded-full h-2">
+            <div className="bg-blue-500 h-2 rounded-full" style={{ width: '45%' }}></div>
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+              <span className="text-sm font-medium">Vegetable Farms</span>
+            </div>
+            <span className="text-sm font-medium">30%</span>
+          </div>
+          <div className="w-full bg-gray-100 rounded-full h-2">
+            <div className="bg-green-500 h-2 rounded-full" style={{ width: '30%' }}></div>
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="w-3 h-3 rounded-full bg-blue-400 mr-2"></div>
+              <span className="text-sm font-medium">Wheat Fields</span>
+            </div>
+            <span className="text-sm font-medium">15%</span>
+          </div>
+          <div className="w-full bg-gray-100 rounded-full h-2">
+            <div className="bg-blue-400 h-2 rounded-full" style={{ width: '15%' }}></div>
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="w-3 h-3 rounded-full bg-amber-500 mr-2"></div>
+              <span className="text-sm font-medium">Other Crops</span>
+            </div>
+            <span className="text-sm font-medium">10%</span>
+          </div>
+          <div className="w-full bg-gray-100 rounded-full h-2">
+            <div className="bg-amber-500 h-2 rounded-full" style={{ width: '10%' }}></div>
           </div>
         </div>
         
-        <div>
-          <h3 className="text-sm font-medium mb-2">Current Water Usage</h3>
-          <div className="flex h-24">
-            <div 
-              className="flex items-center justify-center bg-blue-500 text-white"
-              style={{ width: `${Math.min(100, allocations[0].percentage)}%` }}
-            >
-              <div className="text-center">
-                <div className="text-lg font-semibold">{allocations[0].percentage}%</div>
-                <div className="text-xs">Used</div>
-              </div>
-            </div>
-            <div 
-              className="flex items-center justify-center bg-gray-100"
-              style={{ width: `${Math.max(0, allocations[1].percentage)}%` }}
-            >
-              {allocations[1].percentage > 15 && (
-                <div className="text-center text-gray-600">
-                  <div className="text-lg font-semibold">{allocations[1].percentage}%</div>
-                  <div className="text-xs">Available</div>
-                </div>
-              )}
-            </div>
-          </div>
-          <div className="py-2 text-sm text-center bg-gray-50 mt-1">
-            <span className="font-medium">{waterValues.totalUsed.toLocaleString()} m³</span> used of <span className="font-medium">{waterValues.totalAllocated.toLocaleString()} m³</span> total allocation
-          </div>
+        <div className="border-t pt-4">
+          <h4 className="text-sm font-medium mb-3">Allocation Efficiency</h4>
         </div>
       </CardContent>
     </Card>
