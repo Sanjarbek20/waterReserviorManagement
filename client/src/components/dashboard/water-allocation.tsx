@@ -211,24 +211,7 @@ export default function WaterAllocation() {
   const totalWaterAvailable = waterValues.totalAllocated + waterValues.additionalApproved;
   
   // Use API data if available, otherwise use default data
-  const allocations: Allocation[] = Array.isArray(allocationsData) && allocationsData.length > 0 ? 
-    [
-      { 
-        id: 1, 
-        name: "Used Water", 
-        percentage: Math.round((waterValues.totalUsed / totalWaterAvailable) * 100), 
-        color: "bg-blue-500" 
-      },
-      { 
-        id: 2, 
-        name: "Available Water", 
-        percentage: Math.round(((totalWaterAvailable - waterValues.totalUsed) / totalWaterAvailable) * 100), 
-        color: "bg-green-500" 
-      }
-    ] : [
-      { id: 1, name: "Used Water", percentage: 65, color: "bg-blue-500" },
-      { id: 2, name: "Available Water", percentage: 35, color: "bg-green-500" }
-    ];
+  const allocations: Allocation[] = [];
 
   return (
     <Card>
@@ -266,25 +249,68 @@ export default function WaterAllocation() {
           <Clock className="h-3.5 w-3.5 mr-1" />
           <span>Last updated: {formatRelativeTime(lastUpdated)}</span>
         </div>
-        <div className="space-y-4">
-          {allocations.map((allocation) => (
-            <div key={allocation.id} className="space-y-2">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center">
-                  <span 
-                    className={`w-3 h-3 rounded-full mr-2 ${allocation.color}`}
-                  />
-                  <p className="text-sm font-medium">{allocation.name}</p>
+        <div className="space-y-8">
+          {/* Allocated Water Display */}
+          <div className="space-y-1">
+            <h3 className="text-sm font-medium">Monthly Water Allocation</h3>
+            <div className="bg-gray-100 h-32 rounded-md relative overflow-hidden flex flex-col">
+              {/* Total Allocation */}
+              <div className="flex-1 bg-green-100 border-b border-gray-300 flex items-center justify-center relative">
+                <div className="text-center">
+                  <span className="text-xl font-semibold text-green-700">{waterValues.totalAllocated.toLocaleString()} m³</span>
+                  <div className="text-xs text-green-600">Base Allocation</div>
                 </div>
-                <p className="text-sm font-semibold">{allocation.percentage}%</p>
+                {waterValues.additionalApproved > 0 && (
+                  <div className="absolute bottom-0 left-0 right-0 bg-green-200 py-1.5 text-center border-t border-green-300">
+                    <span className="text-sm font-medium text-green-700">+{waterValues.additionalApproved.toLocaleString()} m³ Additional</span>
+                  </div>
+                )}
               </div>
-              <Progress 
-                value={allocation.percentage} 
-                className="h-2" 
-                indicatorClassName={allocation.color}
-              />
+              
+              {/* Total with Additional */}
+              {waterValues.additionalApproved > 0 && (
+                <div className="bg-green-50 py-2 text-center border-t border-green-200">
+                  <span className="text-sm font-medium text-green-700">Total: {totalWaterAvailable.toLocaleString()} m³</span>
+                </div>
+              )}
             </div>
-          ))}
+          </div>
+          
+          {/* Used Water Display */}
+          <div className="space-y-1">
+            <h3 className="text-sm font-medium">Current Water Usage</h3>
+            <div className="bg-gray-100 rounded-md relative overflow-hidden">
+              <div className="h-24 flex items-center">
+                <div 
+                  className="h-full bg-blue-500 flex items-center justify-center"
+                  style={{ width: `${Math.min(100, (waterValues.totalUsed / totalWaterAvailable) * 100)}%` }}
+                >
+                  <div className="text-center text-white">
+                    <div className="text-lg font-semibold">
+                      {Math.round((waterValues.totalUsed / totalWaterAvailable) * 100)}%
+                    </div>
+                    <div className="text-xs">Used</div>
+                  </div>
+                </div>
+                <div 
+                  className="h-full flex items-center justify-center"
+                  style={{ width: `${Math.max(0, 100 - (waterValues.totalUsed / totalWaterAvailable) * 100)}%` }}
+                >
+                  {(100 - (waterValues.totalUsed / totalWaterAvailable) * 100) > 15 && (
+                    <div className="text-center text-gray-600">
+                      <div className="text-lg font-semibold">
+                        {Math.round(100 - (waterValues.totalUsed / totalWaterAvailable) * 100)}%
+                      </div>
+                      <div className="text-xs">Available</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="px-4 py-2 text-sm text-center border-t border-gray-200">
+                <span className="font-medium">{waterValues.totalUsed.toLocaleString()} m³</span> used of <span className="font-medium">{totalWaterAvailable.toLocaleString()} m³</span> total allocation
+              </div>
+            </div>
+          </div>
         </div>
         
         <div className="mt-6 border-t pt-4">
