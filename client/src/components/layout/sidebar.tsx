@@ -15,7 +15,8 @@ import {
   Download,
   Video,
   Camera,
-  Globe
+  Globe,
+  LineChart
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -44,6 +45,11 @@ export default function Sidebar() {
       name: t("dashboard.water_allocation"), 
       path: "/admin/allocation", 
       icon: <Share2 className="h-4 w-4 mr-3" /> 
+    },
+    { 
+      name: t("water_prediction.title"), 
+      path: "/water-predictions", 
+      icon: <LineChart className="h-4 w-4 mr-3" /> 
     },
     { 
       name: "Video Surveillance", 
@@ -89,6 +95,11 @@ export default function Sidebar() {
       icon: <Download className="h-4 w-4 mr-3" /> 
     },
     { 
+      name: t("water_prediction.title"), 
+      path: "/water-predictions", 
+      icon: <LineChart className="h-4 w-4 mr-3" /> 
+    },
+    { 
       name: "Video Surveillance", 
       path: "/admin/surveillance", 
       icon: <Video className="h-4 w-4 mr-3" /> 
@@ -115,6 +126,11 @@ export default function Sidebar() {
       name: t("general.requests"), 
       path: "/farmer/requests", 
       icon: <Droplet className="h-4 w-4 mr-3" /> 
+    },
+    { 
+      name: t("water_prediction.title"), 
+      path: "/water-predictions", 
+      icon: <LineChart className="h-4 w-4 mr-3" /> 
     },
     { 
       name: "Reports", 

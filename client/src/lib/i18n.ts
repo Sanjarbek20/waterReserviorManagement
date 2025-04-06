@@ -10,12 +10,16 @@ import frTranslation from '../locales/fr.json';
 import esTranslation from '../locales/es.json';
 import deTranslation from '../locales/de.json';
 
+// Water prediction translations
+import enWaterPrediction from '../pages/water-prediction-i18n/en.json';
+import uzWaterPrediction from '../pages/water-prediction-i18n/uz.json';
+
 const resources = {
   en: {
-    translation: enTranslation
+    translation: { ...enTranslation, ...enWaterPrediction }
   },
   uz: {
-    translation: uzTranslation
+    translation: { ...uzTranslation, ...uzWaterPrediction }
   },
   ru: {
     translation: ruTranslation

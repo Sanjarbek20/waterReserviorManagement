@@ -7,6 +7,7 @@ import Login from "@/pages/login";
 // Register page is disabled - only admins can create users
 import Register from "@/pages/register";
 import Settings from "@/pages/settings";
+import WaterPredictions from "@/pages/water-predictions";
 import AdminDashboard from "@/pages/admin/dashboard";
 import AdminReservoirs from "@/pages/admin/reservoirs";
 import AdminAllocation from "@/pages/admin/allocation";
@@ -126,6 +127,10 @@ function Router() {
       
       <Route path="/settings">
         <ProtectedRoute component={Settings} />
+      </Route>
+      
+      <Route path="/water-predictions">
+        <ProtectedRoute component={WaterPredictions} />
       </Route>
       
       {/* Farmer Routes */}
