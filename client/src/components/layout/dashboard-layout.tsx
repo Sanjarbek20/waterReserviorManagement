@@ -4,6 +4,8 @@ import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Menu, Bell, HelpCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { Notification } from "@shared/schema";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -15,7 +17,7 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
   const { user } = useAuth();
   
   // Fetch notifications
-  const { data: notifications = [] } = useQuery({
+  const { data: notifications = [] } = useQuery<Notification[]>({
     queryKey: ["/api/notifications"],
     // Only fetch if user is authenticated
     enabled: !!user
@@ -30,7 +32,7 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900">
       {/* Mobile Nav Drawer Overlay */}
       {sidebarOpen && (
         <div 
@@ -41,7 +43,7 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
 
       {/* Sidebar */}
       <div className={`
-        fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-30 transform transition-transform duration-300 ease-in-out
+        fixed top-0 left-0 h-full w-64 bg-white dark:bg-gray-800 shadow-lg z-30 transform transition-transform duration-300 ease-in-out
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0 lg:relative lg:z-0
       `}>
@@ -51,7 +53,7 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-h-screen">
         {/* Header */}
-        <header className="bg-white shadow-sm py-4 px-6 flex items-center sticky top-0 z-10">
+        <header className="bg-white dark:bg-gray-800 shadow-sm py-4 px-6 flex items-center sticky top-0 z-10">
           <Button
             variant="ghost"
             size="icon"
@@ -62,7 +64,7 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
           </Button>
 
           <div className="flex-1">
-            <h1 className="text-xl font-medium text-neutral-800">{title}</h1>
+            <h1 className="text-xl font-medium text-neutral-800 dark:text-white">{title}</h1>
           </div>
 
           <div className="flex items-center space-x-4">
@@ -70,7 +72,7 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
               <Bell className="h-5 w-5" />
               {notifications && notifications.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                  {notifications.filter(n => !n.isRead).length}
+                  {notifications.filter((n: Notification) => !n.isRead).length}
                 </span>
               )}
             </Button>
@@ -78,6 +80,8 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
             <Button variant="ghost" size="icon">
               <HelpCircle className="h-5 w-5" />
             </Button>
+            
+            <ThemeToggle />
 
             <div className="lg:hidden">
               <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white">
@@ -91,7 +95,7 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 p-6 bg-gray-100 overflow-auto">
+        <main className="flex-1 p-6 bg-gray-100 dark:bg-gray-900 overflow-auto">
           {children}
         </main>
       </div>

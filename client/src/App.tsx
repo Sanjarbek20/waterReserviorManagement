@@ -19,6 +19,7 @@ import FarmerRequests from "@/pages/farmer/requests";
 import FarmerProfile from "@/pages/farmer/profile";
 import FarmerReports from "@/pages/farmer/reports";
 import { AuthProvider, useAuth } from "@/lib/auth";
+import { ThemeProvider } from "@/lib/theme-provider";
 import { useEffect } from "react";
 
 function ProtectedRoute({ 
@@ -164,10 +165,12 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <Router />
-        <Toaster />
-      </AuthProvider>
+      <ThemeProvider defaultTheme="light">
+        <AuthProvider>
+          <Router />
+          <Toaster />
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
