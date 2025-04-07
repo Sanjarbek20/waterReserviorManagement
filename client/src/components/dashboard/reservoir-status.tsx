@@ -214,7 +214,7 @@ export default function ReservoirStatus() {
   return (
     <Card className="w-full">
       <CardHeader className="pb-2 flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0">
-        <CardTitle className="text-lg md:text-xl font-semibold">Water Reservoir Management</CardTitle>
+        <CardTitle className="text-lg md:text-xl font-semibold">Water Reservoir Management System</CardTitle>
         <div className="flex flex-wrap gap-2">
           <Button 
             variant="outline" 
