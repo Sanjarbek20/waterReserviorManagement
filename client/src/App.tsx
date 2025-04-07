@@ -16,10 +16,13 @@ import AdminDataManagement from "@/pages/admin/data-management";
 import AdminSurveillance from "@/pages/admin/surveillance";
 import AdminReports from "@/pages/admin/reports";
 import AdminSettings from "@/pages/admin/settings";
+import AdminActivities from "@/pages/admin/activities";
+import AdminNotifications from "@/pages/admin/notifications";
 import FarmerDashboard from "@/pages/farmer/dashboard";
 import FarmerRequests from "@/pages/farmer/requests";
 import FarmerProfile from "@/pages/farmer/profile";
 import FarmerReports from "@/pages/farmer/reports";
+import NotificationDetailPage from "@/pages/farmer/notifications/[id]";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import { ThemeProvider } from "@/lib/theme-provider";
 import { useEffect } from "react";
@@ -124,6 +127,12 @@ function Router() {
       <Route path="/admin/settings">
         <ProtectedRoute component={AdminSettings} adminOnly={true} />
       </Route>
+      <Route path="/admin/activities">
+        <ProtectedRoute component={AdminActivities} adminOnly={true} dataAdminAllowed={true} />
+      </Route>
+      <Route path="/admin/notifications">
+        <ProtectedRoute component={AdminNotifications} adminOnly={true} dataAdminAllowed={true} />
+      </Route>
       
       <Route path="/settings">
         <ProtectedRoute component={Settings} />
@@ -145,6 +154,9 @@ function Router() {
       </Route>
       <Route path="/farmer/reports">
         <ProtectedRoute component={FarmerReports} />
+      </Route>
+      <Route path="/farmer/notifications/:id">
+        <ProtectedRoute component={NotificationDetailPage} />
       </Route>
       
       {/* Common Routes */}
