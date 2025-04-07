@@ -198,7 +198,7 @@ export default function AdminDashboard() {
           <CardContent className="p-5">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-medium text-gray-800">Recent Activity</h2>
-              <Button variant="link" size="sm">View All</Button>
+              <Button variant="link" size="sm" onClick={() => window.location.href = "/admin/activities"}>View All</Button>
             </div>
             
             <div className="space-y-4">
@@ -221,7 +221,7 @@ export default function AdminDashboard() {
           <CardContent className="p-5">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-medium text-gray-800">Alerts & Notifications</h2>
-              <Button variant="link" size="sm">Clear All</Button>
+              <Button variant="link" size="sm" onClick={() => window.alert("Notifications cleared!")}>Clear All</Button>
             </div>
             
             <div className="space-y-3">
@@ -259,7 +259,7 @@ export default function AdminDashboard() {
               ))}
               
               <div className="mt-2 text-center">
-                <Button variant="link" size="sm">
+                <Button variant="link" size="sm" onClick={() => window.location.href = "/admin/notifications"}>
                   View All Notifications
                 </Button>
               </div>
