@@ -50,6 +50,14 @@
     "recommended_amount": "Tavsiya etilgan miqdor",
     "recommended_date": "Tavsiya etilgan sana",
     "need_forecast": "Bashorat Talab Qilinadi",
-    "generate_forecast_first": "Ekin turiga qarab tavsiyalarni hisoblash uchun oldin AI bashoratini yarating"
+    "generate_forecast_first": "Ekin turiga qarab tavsiyalarni hisoblash uchun oldin AI bashoratini yarating",
+    "reservoir": "Suv Ombori",
+    "select_reservoir": "Suv omborini tanlang",
+    "reservoir_error": "Suv Ombori Tanlanmagan",
+    "select_reservoir": "Suv omborini tanlang",
+    "days": "kun",
+    "reservoir_impact": "Suv Omboriga Ta'siri",
+    "current_level": "Hozirgi daraja",
+    "projected_level": "Suv sarfidan keyingi daraja"
   }
 }

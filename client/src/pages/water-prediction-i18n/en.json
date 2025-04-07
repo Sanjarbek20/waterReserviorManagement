@@ -50,6 +50,14 @@
     "recommended_amount": "Recommended amount",
     "recommended_date": "Recommended date",
     "need_forecast": "Forecast Required",
-    "generate_forecast_first": "Please generate an AI forecast first to calculate crop-specific recommendations"
+    "generate_forecast_first": "Please generate an AI forecast first to calculate crop-specific recommendations",
+    "reservoir": "Reservoir",
+    "select_reservoir": "Select reservoir",
+    "reservoir_error": "Reservoir Not Selected",
+    "select_reservoir": "Please select a reservoir",
+    "days": "days",
+    "reservoir_impact": "Reservoir Impact",
+    "current_level": "Current level",
+    "projected_level": "Projected level after allocation"
   }
 }
