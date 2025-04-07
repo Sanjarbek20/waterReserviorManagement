@@ -52,6 +52,7 @@ export default function WaterPredictions() {
   const [selectedCropType, setSelectedCropType] = useState<string>(user?.cropType || 'paxta');
   const [fieldSize, setFieldSize] = useState<number>(parseFloat(user?.fieldSize || '5'));
   const [daysSincePlanting, setDaysSincePlanting] = useState<number>(30);
+  const [irrigationMethod, setIrrigationMethod] = useState<'standard' | 'drip'>('standard');
   const [allocationRecommendation, setAllocationRecommendation] = useState<{
     recommendedAmount: number;
     recommendedDate: string;
@@ -554,6 +555,24 @@ export default function WaterPredictions() {
                       </div>
                     </div>
                     
+                    <div className="space-y-2">
+                      <Label htmlFor="irrigationMethod">{t('water_prediction.irrigation_method')}</Label>
+                      <Select 
+                        value={irrigationMethod} 
+                        onValueChange={(value) => setIrrigationMethod(value as 'standard' | 'drip')}
+                      >
+                        <SelectTrigger id="irrigationMethod">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem value="standard">{t('water_prediction.standard_irrigation')}</SelectItem>
+                            <SelectItem value="drip">{t('water_prediction.drip_irrigation')}</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
                     <Button
                       onClick={() => {
                         if (!aiGeneratedForecast.length) {
@@ -584,7 +603,8 @@ export default function WaterPredictions() {
                           daysSincePlanting,
                           forecastedValues,
                           parseFloat(selectedRes.capacity), // Suv ombori hajmi (m³)
-                          parseFloat(selectedRes.level) // Hozirgi suv ombori darajasi (m³)
+                          parseFloat(selectedRes.level), // Hozirgi suv ombori darajasi (m³)
+                          irrigationMethod // Sug'orish usuli
                         );
                         
                         setAllocationRecommendation(recommendation);
@@ -612,7 +632,8 @@ export default function WaterPredictions() {
                             {Math.round(WaterConsumptionForecastModel.calculateCropWaterRequirement(
                               selectedCropType,
                               fieldSize,
-                              daysSincePlanting
+                              daysSincePlanting,
+                              irrigationMethod
                             ))} {t('water_prediction.liters_per_day')}
                           </p>
                         </div>
