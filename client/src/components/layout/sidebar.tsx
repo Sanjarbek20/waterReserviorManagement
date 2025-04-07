@@ -15,6 +15,7 @@ import {
   Download,
   Video,
   Camera,
+  Globe,
   LineChart
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -72,8 +73,13 @@ export default function Sidebar() {
     },
     { 
       name: t("general.settings"), 
-      path: "/settings", 
+      path: "/admin/settings", 
       icon: <Settings className="h-4 w-4 mr-3" /> 
+    },
+    { 
+      name: t("general.settings"),
+      path: "/settings", 
+      icon: <Globe className="h-4 w-4 mr-3" /> 
     }
   ];
 
@@ -106,7 +112,7 @@ export default function Sidebar() {
     { 
       name: t("general.settings"),
       path: "/settings", 
-      icon: <Settings className="h-4 w-4 mr-3" /> 
+      icon: <Globe className="h-4 w-4 mr-3" /> 
     }
   ];
 
@@ -134,7 +140,7 @@ export default function Sidebar() {
     { 
       name: t("general.settings"),
       path: "/settings", 
-      icon: <Settings className="h-4 w-4 mr-3" /> 
+      icon: <Globe className="h-4 w-4 mr-3" /> 
     }
   ];
 
