@@ -243,19 +243,25 @@ export class WaterConsumptionForecastModel {
    * @param cropType Ekin turi
    * @param fieldSizeHectares Maydon hajmi (gektar)
    * @param daysSincePlanting Ekishdan beri o'tgan kunlar
+   * @param irrigationType Sug'orish usuli: 'standard' (oddiy), 'drip' (tomchilatib)
    * @returns Kunlik suv talabi (litr)
    */
   public static calculateCropWaterRequirement(
     cropType: string,
     fieldSizeHectares: number,
-    daysSincePlanting: number
+    daysSincePlanting: number,
+    irrigationType: 'standard' | 'drip' = 'standard'
   ): number {
+    // Sug'orish usuli koeffitsienti
+    // Tomchilatib sug'orish oddiy sug'orishdan 30-60% tejamkor
+    const irrigationEfficiency = irrigationType === 'drip' ? 0.5 : 1.0; // Tomchi = 50% tejamliroq
+    
     // Agar ekin turi ma'lum bo'lmasa, o'rtacha qiymatni qaytarish
     if (!cropWaterRequirements[cropType]) {
       // O'rtacha suv talabi (barcha ekinlar uchun)
       const averageRequirement = Object.values(cropWaterRequirements).reduce((sum, val) => sum + val, 0) / 
                                 Object.values(cropWaterRequirements).length;
-      return averageRequirement * fieldSizeHectares;
+      return averageRequirement * fieldSizeHectares * irrigationEfficiency;
     }
     
     // Asosiy suv talabi
@@ -283,11 +289,11 @@ export class WaterConsumptionForecastModel {
       
       // Bosqichga mos suv koeffitsientini qo'llash
       const waterMultiplier = stages[currentStageIndex].waterMultiplier;
-      return baseRequirement * waterMultiplier * fieldSizeHectares;
+      return baseRequirement * waterMultiplier * fieldSizeHectares * irrigationEfficiency;
     }
     
     // O'sish davrlari ma'lumotlari bo'lmasa, asosiy talabni qaytarish
-    return baseRequirement * fieldSizeHectares;
+    return baseRequirement * fieldSizeHectares * irrigationEfficiency;
   }
   
   /**
@@ -298,6 +304,7 @@ export class WaterConsumptionForecastModel {
    * @param forecastedWaterLevels Bashoratlangan suv hajmi
    * @param reservoirCapacity Suv ombori hajmi
    * @param currentReservoirLevel Hozirgi suv ombori darajasi (m³)
+   * @param irrigationMethod Sug'orish usuli: 'standard' (oddiy), 'drip' (tomchilatib)
    * @returns Suv ajratish tavsiyalari
    */
   public static generateWaterAllocationRecommendations(
@@ -306,7 +313,8 @@ export class WaterConsumptionForecastModel {
     daysSincePlanting: number,
     forecastedWaterLevels: number[],
     reservoirCapacity: number,
-    currentReservoirLevel: number = 0
+    currentReservoirLevel: number = 0,
+    irrigationMethod: 'standard' | 'drip' = 'standard'
   ): {
     recommendedAmount: number;
     recommendedDate: string;
@@ -316,10 +324,12 @@ export class WaterConsumptionForecastModel {
     impactMessage: string;
   } {
     // Kunlik suv talabini hisoblash (litr)
+    // Sug'orish usulini hisobga olish - parametrdan keladi
     const dailyRequirement = this.calculateCropWaterRequirement(
       cropType,
       fieldSizeHectares,
-      daysSincePlanting
+      daysSincePlanting,
+      irrigationMethod
     );
     
     // Kunlik suv talabi (m³)
@@ -347,26 +357,41 @@ export class WaterConsumptionForecastModel {
     const weatherFactors = [1.0, 1.05, 0.95, 1.1, 0.9, 1.0, 1.05];
     
     // Suv zahirasi bo'yicha strategiyani aniqlash
-    if (levelPercentage < 25) {
-      // Suv tanqis - faqat juda zarur minimal miqdorni ajratish (3 kunlik)
-      recommendedAmount = dailyRequirement * 3 * 0.8; // 3 kunlik, 20% kamaytirilgan
+    // Suvning umumiy talab va mavjud zahira nisbati
+    const totalDemand = dailyRequirement * 30; // 30 kunlik talab
+    const availableWaterRatio = actualCurrentLevel / totalDemand;
+    
+    if (levelPercentage < 20 && availableWaterRatio < 0.5) {
+      // Juda tanqis - juda qattiq cheklash (3 kunlik)
+      recommendedAmount = dailyRequirement * 3 * 0.7; // 3 kunlik, 30% kamaytirilgan
       status = 'critical';
       message = 'Suv tanqisligi! Faqat minimal miqdorda suv ajratilishi tavsiya etiladi.';
-    } else if (levelPercentage < 50) {
-      // Suv tanqis - minimal miqdorni ajratish (4 kunlik)
-      recommendedAmount = dailyRequirement * 4 * 0.9; // 4 kunlik, 10% kamaytirilgan
+    } else if (levelPercentage < 40 && availableWaterRatio < 0.7) {
+      // Tanqis - minimal miqdorni ajratish (4 kunlik)
+      recommendedAmount = dailyRequirement * 4 * 0.8; // 4 kunlik, 20% kamaytirilgan
       status = 'critical';
-      message = 'Suv tanqisligi! Faqat minimal miqdorda suv ajratilishi tavsiya etiladi.';
-    } else if (levelPercentage < 70) {
-      // Suv o'rtacha - ehtiyot bilan ajratish (5 kunlik)
-      recommendedAmount = dailyRequirement * 5; 
+      message = 'Suv zahirasi past! Minimal miqdorda suv ajratilishi tavsiya etiladi.';
+    } else if (levelPercentage < 60 && availableWaterRatio < 1.0) {
+      // O'rtacha - ehtiyot bilan ajratish (5 kunlik)
+      recommendedAmount = dailyRequirement * 5 * 0.9; // 5 kunlik, 10% kamaytirilgan
       status = 'warning';
       message = 'Suv zahirasi o\'rtacha. Ehtiyot bilan suv ajratilishi tavsiya etiladi.';
     } else {
       // Suv yetarli - optimal miqdorni ajratish (haftalik)
-      recommendedAmount = weeklyRequirement;
+      // Agar suv ombori 100% ga yaqin to'lgan bo'lsa - ko'proq suv ajratish mumkin
+      let optimalFactor = 1.0;
+      if (levelPercentage > 90) {
+        optimalFactor = 1.2; // Ombor deyarli to'la - 20% ko'proq suv ajratish mumkin
+        message = 'Suv zahirasi to\'liq yetarli. Ekinlar uchun optimal miqdordan ko\'proq suv ajratish mumkin.';
+      } else if (levelPercentage > 75) {
+        optimalFactor = 1.1; // Omborda ko'p suv bor - 10% ko'proq
+        message = 'Suv zahirasi yetarli. Optimal miqdorda suv ajratish mumkin.';
+      } else {
+        message = 'Suv zahirasi qoniqarli. Ehtiyot bilan optimal miqdorda suv ajratish mumkin.';
+      }
+      
+      recommendedAmount = weeklyRequirement * optimalFactor;
       status = 'optimal';
-      message = 'Suv zahirasi yetarli. Optimal miqdorda suv ajratish mumkin.';
     }
     
     // Eng yaxshi suv ajratish sanasini aniqlash
