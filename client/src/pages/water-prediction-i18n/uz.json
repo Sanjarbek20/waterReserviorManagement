@@ -1,7 +1,7 @@
 {
   "water_prediction": {
     "title": "Suv Iste'moli Bashorati",
-    "subtitle": "Sun'iy intellekt yordamida suv sarfiyatini bashoratlash va tanqislikni tahlil qilish",
+    "subtitle": "Sun'iy intellekt yordamida suv sarfiyatini bashoratlash va ekin turiga qarab suv ajratish tavsiyalari",
     "consumption_trends": "Iste'mol Tendensiyalari",
     "last_30_days": "So'nggi 30 kunlik suv iste'moli",
     "forecast_title": "Suv Iste'moli Bashorati",
@@ -31,6 +31,25 @@
     "shortage_percentage": "Tanqislik foizi",
     "consumption": "Iste'mol",
     "consumption_m3": "Suv Iste'moli (m³)",
-    "supply_capacity": "Ta'minot Imkoniyati"
+    "supply_capacity": "Ta'minot Imkoniyati",
+    
+    "crop_water_demand": "Ekin Suv Talabi Tahlili",
+    "crop_water_description": "Ekin turi va dala parametrlariga asoslanib suv talabini hisoblash",
+    "crop_type": "Ekin Turi",
+    "select_crop": "Ekin turini tanlang",
+    "field_size": "Maydon Hajmi",
+    "days_since_planting": "Ekishdan Beri Kunlar",
+    "calculate_recommendations": "Tavsiyalarni Hisoblash",
+    "water_requirements": "Suv Talabi",
+    "base_requirement": "Asosiy suv talabi",
+    "daily_requirement": "Kunlik suv talabi",
+    "liters_per_day_ha": "litr/kun/gektar",
+    "liters_per_day": "litr/kun",
+    "liters": "litr",
+    "allocation_recommendation": "Suv Ajratish Tavsiyasi",
+    "recommended_amount": "Tavsiya etilgan miqdor",
+    "recommended_date": "Tavsiya etilgan sana",
+    "need_forecast": "Bashorat Talab Qilinadi",
+    "generate_forecast_first": "Ekin turiga qarab tavsiyalarni hisoblash uchun oldin AI bashoratini yarating"
   }
 }

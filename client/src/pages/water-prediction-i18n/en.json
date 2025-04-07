@@ -1,7 +1,7 @@
 {
   "water_prediction": {
     "title": "Water Consumption Prediction",
-    "subtitle": "AI-powered water usage forecasting and shortage analysis",
+    "subtitle": "AI-powered water usage forecasting and crop-based allocation recommendations",
     "consumption_trends": "Consumption Trends",
     "last_30_days": "Last 30 days water consumption",
     "forecast_title": "Water Consumption Forecast",
@@ -31,6 +31,25 @@
     "shortage_percentage": "Shortage percentage",
     "consumption": "Consumption",
     "consumption_m3": "Water Consumption (m³)",
-    "supply_capacity": "Supply Capacity"
+    "supply_capacity": "Supply Capacity",
+    
+    "crop_water_demand": "Crop Water Demand Analysis",
+    "crop_water_description": "Calculate water requirements based on crop type and field parameters",
+    "crop_type": "Crop Type",
+    "select_crop": "Select crop type",
+    "field_size": "Field Size",
+    "days_since_planting": "Days Since Planting",
+    "calculate_recommendations": "Calculate Recommendations",
+    "water_requirements": "Water Requirements",
+    "base_requirement": "Base water requirement",
+    "daily_requirement": "Daily water requirement",
+    "liters_per_day_ha": "liters/day/hectare",
+    "liters_per_day": "liters/day",
+    "liters": "liters",
+    "allocation_recommendation": "Allocation Recommendation",
+    "recommended_amount": "Recommended amount",
+    "recommended_date": "Recommended date",
+    "need_forecast": "Forecast Required",
+    "generate_forecast_first": "Please generate an AI forecast first to calculate crop-specific recommendations"
   }
 }

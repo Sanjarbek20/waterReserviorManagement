@@ -8,7 +8,11 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, 
   ResponsiveContainer, AreaChart, Area, BarChart, Bar 
 } from 'recharts';
-import { WaterConsumptionForecastModel } from '@/lib/ai/waterPredictionModel';
+import { 
+  WaterConsumptionForecastModel, 
+  cropWaterRequirements,
+  cropGrowthStages 
+} from '@/lib/ai/waterPredictionModel';
 import { 
   WaterConsumptionDataPoint, 
   generateHistoricalWaterData, 
@@ -16,15 +20,26 @@ import {
   calculateConsumptionChange,
   predictWaterShortage
 } from '@/lib/ai/mockWaterData';
-import { format, parseISO, subDays } from 'date-fns';
-import { Loader2 } from 'lucide-react';
+import { format, parseISO, subDays, addDays } from 'date-fns';
+import { Loader2, AlertTriangle, CheckCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Badge } from '@/components/ui/badge';
+import { useAuth } from '@/lib/auth';
+import { Label } from '@/components/ui/label';
+import { 
+  Select, 
+  SelectContent, 
+  SelectGroup, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from '@/components/ui/select';
 import DashboardLayout from "@/components/layout/dashboard-layout";
 
 export default function WaterPredictions() {
   const { t } = useTranslation();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [isInitializing, setIsInitializing] = useState(true);
   const [isTraining, setIsTraining] = useState(false);
   const [isPredicting, setIsPredicting] = useState(false);
@@ -34,6 +49,16 @@ export default function WaterPredictions() {
   const [forecastData, setForecastData] = useState<WaterConsumptionDataPoint[]>([]);
   const [aiGeneratedForecast, setAiGeneratedForecast] = useState<WaterConsumptionDataPoint[]>([]);
   const [consumptionChange, setConsumptionChange] = useState<number>(0);
+  const [selectedCropType, setSelectedCropType] = useState<string>(user?.cropType || 'paxta');
+  const [fieldSize, setFieldSize] = useState<number>(parseFloat(user?.fieldSize || '5'));
+  const [daysSincePlanting, setDaysSincePlanting] = useState<number>(30);
+  const [allocationRecommendation, setAllocationRecommendation] = useState<{
+    recommendedAmount: number;
+    recommendedDate: string;
+    status: 'optimal' | 'warning' | 'critical';
+    message: string;
+  } | null>(null);
+  
   const [shortageAnalysis, setShortageAnalysis] = useState<{
     willHaveShortage: boolean,
     shortageStartDate: string | null,
@@ -386,7 +411,7 @@ export default function WaterPredictions() {
                     <div className="space-y-2">
                       <h4 className="text-sm font-medium">{t('water_prediction.shortage_analysis')}</h4>
                       {shortageAnalysis && (
-                        <div className="text-sm">
+                        <div className="bg-amber-50 border border-amber-200 rounded-md p-3 text-sm">
                           {shortageAnalysis.willHaveShortage ? (
                             <div className="flex flex-col gap-1">
                               <Badge variant="destructive" className="w-fit">
@@ -424,6 +449,156 @@ export default function WaterPredictions() {
               </Card>
             </div>
 
+            {/* Ekin turi bo'yicha suv talablarini hisoblash */}
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle>{t('water_prediction.crop_water_demand')}</CardTitle>
+                <CardDescription>{t('water_prediction.crop_water_description')}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="cropType">{t('water_prediction.crop_type')}</Label>
+                      <Select 
+                        value={selectedCropType} 
+                        onValueChange={setSelectedCropType}
+                      >
+                        <SelectTrigger id="cropType">
+                          <SelectValue placeholder={t('water_prediction.select_crop')} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            {Object.keys(cropWaterRequirements).map(crop => (
+                              <SelectItem key={crop} value={crop}>
+                                {crop}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="fieldSize">{t('water_prediction.field_size')} (ha)</Label>
+                      <div className="flex items-center space-x-2">
+                        <input 
+                          id="fieldSize"
+                          type="number" 
+                          min="0.1" 
+                          step="0.1"
+                          value={fieldSize}
+                          onChange={(e) => setFieldSize(parseFloat(e.target.value))}
+                          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="daysSincePlanting">{t('water_prediction.days_since_planting')}</Label>
+                      <div className="flex items-center space-x-2">
+                        <input 
+                          id="daysSincePlanting"
+                          type="number" 
+                          min="1" 
+                          step="1"
+                          value={daysSincePlanting}
+                          onChange={(e) => setDaysSincePlanting(parseInt(e.target.value))}
+                          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        />
+                      </div>
+                    </div>
+                    
+                    <Button
+                      onClick={() => {
+                        if (!aiGeneratedForecast.length) {
+                          toast({
+                            title: t('water_prediction.need_forecast'),
+                            description: t('water_prediction.generate_forecast_first'),
+                            variant: 'destructive'
+                          });
+                          return;
+                        }
+                        
+                        const forecastedValues = aiGeneratedForecast.map(item => item.value);
+                        const recommendation = WaterConsumptionForecastModel.generateWaterAllocationRecommendations(
+                          selectedCropType,
+                          fieldSize,
+                          daysSincePlanting,
+                          forecastedValues,
+                          1500000 // Suv ombori hajmi (m³)
+                        );
+                        
+                        setAllocationRecommendation(recommendation);
+                      }}
+                    >
+                      {t('water_prediction.calculate_recommendations')}
+                    </Button>
+                  </div>
+                  
+                  <div className="bg-blue-50 rounded-lg p-4">
+                    <h3 className="text-lg font-medium mb-3">{t('water_prediction.water_requirements')}</h3>
+                    
+                    {selectedCropType && (
+                      <div className="space-y-4">
+                        <div>
+                          <p className="text-sm text-muted-foreground mb-1">{t('water_prediction.base_requirement')}</p>
+                          <p className="text-lg font-medium">
+                            {cropWaterRequirements[selectedCropType]} {t('water_prediction.liters_per_day_ha')}
+                          </p>
+                        </div>
+                        
+                        <div>
+                          <p className="text-sm text-muted-foreground mb-1">{t('water_prediction.daily_requirement')}</p>
+                          <p className="text-lg font-medium">
+                            {Math.round(WaterConsumptionForecastModel.calculateCropWaterRequirement(
+                              selectedCropType,
+                              fieldSize,
+                              daysSincePlanting
+                            ))} {t('water_prediction.liters_per_day')}
+                          </p>
+                        </div>
+                        
+                        {allocationRecommendation && (
+                          <div className="mt-4 border-t pt-4">
+                            <h4 className="font-medium mb-2">{t('water_prediction.allocation_recommendation')}</h4>
+                            
+                            <div className={`p-3 rounded-md ${
+                              allocationRecommendation.status === 'optimal' ? 'bg-green-100 border border-green-200' :
+                              allocationRecommendation.status === 'warning' ? 'bg-amber-100 border border-amber-200' :
+                              'bg-red-100 border border-red-200'
+                            }`}>
+                              <div className="flex items-center gap-2 mb-2">
+                                {allocationRecommendation.status === 'optimal' ? (
+                                  <CheckCircle className="h-5 w-5 text-green-600" />
+                                ) : (
+                                  <AlertTriangle className="h-5 w-5 text-amber-600" />
+                                )}
+                                <span className="font-medium">
+                                  {allocationRecommendation.message}
+                                </span>
+                              </div>
+                              
+                              <div className="grid grid-cols-2 gap-2 text-sm">
+                                <div>
+                                  <p className="text-muted-foreground">{t('water_prediction.recommended_amount')}</p>
+                                  <p className="font-medium">{allocationRecommendation.recommendedAmount} {t('water_prediction.liters')}</p>
+                                </div>
+                                <div>
+                                  <p className="text-muted-foreground">{t('water_prediction.recommended_date')}</p>
+                                  <p className="font-medium">{formatDate(allocationRecommendation.recommendedDate)}</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+                
             {/* Oylik statistika kartalari */}
             <Card className="mb-6">
               <CardHeader>
