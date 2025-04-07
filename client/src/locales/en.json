@@ -13,7 +13,7 @@
     "profile": "Profile"
   },
   "dashboard": {
-    "reservoir_status": "Reservoir Status",
+    "reservoir_status": "Water Reservoir Management System",
     "water_allocation": "Water Allocation",
     "usage_statistics": "Usage Statistics",
     "water_forecast": "Water Forecast",
