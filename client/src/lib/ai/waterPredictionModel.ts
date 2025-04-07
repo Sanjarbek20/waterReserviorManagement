@@ -291,12 +291,13 @@ export class WaterConsumptionForecastModel {
   }
   
   /**
-   * Suv ajratish tavsiyalarini shakllantirish
+   * Suv ajratish tavsiyalarini shakllantirish va suvning kamayishini hisobga olish
    * @param cropType Ekin turi
    * @param fieldSizeHectares Maydon hajmi (gektar)
    * @param daysSincePlanting Ekishdan beri o'tgan kunlar
    * @param forecastedWaterLevels Bashoratlangan suv hajmi
    * @param reservoirCapacity Suv ombori hajmi
+   * @param currentReservoirLevel Hozirgi suv ombori darajasi (m³)
    * @returns Suv ajratish tavsiyalari
    */
   public static generateWaterAllocationRecommendations(
@@ -304,26 +305,36 @@ export class WaterConsumptionForecastModel {
     fieldSizeHectares: number,
     daysSincePlanting: number,
     forecastedWaterLevels: number[],
-    reservoirCapacity: number
+    reservoirCapacity: number,
+    currentReservoirLevel: number = 0
   ): {
     recommendedAmount: number;
     recommendedDate: string;
     status: 'optimal' | 'warning' | 'critical';
     message: string;
+    projectedReservoirLevel: number;
+    impactMessage: string;
   } {
-    // Kunlik suv talabini hisoblash
+    // Kunlik suv talabini hisoblash (litr)
     const dailyRequirement = this.calculateCropWaterRequirement(
       cropType,
       fieldSizeHectares,
       daysSincePlanting
     );
     
-    // Keyingi 7 kunlik umumiy talab
+    // Kunlik suv talabi (m³)
+    const dailyRequirementCubicMeters = dailyRequirement / 1000;
+    
+    // Keyingi 7 kunlik umumiy talab (litr)
     const weeklyRequirement = dailyRequirement * 7;
     
+    // Haqiqiy suv ombori darajasi (agar berilmagan bo'lsa, bashoratdagi birinchi qiymatni olish)
+    const actualCurrentLevel = currentReservoirLevel > 0 ? 
+                             currentReservoirLevel : 
+                             (forecastedWaterLevels[0] || 0);
+    
     // Suv ombori holatini tekshirish
-    const currentLevel = forecastedWaterLevels[0] || 0;
-    const levelPercentage = (currentLevel / reservoirCapacity) * 100;
+    const levelPercentage = (actualCurrentLevel / reservoirCapacity) * 100;
     
     // Tavsiyalarni shakllantirish
     let recommendedAmount = 0;
@@ -331,38 +342,91 @@ export class WaterConsumptionForecastModel {
     let status: 'optimal' | 'warning' | 'critical' = 'optimal';
     let message = '';
     
-    if (levelPercentage < 30) {
-      // Suv tanqis - faqat minimal miqdorni ajratish
-      recommendedAmount = dailyRequirement * 3; // 3 kunlik
+    // Ob-havoga qarab suv iste'moli o'zgarishi (taxminiy koeffitsient)
+    // Kelgusi 7 kungacha ob-havo ta'siri (taxminiy)
+    const weatherFactors = [1.0, 1.05, 0.95, 1.1, 0.9, 1.0, 1.05];
+    
+    // Suv zahirasi bo'yicha strategiyani aniqlash
+    if (levelPercentage < 25) {
+      // Suv tanqis - faqat juda zarur minimal miqdorni ajratish (3 kunlik)
+      recommendedAmount = dailyRequirement * 3 * 0.8; // 3 kunlik, 20% kamaytirilgan
       status = 'critical';
       message = 'Suv tanqisligi! Faqat minimal miqdorda suv ajratilishi tavsiya etiladi.';
-    } else if (levelPercentage < 60) {
-      // Suv o'rtacha - ehtiyot bilan ajratish
-      recommendedAmount = dailyRequirement * 5; // 5 kunlik
+    } else if (levelPercentage < 50) {
+      // Suv tanqis - minimal miqdorni ajratish (4 kunlik)
+      recommendedAmount = dailyRequirement * 4 * 0.9; // 4 kunlik, 10% kamaytirilgan
+      status = 'critical';
+      message = 'Suv tanqisligi! Faqat minimal miqdorda suv ajratilishi tavsiya etiladi.';
+    } else if (levelPercentage < 70) {
+      // Suv o'rtacha - ehtiyot bilan ajratish (5 kunlik)
+      recommendedAmount = dailyRequirement * 5; 
       status = 'warning';
       message = 'Suv zahirasi o\'rtacha. Ehtiyot bilan suv ajratilishi tavsiya etiladi.';
     } else {
-      // Suv yetarli - optimal miqdorni ajratish
+      // Suv yetarli - optimal miqdorni ajratish (haftalik)
       recommendedAmount = weeklyRequirement;
       status = 'optimal';
       message = 'Suv zahirasi yetarli. Optimal miqdorda suv ajratish mumkin.';
     }
     
     // Eng yaxshi suv ajratish sanasini aniqlash
-    // (Bu murakkab hisob-kitoblar talab qiladi, hozircha sodda variant)
+    // Buning uchun suvning bashoratdagi maksimal darajasini, 
+    // ob-havo omillari va kunlik talabni hisobga olamiz
     const nextWeekForecast = forecastedWaterLevels.slice(0, 7);
-    const maxLevelDay = nextWeekForecast.indexOf(Math.max(...nextWeekForecast));
-    if (maxLevelDay > 0) {
+    
+    // Har bir kun uchun suv iste'moli va darajasi balansini hisoblash
+    const dailyBalances = nextWeekForecast.map((level, i) => {
+      // Ob-havo omili bilan tuzatirilgan kunlik talab
+      const adjustedDailyNeed = dailyRequirementCubicMeters * weatherFactors[i];
+      
+      // Suv darajasi va talab o'rtasidagi balans (qanchalik ko'p bo'lsa, shunchalik yaxshi)
+      return {
+        day: i,
+        level: level,
+        balance: level - adjustedDailyNeed,
+        adjustedNeed: adjustedDailyNeed
+      };
+    });
+    
+    // Eng yaxshi suv ajratish kunini topish:
+    // 1. Suv darajasi yuqori bo'lgan kunlar
+    // 2. Lekin keyingi kun uchun talab past bo'lgan kunlar afzalroq
+    dailyBalances.sort((a, b) => b.balance - a.balance);
+    
+    // Eng yaxshi kunni tanlash
+    const bestDay = dailyBalances[0]?.day ?? 0;
+    if (bestDay >= 0) {
       const recommendedDay = new Date();
-      recommendedDay.setDate(recommendedDay.getDate() + maxLevelDay);
+      recommendedDay.setDate(recommendedDay.getDate() + bestDay);
       recommendedDate = recommendedDay.toISOString().split('T')[0];
+    }
+    
+    // Tavsiya etilgan miqdor bilan suv sarfi ta'sirini hisoblash
+    const recommendedAmountCubicMeters = recommendedAmount / 1000; // litrdan m³ ga o'tkazish
+    
+    // Suv sarfidan keyingi suv ombori darajasi
+    const projectedLevel = Math.max(0, actualCurrentLevel - recommendedAmountCubicMeters);
+    
+    // Suv sarfining foizli ta'siri
+    const impactPercentage = (recommendedAmountCubicMeters / actualCurrentLevel) * 100;
+    
+    // Ta'sir haqida xabar
+    let impactMessage = '';
+    if (impactPercentage < 5) {
+      impactMessage = `Bu miqdordagi suv sarfi suv omboridagi zahirani juda oz darajada (${impactPercentage.toFixed(1)}%) kamaytiradi.`;
+    } else if (impactPercentage < 15) {
+      impactMessage = `Bu miqdordagi suv sarfi suv omboridagi zahirani sezilarli darajada (${impactPercentage.toFixed(1)}%) kamaytiradi.`;
+    } else {
+      impactMessage = `Bu miqdordagi suv sarfi suv omboridagi zahirani katta darajada (${impactPercentage.toFixed(1)}%) kamaytiradi. Ehtiyot bilan suv sarflashni tavsiya qilamiz.`;
     }
     
     return {
       recommendedAmount: Math.round(recommendedAmount),
       recommendedDate,
       status,
-      message
+      message,
+      projectedReservoirLevel: Math.round(projectedLevel),
+      impactMessage
     };
   }
 }

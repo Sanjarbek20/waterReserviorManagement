@@ -5,6 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { 
+  Select, 
+  SelectContent, 
+  SelectGroup,
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from '@/components/ui/select';
+import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, 
   ResponsiveContainer, AreaChart, Area, BarChart, Bar 
 } from 'recharts';
@@ -26,14 +34,6 @@ import { useTranslation } from 'react-i18next';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/lib/auth';
 import { Label } from '@/components/ui/label';
-import { 
-  Select, 
-  SelectContent, 
-  SelectGroup, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from '@/components/ui/select';
 import DashboardLayout from "@/components/layout/dashboard-layout";
 
 export default function WaterPredictions() {
@@ -57,7 +57,13 @@ export default function WaterPredictions() {
     recommendedDate: string;
     status: 'optimal' | 'warning' | 'critical';
     message: string;
+    projectedReservoirLevel: number;
+    impactMessage: string;
   } | null>(null);
+  
+  // Suv omborlari ma'lumotlari uchun state
+  const [reservoirs, setReservoirs] = useState<{id: number, name: string, capacity: string, level: string}[]>([]);
+  const [selectedReservoir, setSelectedReservoir] = useState<number | null>(null);
   
   const [shortageAnalysis, setShortageAnalysis] = useState<{
     willHaveShortage: boolean,
@@ -67,8 +73,26 @@ export default function WaterPredictions() {
   } | null>(null);
 
   // Model va ma'lumotlarni boshlang'ich holga keltirish
+  // Suv ombori ma'lumotlarini yuklash
+  const fetchReservoirs = async () => {
+    try {
+      const response = await fetch('/api/reservoirs');
+      if (response.ok) {
+        const data = await response.json();
+        setReservoirs(data);
+        // Agar suv ombori bo'lsa, birinchisini tanlash
+        if (data.length > 0) {
+          setSelectedReservoir(data[0].id);
+        }
+      }
+    } catch (error) {
+      console.error("Suv omborlarini yuklashda xatolik:", error);
+    }
+  };
+
   useEffect(() => {
     initializeData();
+    fetchReservoirs();
   }, []);
 
   // Ma'lumotlar va modelni boshlang'ich holga keltirish
@@ -459,6 +483,27 @@ export default function WaterPredictions() {
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-4">
                     <div className="space-y-2">
+                      <Label htmlFor="reservoir">{t('water_prediction.reservoir')}</Label>
+                      <Select 
+                        value={selectedReservoir?.toString() || ''} 
+                        onValueChange={(value) => setSelectedReservoir(parseInt(value))}
+                      >
+                        <SelectTrigger id="reservoir">
+                          <SelectValue placeholder={t('water_prediction.select_reservoir')} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            {reservoirs.map(reservoir => (
+                              <SelectItem key={reservoir.id} value={reservoir.id.toString()}>
+                                {reservoir.name} ({parseFloat(reservoir.level).toLocaleString()} m³)
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  
+                    <div className="space-y-2">
                       <Label htmlFor="cropType">{t('water_prediction.crop_type')}</Label>
                       <Select 
                         value={selectedCropType} 
@@ -520,13 +565,26 @@ export default function WaterPredictions() {
                           return;
                         }
                         
+                        // Tanlangan suv omborini topish
+                        const selectedRes = reservoirs.find(r => r.id === selectedReservoir);
+                        
+                        if (!selectedRes) {
+                          toast({
+                            title: t('water_prediction.reservoir_error'),
+                            description: t('water_prediction.select_reservoir'),
+                            variant: 'destructive'
+                          });
+                          return;
+                        }
+                        
                         const forecastedValues = aiGeneratedForecast.map(item => item.value);
                         const recommendation = WaterConsumptionForecastModel.generateWaterAllocationRecommendations(
                           selectedCropType,
                           fieldSize,
                           daysSincePlanting,
                           forecastedValues,
-                          1500000 // Suv ombori hajmi (m³)
+                          parseFloat(selectedRes.capacity), // Suv ombori hajmi (m³)
+                          parseFloat(selectedRes.level) // Hozirgi suv ombori darajasi (m³)
                         );
                         
                         setAllocationRecommendation(recommendation);
@@ -579,7 +637,7 @@ export default function WaterPredictions() {
                                 </span>
                               </div>
                               
-                              <div className="grid grid-cols-2 gap-2 text-sm">
+                              <div className="grid grid-cols-2 gap-2 text-sm mb-3">
                                 <div>
                                   <p className="text-muted-foreground">{t('water_prediction.recommended_amount')}</p>
                                   <p className="font-medium">{allocationRecommendation.recommendedAmount} {t('water_prediction.liters')}</p>
@@ -587,6 +645,19 @@ export default function WaterPredictions() {
                                 <div>
                                   <p className="text-muted-foreground">{t('water_prediction.recommended_date')}</p>
                                   <p className="font-medium">{formatDate(allocationRecommendation.recommendedDate)}</p>
+                                </div>
+                              </div>
+                              
+                              <div className="mt-3 p-2 bg-blue-50 border border-blue-200 rounded-md">
+                                <h5 className="text-sm font-medium mb-1">{t('water_prediction.reservoir_impact')}</h5>
+                                <div className="space-y-1">
+                                  <p className="text-xs text-muted-foreground">
+                                    {t('water_prediction.current_level')}: <span className="font-medium">{parseFloat(reservoirs.find(r => r.id === selectedReservoir)?.level || '0').toLocaleString()} m³</span>
+                                  </p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {t('water_prediction.projected_level')}: <span className="font-medium">{allocationRecommendation.projectedReservoirLevel.toLocaleString()} m³</span>
+                                  </p>
+                                  <p className="text-xs">{allocationRecommendation.impactMessage}</p>
                                 </div>
                               </div>
                             </div>
