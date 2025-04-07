@@ -410,7 +410,7 @@ export default function FarmerDashboard() {
                     <CalendarIcon className="h-3 w-3 mr-1" />
                     Today, 8:32 AM
                   </p>
-                  <Button variant="ghost" size="sm" className="h-7 px-2">
+                  <Button variant="ghost" size="sm" className="h-7 px-2" onClick={() => window.location.href = "/farmer/notifications/1"}>
                     <ChevronRight className="h-4 w-4" />
                   </Button>
                 </div>
@@ -424,7 +424,7 @@ export default function FarmerDashboard() {
                     <CalendarIcon className="h-3 w-3 mr-1" />
                     Yesterday, 3:45 PM
                   </p>
-                  <Button variant="ghost" size="sm" className="h-7 px-2">
+                  <Button variant="ghost" size="sm" className="h-7 px-2" onClick={() => window.location.href = "/farmer/notifications/2"}>
                     <ChevronRight className="h-4 w-4" />
                   </Button>
                 </div>
@@ -438,7 +438,7 @@ export default function FarmerDashboard() {
                     <CalendarIcon className="h-3 w-3 mr-1" />
                     Apr 02, 2025
                   </p>
-                  <Button variant="ghost" size="sm" className="h-7 px-2">
+                  <Button variant="ghost" size="sm" className="h-7 px-2" onClick={() => window.location.href = "/farmer/notifications/3"}>
                     <ChevronRight className="h-4 w-4" />
                   </Button>
                 </div>
