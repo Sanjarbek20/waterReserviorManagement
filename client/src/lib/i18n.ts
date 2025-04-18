@@ -48,7 +48,11 @@ i18n
     detection: {
       order: ['localStorage', 'navigator'],
       caches: ['localStorage'],
-    }
+    },
+    // Make sure to use direct language codes without region
+    load: 'languageOnly',
+    // Use specific cleanup to make sure language is properly set
+    cleanCode: true
   });
 
 export default i18n;
