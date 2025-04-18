@@ -49,6 +49,7 @@ i18n
     detection: {
       order: ['localStorage', 'navigator'],
       caches: ['localStorage'],
+      lookupLocalStorage: 'i18nextLng',
     },
     // Make sure to use direct language codes without region
     load: 'languageOnly',
