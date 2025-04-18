@@ -12,7 +12,14 @@
     "register": "Ro'yxatdan o'tish",
     "profile": "Profil",
     "farmer_dashboard": "Fermer boshqaruv paneli",
-    "admin_dashboard": "Admin boshqaruv paneli"
+    "admin_dashboard": "Admin boshqaruv paneli",
+    "data_management": "Ma'lumotlar boshqaruvi",
+    "user_management": "Foydalanuvchilar boshqaruvi", 
+    "reservoir_management": "Suv omborlari boshqaruvi",
+    "water_allocation_management": "Suv taqsimoti boshqaruvi",
+    "video_surveillance": "Video nazorat",
+    "reports": "Hisobotlar",
+    "system_activity_log": "Tizim faoliyati jurnali"
   },
   "farmer": {
     "your_water_allocation": "Sizning suv taqsimotingiz",
@@ -208,6 +215,23 @@
     "data_refreshed": "Ma'lumotlar yangilandi",
     "refresh_failed": "Yangilash amalga oshmadi",
     "notifications_marked": "Barcha bildirishnomalar o'qilgan deb belgilandi",
-    "notifications_marked_desc": "Barcha bildirishnomalar muvaffaqiyatli o'qilgan deb belgilandi"
+    "notifications_marked_desc": "Barcha bildirishnomalar muvaffaqiyatli o'qilgan deb belgilandi",
+    "add_reservoir": "Suv ombori qo'shish",
+    "reservoir_updated": "Suv ombori yangilandi",
+    "water_level_updated": "Suv darajasi muvaffaqiyatli yangilandi.",
+    "update_failed": "Yangilash amalga oshmadi",
+    "reservoir_created": "Suv ombori yaratildi",
+    "reservoir_added": "Yangi suv ombori muvaffaqiyatli qo'shildi.",
+    "creation_failed": "Yaratish amalga oshmadi",
+    "reservoir_deleted": "Suv ombori o'chirildi",
+    "reservoir_deletion_success": "Suv ombori muvaffaqiyatli o'chirildi.",
+    "deletion_failed": "O'chirish amalga oshmadi",
+    "updating": "Yangilanmoqda...",
+    "creating": "Yaratilmoqda...",
+    "deleting": "O'chirilmoqda...",
+    "update_level": "Darajani yangilash",
+    "add_new_reservoir": "Yangi suv ombori qo'shish",
+    "fill_details": "Yangi suv ombori uchun ma'lumotlarni to'ldiring",
+    "create_reservoir": "Suv omborini yaratish"
   }
 }
