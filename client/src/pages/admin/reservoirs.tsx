@@ -29,9 +29,11 @@ import {
 } from "@/components/ui/dialog";
 import { format } from "date-fns";
 import { Droplet, Edit, RefreshCw, Plus, Trash } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function AdminReservoirs() {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false); 
@@ -165,7 +167,7 @@ export default function AdminReservoirs() {
   };
 
   return (
-    <DashboardLayout title="Reservoir Management">
+    <DashboardLayout title={t("general.reservoir_management")}>
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>

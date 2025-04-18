@@ -12,7 +12,14 @@
     "register": "Register",
     "profile": "Profile",
     "farmer_dashboard": "Farmer Dashboard",
-    "admin_dashboard": "Admin Dashboard"
+    "admin_dashboard": "Admin Dashboard",
+    "data_management": "Data Management",
+    "user_management": "User Management", 
+    "reservoir_management": "Reservoir Management",
+    "water_allocation_management": "Water Allocation Management",
+    "video_surveillance": "Video Surveillance",
+    "reports": "Reports",
+    "system_activity_log": "System Activity Log"
   },
   "farmer": {
     "your_water_allocation": "Your Water Allocation",
@@ -85,6 +92,31 @@
     "used_water": "Used Water",
     "available_water": "Available Water",
     "current_period_usage": "Current period water usage shown above"
+  },
+  "reservoirs": {
+    "overview": "Overview",
+    "detailed_view": "Detailed View",
+    "history": "History",
+    "reservoirs_overview": "Reservoirs Overview",
+    "detailed_reservoir_data": "Detailed Reservoir Data",
+    "reservoir_history": "Reservoir History",
+    "historical_data_soon": "Historical data visualization will be available soon.",
+    "name": "Name",
+    "current_level": "Current Level",
+    "capacity": "Capacity",
+    "percentage": "Percentage",
+    "last_updated": "Last Updated",
+    "actions": "Actions",
+    "update": "Update",
+    "update_reservoir_level": "Update Reservoir Level",
+    "adjust_water_level": "Adjust the water level for",
+    "new_level": "New Level",
+    "enter_exact_value": "Or enter exact value",
+    "or_enter_exact": "Or enter exact value:",
+    "reservoir_name": "Reservoir Name",
+    "current_capacity": "Current Capacity",
+    "initial_water_level": "Initial Water Level",
+    "location": "Location"
   },
   "settings": {
     "general_settings": "General Settings",
@@ -208,6 +240,23 @@
     "data_refreshed": "Data refreshed",
     "refresh_failed": "Refresh failed",
     "notifications_marked": "All notifications marked as read",
-    "notifications_marked_desc": "All notifications have been successfully marked as read"
+    "notifications_marked_desc": "All notifications have been successfully marked as read",
+    "add_reservoir": "Add Reservoir",
+    "reservoir_updated": "Reservoir updated",
+    "water_level_updated": "Water level has been updated successfully.",
+    "update_failed": "Update failed",
+    "reservoir_created": "Reservoir created",
+    "reservoir_added": "New reservoir has been added successfully.",
+    "creation_failed": "Creation failed",
+    "reservoir_deleted": "Reservoir deleted",
+    "reservoir_deletion_success": "Reservoir has been deleted successfully.",
+    "deletion_failed": "Deletion failed",
+    "updating": "Updating...",
+    "creating": "Creating...",
+    "deleting": "Deleting...",
+    "update_level": "Update Level",
+    "add_new_reservoir": "Add New Reservoir",
+    "fill_details": "Fill in the details for the new reservoir",
+    "create_reservoir": "Create Reservoir"
   }
 }
