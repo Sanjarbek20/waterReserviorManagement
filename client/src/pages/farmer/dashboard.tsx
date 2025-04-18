@@ -151,7 +151,7 @@ export default function FarmerDashboard() {
             <div className="flex flex-col md:flex-row gap-4">
               <div className="w-full md:w-1/2 space-y-2">
                 <div className="space-y-1">
-                  <h3 className="text-sm font-medium">Monthly Water Allocation</h3>
+                  <h3 className="text-sm font-medium">{t("farmer.monthly_water_allocation")}</h3>
                   <div className="bg-gray-100 h-32 rounded-md relative overflow-hidden flex flex-col">
                     {/* Total Allocation */}
                     <div className="flex-1 bg-green-100 border-b border-gray-300 flex items-center justify-center relative">
@@ -176,7 +176,7 @@ export default function FarmerDashboard() {
               
               <div className="w-full md:w-1/2">
                 <div className="space-y-1">
-                  <h3 className="text-sm font-medium">Current Water Usage</h3>
+                  <h3 className="text-sm font-medium">{t("farmer.current_water_usage")}</h3>
                   <div className="bg-gray-100 h-32 rounded-md relative overflow-hidden">
                     <WaterLevel percentage={percentage} height="h-32" />
                     <div className="px-4 py-2 text-sm text-center border-t border-gray-200 absolute bottom-0 left-0 right-0 bg-white bg-opacity-70">
