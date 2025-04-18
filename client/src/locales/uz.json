@@ -28,7 +28,7 @@
     "request_additional": "Qo'shimcha taqsimot so'rovi",
     "usage_history": "Foydalanish tarixi",
     "water_forecast": "Suv bashorati",
-    "next_days": "Keyingi 30 kun",
+    "next_30_days": "Keyingi 30 kun",
     "recent_water_requests": "So'nggi suv so'rovlari",
     "irrigation_efficiency": "Sug'orish samaradorligi"
   },
@@ -41,6 +41,7 @@
     "alerts_notifications": "Ogohlantirishlar & Bildirishnomalar",
     "view_all": "Barchasini ko'rish",
     "clear_all": "Barchasini tozalash",
+    "mark_all_read": "Barchasini o'qilgan deb belgilash",
     "rice_fields": "Sholi maydonlari",
     "vegetable_farms": "Sabzavot fermalari",
     "wheat_fields": "Bug'doy maydonlari",
