@@ -16,7 +16,9 @@ import {
   Video,
   Camera,
   Globe,
-  LineChart
+  LineChart,
+  Activity,
+  GaugeCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -40,6 +42,11 @@ export default function Sidebar() {
       name: t("general.reservoirs"), 
       path: "/admin/reservoirs", 
       icon: <Droplet className="h-4 w-4 mr-3" /> 
+    },
+    { 
+      name: "Suv omborlari monitoringi", 
+      path: "/admin/reservoir-live-monitoring", 
+      icon: <GaugeCircle className="h-4 w-4 mr-3" /> 
     },
     { 
       name: t("dashboard.water_allocation"), 
@@ -98,6 +105,11 @@ export default function Sidebar() {
       name: "Download Reports", 
       path: "/admin/data-management", 
       icon: <Download className="h-4 w-4 mr-3" /> 
+    },
+    { 
+      name: "Suv omborlari monitoringi", 
+      path: "/admin/reservoir-live-monitoring", 
+      icon: <GaugeCircle className="h-4 w-4 mr-3" /> 
     },
     { 
       name: t("water_prediction.title"), 
