@@ -112,14 +112,14 @@ export default function ReservoirStatus() {
       await refetch();
       setLastUpdated(new Date());
       toast({
-        title: "Data Refreshed",
-        description: "Reservoir data has been manually refreshed.",
+        title: t('common.data_refreshed'),
+        description: t('dashboard.reservoir_refreshed'),
       });
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Refresh Failed",
-        description: "Could not refresh reservoir data.",
+        title: t('common.refresh_failed'),
+        description: t('dashboard.reservoir_refresh_failed'),
       });
     } finally {
       setIsRefreshing(false);
@@ -209,7 +209,7 @@ export default function ReservoirStatus() {
       return dateObj.toLocaleDateString();
     } catch (error) {
       // If there's any error in date parsing or calculation, return a fallback
-      return "Recently";
+      return t('common.recently');
     }
   };
 
@@ -235,14 +235,14 @@ export default function ReservoirStatus() {
             onClick={() => {
               setIsRealTimeEnabled(!isRealTimeEnabled);
               toast({
-                title: isRealTimeEnabled ? "Real-time Updates Disabled" : "Real-time Updates Enabled",
+                title: isRealTimeEnabled ? t('common.realtime_disabled') : t('common.realtime_enabled'),
                 description: isRealTimeEnabled 
-                  ? "You will no longer receive automatic updates." 
-                  : "You will now receive automatic updates.",
+                  ? t('common.realtime_disabled_desc') 
+                  : t('common.realtime_enabled_desc'),
               });
             }}
           >
-            {isRealTimeEnabled ? "Real-time: ON" : "Real-time: OFF"}
+            {isRealTimeEnabled ? t('common.realtime_on') : t('common.realtime_off')}
           </Button>
         </div>
       </CardHeader>

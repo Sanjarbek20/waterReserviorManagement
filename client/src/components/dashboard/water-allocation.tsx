@@ -127,16 +127,16 @@ export default function WaterAllocation() {
       const diffMs = now.getTime() - dateObj.getTime();
       const diffMins = Math.floor(diffMs / (1000 * 60));
       
-      if (diffMins < 1) return "Just now";
-      if (diffMins < 60) return `${diffMins} minutes ago`;
+      if (diffMins < 1) return t('common.just_now');
+      if (diffMins < 60) return t('common.minutes_ago', { count: diffMins });
       
       const diffHours = Math.floor(diffMins / 60);
-      if (diffHours < 24) return `${diffHours} hours ago`;
+      if (diffHours < 24) return t('common.hours_ago', { count: diffHours });
       
       return dateObj.toLocaleDateString();
     } catch (error) {
       // If there's any error in date parsing or calculation, return a fallback
-      return "Recently";
+      return t('common.recently');
     }
   };
   
@@ -159,14 +159,14 @@ export default function WaterAllocation() {
       
       setLastUpdated(new Date());
       toast({
-        title: "Data Refreshed",
-        description: "Water allocation data has been updated.",
+        title: t('common.data_refreshed'),
+        description: t('dashboard.allocation_refreshed'),
       });
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Refresh Failed",
-        description: "Could not refresh allocation data.",
+        title: t('common.refresh_failed'),
+        description: t('dashboard.allocation_refresh_failed'),
       });
     } finally {
       setIsRefreshing(false);
