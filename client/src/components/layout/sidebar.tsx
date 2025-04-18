@@ -52,6 +52,11 @@ export default function Sidebar() {
       icon: <LineChart className="h-4 w-4 mr-3" /> 
     },
     { 
+      name: "Reservoir Forecasting", 
+      path: "/reservoir-forecasting", 
+      icon: <BarChart3 className="h-4 w-4 mr-3" /> 
+    },
+    { 
       name: "Video Surveillance", 
       path: "/admin/surveillance", 
       icon: <Video className="h-4 w-4 mr-3" /> 
@@ -98,6 +103,11 @@ export default function Sidebar() {
       name: t("water_prediction.title"), 
       path: "/water-predictions", 
       icon: <LineChart className="h-4 w-4 mr-3" /> 
+    },
+    { 
+      name: "Reservoir Forecasting", 
+      path: "/reservoir-forecasting", 
+      icon: <BarChart3 className="h-4 w-4 mr-3" /> 
     },
     { 
       name: "Video Surveillance", 
