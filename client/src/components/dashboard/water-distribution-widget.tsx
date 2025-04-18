@@ -3,7 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, AlertCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useQuery } from "@tanstack/react-query";
+import { queryClient } from "@/lib/queryClient";
+import { useAuth } from "@/lib/auth";
+import { WaterAllocation } from "@shared/schema";
 
 // Suv taqsimoti uchun ma'lumotlar turi
 type DistributionItem = {
@@ -12,54 +17,130 @@ type DistributionItem = {
   color: string;
 };
 
+// Crop to color mapping
+const cropColorMap: { [key: string]: string } = {
+  "sholi": "bg-blue-500",
+  "bug'doy": "bg-blue-300",
+  "sabzavot": "bg-green-500",
+  "paxta": "bg-purple-500",
+  "meva": "bg-red-400",
+  "uzum": "bg-pink-500",
+  "boshqa": "bg-amber-500"
+};
+
+// Default distribution if API data is not available
+const defaultDistribution: DistributionItem[] = [
+  { name: "Sholi maydonlari", value: 45, color: "bg-blue-500" },
+  { name: "Sabzavot fermalari", value: 30, color: "bg-green-500" },
+  { name: "Bug'doy maydonlari", value: 15, color: "bg-blue-300" },
+  { name: "Boshqa ekinlar", value: 10, color: "bg-amber-500" },
+];
+
 export default function WaterDistributionWidget() {
   const { t } = useTranslation();
+  const { toast } = useToast();
+  const { user } = useAuth();
   const [isUpdating, setIsUpdating] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
-  const [distribution, setDistribution] = useState<DistributionItem[]>([
-    { name: "Sholi maydonlari", value: 45, color: "bg-blue-500" },
-    { name: "Sabzavot fermalari", value: 30, color: "bg-green-500" },
-    { name: "Bug'doy maydonlari", value: 15, color: "bg-blue-300" },
-    { name: "Boshqa ekinlar", value: 10, color: "bg-amber-500" },
-  ]);
-
-  // Yangilash harakatini simulyatsiya qilish
+  const [distribution, setDistribution] = useState<DistributionItem[]>(defaultDistribution);
+  
+  // Fetch water allocations from API
+  const { data: allocations, isLoading, isError, refetch } = useQuery<WaterAllocation[]>({
+    queryKey: ["/api/allocations"],
+    enabled: !!user, // Only fetch if user is logged in
+  });
+  
+  // Process allocation data to create distribution data when allocations change
+  useEffect(() => {
+    if (allocations && allocations.length > 0) {
+      // Group allocations by crop type
+      const cropAllocations = new Map<string, {total: number, used: number}>();
+      
+      // Calculate total allocation and used amounts
+      let totalAllocated = 0;
+      
+      // Process all allocations
+      // Add different crop types for variety in the demo
+      const cropTypes = ["sholi", "bug'doy", "sabzavot", "paxta", "boshqa"];
+      
+      allocations.forEach((allocation, index) => {
+        // Determine crop type based on the allocation index for demo purposes
+        // In real implementation, we would fetch the user details with crop types
+        const userCropType = cropTypes[index % cropTypes.length];
+        
+        // Get existing data or initialize
+        const existing = cropAllocations.get(userCropType) || {total: 0, used: 0};
+        
+        // Add this allocation to the total
+        const allocatedAmount = parseFloat(allocation.amount);
+        const usedAmount = parseFloat(allocation.used);
+        
+        existing.total += allocatedAmount;
+        existing.used += usedAmount;
+        totalAllocated += allocatedAmount;
+        
+        // Update the map
+        cropAllocations.set(userCropType, existing);
+      });
+      
+      // Convert to distribution items
+      const newDistribution: DistributionItem[] = Array.from(cropAllocations.entries())
+        .map(([cropType, amounts]) => {
+          // Calculate percentage of total allocation
+          const percentage = Math.round((amounts.total / totalAllocated) * 100);
+          
+          // Map crop type to readable name
+          let name = cropType;
+          if (cropType === "sholi") name = "Sholi maydonlari";
+          else if (cropType === "bug'doy") name = "Bug'doy maydonlari";
+          else if (cropType === "sabzavot") name = "Sabzavot fermalari";
+          else if (cropType === "paxta") name = "Paxta dalasi";
+          else if (cropType === "meva") name = "Meva bog'lari";
+          else if (cropType === "uzum") name = "Uzumzorlar";
+          else name = "Boshqa ekinlar";
+          
+          return {
+            name,
+            value: percentage,
+            color: cropColorMap[cropType] || "bg-amber-500"
+          };
+        })
+        .sort((a, b) => b.value - a.value); // Sort by value in descending order
+      
+      // Make sure percentages sum to 100%
+      if (newDistribution.length > 0) {
+        const sum = newDistribution.reduce((acc, item) => acc + item.value, 0);
+        if (sum !== 100) {
+          newDistribution[0].value += (100 - sum); // Adjust the largest allocation
+        }
+        
+        // Update state with real data
+        setDistribution(newDistribution);
+        setLastUpdate(new Date());
+      }
+    }
+  }, [allocations]);
+  
+  // Yangilash harakati - Refresh data from API
   const handleRefresh = () => {
     setIsUpdating(true);
     
-    // Small random variations to simulate real-time updates
-    setTimeout(() => {
-      const newDistribution = distribution.map(item => {
-        // Random change between -2% and +2%
-        const change = Math.random() * 4 - 2;
-        let newValue = Math.round(item.value + change);
-        
-        // Ensure values stay within reasonable bounds
-        newValue = Math.max(5, Math.min(50, newValue));
-        
-        return {
-          ...item,
-          value: newValue
-        };
-      });
-      
-      // Adjust values to ensure they sum to 100%
-      const sum = newDistribution.reduce((acc, item) => acc + item.value, 0);
-      const adjustedDistribution = newDistribution.map((item, index) => {
-        // Last item gets the remainder to ensure exactly 100%
-        if (index === newDistribution.length - 1) {
-          const otherSum = newDistribution
-            .slice(0, -1)
-            .reduce((acc, item) => acc + item.value, 0);
-          return { ...item, value: 100 - otherSum };
-        }
-        return { ...item, value: Math.round(item.value * (100 / sum)) };
-      });
-      
-      setDistribution(adjustedDistribution);
+    // Fetch new data from API
+    refetch().then(() => {
       setLastUpdate(new Date());
       setIsUpdating(false);
-    }, 800);
+      toast({
+        title: "Ma'lumotlar yangilandi",
+        description: "Suv taqsimoti bo'yicha oxirgi ma'lumotlar yuklandi.",
+      });
+    }).catch(error => {
+      setIsUpdating(false);
+      toast({
+        title: "Xatolik",
+        description: "Ma'lumotlarni yangilashda muammo yuzaga keldi.",
+        variant: "destructive",
+      });
+    });
   };
   
   // Format the relative time (e.g. "10 minutes ago")
