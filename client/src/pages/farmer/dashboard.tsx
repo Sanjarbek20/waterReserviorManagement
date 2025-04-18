@@ -37,13 +37,34 @@ export default function FarmerDashboard() {
   const [isMarkingRead, setIsMarkingRead] = useState(false);
   const { t } = useTranslation();
   
+  // Define water allocation type
+  type WaterAllocation = {
+    id: number;
+    userId: number;
+    reservoirId: number;
+    amount: string;
+    used: string;
+    allocatedDate: string;
+  };
+
   // Fetch allocations data
-  const { data: allocations, isLoading: isLoadingAllocations, refetch: refetchAllocations } = useQuery({
+  const { data: allocations = [] as WaterAllocation[], isLoading: isLoadingAllocations, refetch: refetchAllocations } = useQuery<WaterAllocation[]>({
     queryKey: ["/api/allocations"],
   });
   
+  // Define water request type
+  type WaterRequest = {
+    id: number;
+    userId: number;
+    amount: string;
+    requestDate: string;
+    status: 'pending' | 'approved' | 'denied';
+    notes?: string;
+    type?: string;
+  };
+
   // Fetch user requests
-  const { data: requests = [], refetch: refetchRequests } = useQuery({
+  const { data: requests = [] as WaterRequest[], refetch: refetchRequests } = useQuery<WaterRequest[]>({
     queryKey: ["/api/requests"],
   });
   
@@ -94,7 +115,7 @@ export default function FarmerDashboard() {
   };
   
   // Fetch water requests data
-  const { data: requestsData = [] } = useQuery<any[]>({
+  const { data: requestsData = [] as WaterRequest[] } = useQuery<WaterRequest[]>({
     queryKey: ["/api/requests"],
     enabled: !!user
   });
@@ -159,13 +180,13 @@ export default function FarmerDashboard() {
                         <span className="text-xl font-semibold text-green-700">{allocationData.monthly.toLocaleString()} m³</span>
                         <div className="text-xs text-green-600">Base Allocation</div>
                       </div>
-                      {requests && Array.isArray(requests) && requests.some((req: any) => req.status === 'approved') && (
+                      {requests.some(req => req.status === 'approved') && (
                         <div className="absolute bottom-0 left-0 right-0 bg-green-200 py-1.5 text-center border-t border-green-300">
                           <span className="text-sm font-medium text-green-700">
                             +{requests
-                              .filter((req: any) => req.status === 'approved')
-                              .reduce((sum: number, req: any) => sum + parseInt(req.amount || '0'), 0)
-                              .toLocaleString()} m³ Additional
+                              .filter(req => req.status === 'approved')
+                              .reduce((sum: number, req) => sum + parseInt(req.amount || '0'), 0)
+                              .toLocaleString()} m³ {t('farmer.additional')}
                           </span>
                         </div>
                       )}
@@ -202,13 +223,13 @@ export default function FarmerDashboard() {
                   <span className="text-sm text-gray-500">{t("farmer.remaining")}:</span>
                   <span className="text-sm font-medium text-blue-500">{allocationData.remaining.toLocaleString()} m³</span>
                 </div>
-                {requests && Array.isArray(requests) && requests.some((req: any) => req.status === 'approved') && (
+                {requests.some(req => req.status === 'approved') && (
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-500">{t("farmer.additional_approved")}:</span>
                     <span className="text-sm font-medium text-green-600">
                       +{requests
-                        .filter((req: any) => req.status === 'approved')
-                        .reduce((sum: number, req: any) => sum + parseInt(req.amount || '0'), 0)
+                        .filter(req => req.status === 'approved')
+                        .reduce((sum: number, req) => sum + parseInt(req.amount || '0'), 0)
                         .toLocaleString()} m³
                     </span>
                   </div>
@@ -343,11 +364,11 @@ export default function FarmerDashboard() {
                 </thead>
                 <tbody>
                   {requestsData && requestsData.length > 0 ? (
-                    requestsData.slice(0, 3).map((request: any) => (
+                    requestsData.slice(0, 3).map((request) => (
                       <tr key={request.id} className="border-b">
                         <td className="py-2 px-4 text-sm">
-                          {request.date 
-                            ? format(new Date(request.date), 'MMM dd, yyyy')
+                          {request.requestDate 
+                            ? format(new Date(request.requestDate), 'MMM dd, yyyy')
                             : format(new Date(), 'MMM dd, yyyy')
                           }
                         </td>
