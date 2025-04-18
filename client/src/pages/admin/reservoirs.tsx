@@ -83,8 +83,8 @@ export default function AdminReservoirs() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/reservoirs"] });
       toast({
-        title: "Reservoir created",
-        description: "New reservoir has been added successfully.",
+        title: t("common.reservoir_created"),
+        description: t("common.reservoir_added"),
       });
       setOpenAddDialog(false);
       setNewReservoir({
@@ -97,7 +97,7 @@ export default function AdminReservoirs() {
     onError: (error: any) => {
       toast({
         variant: "destructive",
-        title: "Creation failed",
+        title: t("common.creation_failed"),
         description: error.message || "Failed to create new reservoir",
       });
     },
@@ -112,15 +112,15 @@ export default function AdminReservoirs() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/reservoirs"] });
       toast({
-        title: "Reservoir deleted",
-        description: "Reservoir has been deleted successfully.",
+        title: t("common.reservoir_deleted"),
+        description: t("common.reservoir_deletion_success"),
       });
       setOpenDeleteDialog(false);
     },
     onError: (error: any) => {
       toast({
         variant: "destructive",
-        title: "Deletion failed",
+        title: t("common.deletion_failed"),
         description: error.message || "Failed to delete reservoir",
       });
     },
@@ -450,7 +450,7 @@ export default function AdminReservoirs() {
                 <label className="text-sm font-medium block mb-2">{t("reservoirs.reservoir_name")}:</label>
                 <Input
                   name="name"
-                  placeholder="Enter reservoir name"
+                  placeholder={t("reservoirs.reservoir_name")}
                   value={newReservoir.name}
                   onChange={handleInputChange}
                 />
@@ -461,7 +461,7 @@ export default function AdminReservoirs() {
                 <Input
                   name="capacity"
                   type="number"
-                  placeholder="Enter total capacity"
+                  placeholder={t("reservoirs.capacity")}
                   value={newReservoir.capacity}
                   onChange={handleInputChange}
                 />
@@ -472,7 +472,7 @@ export default function AdminReservoirs() {
                 <Input
                   name="currentLevel"
                   type="number"
-                  placeholder="Enter current water level"
+                  placeholder={t("reservoirs.current_level")}
                   value={newReservoir.currentLevel}
                   onChange={handleInputChange}
                 />
@@ -482,7 +482,7 @@ export default function AdminReservoirs() {
                 <label className="text-sm font-medium block mb-2">{t("reservoirs.location")}:</label>
                 <Input
                   name="location"
-                  placeholder="Enter geographical location"
+                  placeholder={t("reservoirs.location")}
                   value={newReservoir.location}
                   onChange={handleInputChange}
                 />
