@@ -80,7 +80,11 @@
     "wheat_fields": "Wheat Fields",
     "other_crops": "Other Crops",
     "allocation_efficiency": "Allocation Efficiency",
-    "current_period": "April current period water usage shown above"
+    "current_period": "April current period water usage shown above",
+    "filled": "filled",
+    "used_water": "Used Water",
+    "available_water": "Available Water",
+    "current_period_usage": "Current period water usage shown above"
   },
   "settings": {
     "general_settings": "General Settings",
@@ -147,6 +151,17 @@
     "allocation_approved_desc": "Your additional {{amount}} m³ water request has been approved.",
     "notification_details": "Notification Details"
   },
+  "crops": {
+    "rice_fields": "Rice Fields",
+    "vegetable_farms": "Vegetable Farms",
+    "wheat_fields": "Wheat Fields",
+    "other_crops": "Other Crops"
+  },
+  "time": {
+    "last_6_months": "Last 6 Months",
+    "last_year": "Last Year",
+    "all_time": "All Time"
+  },
   "common": {
     "search": "Search",
     "add": "Add",
@@ -160,6 +175,11 @@
     "refreshing": "Refreshing...",
     "real_time_on": "Real-time: ON",
     "real_time_off": "Real-time: OFF",
+    "realtime_on": "Real-time: ON",
+    "last_updated": "Last updated",
+    "just_now": "Just now", 
+    "updated": "Updated",
+    "minutes_ago": "minutes ago",
     "success": "Success",
     "error": "Error",
     "warning": "Warning",
