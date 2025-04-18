@@ -98,10 +98,10 @@ export default function AdminDashboard() {
   ];
 
   const waterAllocations = [
-    { name: "Rice Fields", percentage: 45, color: "bg-blue-500" },
-    { name: "Vegetable Farms", percentage: 30, color: "bg-green-500" },
-    { name: "Wheat Fields", percentage: 15, color: "bg-sky-500" },
-    { name: "Other Crops", percentage: 10, color: "bg-amber-500" }
+    { name: t("admin.rice_fields"), percentage: 45, color: "bg-blue-500" },
+    { name: t("admin.vegetable_farms"), percentage: 30, color: "bg-green-500" },
+    { name: t("admin.wheat_fields"), percentage: 15, color: "bg-sky-500" },
+    { name: t("admin.other_crops"), percentage: 10, color: "bg-amber-500" }
   ];
 
   const activities = [
@@ -175,7 +175,7 @@ export default function AdminDashboard() {
                   <ArrowUp className="h-3 w-3 mr-1" /> : 
                   <ArrowDown className="h-3 w-3 mr-1" />
                 }
-                {card.trend} {card.trendDirection === "up" ? "increase" : "decrease"}
+                {card.trend} {card.trendDirection === "up" ? t("admin.increase") : t("admin.decrease")}
               </p>
             </CardContent>
           </Card>
@@ -200,8 +200,8 @@ export default function AdminDashboard() {
         <Card>
           <CardContent className="p-5">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-medium text-gray-800">Recent Activity</h2>
-              <Button variant="link" size="sm" onClick={() => window.location.href = "/admin/activities"}>View All</Button>
+              <h2 className="text-lg font-medium text-gray-800">{t("admin.recent_activity")}</h2>
+              <Button variant="link" size="sm" onClick={() => window.location.href = "/admin/activities"}>{t("admin.view_all")}</Button>
             </div>
             
             <div className="space-y-4">
@@ -223,8 +223,8 @@ export default function AdminDashboard() {
         <Card>
           <CardContent className="p-5">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-medium text-gray-800">Alerts & Notifications</h2>
-              <Button variant="link" size="sm" onClick={() => window.alert("Notifications cleared!")}>Clear All</Button>
+              <h2 className="text-lg font-medium text-gray-800">{t("admin.alerts_notifications")}</h2>
+              <Button variant="link" size="sm" onClick={() => window.alert("Notifications cleared!")}>{t("admin.clear_all")}</Button>
             </div>
             
             <div className="space-y-3">
@@ -263,7 +263,7 @@ export default function AdminDashboard() {
               
               <div className="mt-2 text-center">
                 <Button variant="link" size="sm" onClick={() => window.location.href = "/admin/notifications"}>
-                  View All Notifications
+                  {t("admin.view_all")}
                 </Button>
               </div>
             </div>
