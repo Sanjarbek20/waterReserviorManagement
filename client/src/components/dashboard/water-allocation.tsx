@@ -217,19 +217,19 @@ export default function WaterAllocation() {
     [
       { 
         id: 1, 
-        name: "Used Water", 
+        name: t('dashboard.used_water'), 
         percentage: Math.round((waterValues.totalUsed / totalWaterAvailable) * 100), 
         color: "bg-blue-500" 
       },
       { 
         id: 2, 
-        name: "Available Water", 
+        name: t('dashboard.available_water'), 
         percentage: Math.round(((totalWaterAvailable - waterValues.totalUsed) / totalWaterAvailable) * 100), 
         color: "bg-green-500" 
       }
     ] : [
-      { id: 1, name: "Used Water", percentage: 65, color: "bg-blue-500" },
-      { id: 2, name: "Available Water", percentage: 35, color: "bg-green-500" }
+      { id: 1, name: t('dashboard.used_water'), percentage: 65, color: "bg-blue-500" },
+      { id: 2, name: t('dashboard.available_water'), percentage: 35, color: "bg-green-500" }
     ];
 
   return (
@@ -254,10 +254,10 @@ export default function WaterAllocation() {
             onClick={() => {
               setIsRealTimeEnabled(!isRealTimeEnabled);
               toast({
-                title: isRealTimeEnabled ? "Real-time Updates Disabled" : "Real-time Updates Enabled",
+                title: isRealTimeEnabled ? t('common.realtime_disabled') : t('common.realtime_enabled'),
                 description: isRealTimeEnabled 
-                  ? "You will no longer receive automatic updates." 
-                  : "You will now receive automatic updates.",
+                  ? t('common.realtime_disabled_desc')
+                  : t('common.realtime_enabled_desc'),
               });
             }}
           >

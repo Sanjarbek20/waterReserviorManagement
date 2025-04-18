@@ -53,14 +53,14 @@ export default function FarmerDashboard() {
     try {
       await refetchAllocations();
       toast({
-        title: "Data refreshed",
-        description: "Usage data has been updated",
+        title: t('common.data_refreshed'),
+        description: t('farmer.usage_refreshed'),
       });
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Refresh failed",
-        description: "Could not refresh usage data",
+        title: t('common.refresh_failed'),
+        description: t('farmer.usage_refresh_failed'),
       });
     } finally {
       setIsRefreshing(false);
@@ -74,14 +74,14 @@ export default function FarmerDashboard() {
       // In a real app, we would call an API to mark notifications as read
       await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
       toast({
-        title: "Notifications marked as read",
-        description: "All notifications have been marked as read",
+        title: t('common.notifications_marked'),
+        description: t('common.notifications_marked_desc'),
       });
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Action failed",
-        description: "Could not mark notifications as read. Please try again",
+        title: t('common.action_failed'),
+        description: t('common.notifications_mark_failed'),
       });
     } finally {
       setIsMarkingRead(false);
