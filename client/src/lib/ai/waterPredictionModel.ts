@@ -16,6 +16,31 @@ export const cropWaterRequirements: Record<string, number> = {
   "o'rik": 22, // O'rik
 };
 
+// Suv ombori ma'lumotlari uchun tipler
+export interface ReservoirData {
+  date: string;
+  inflow: number;  // Kirib kelgan suv (m³)
+  outflow: number; // Chiqib ketgan suv (m³)
+  level: number;   // Suv sathi (m³)
+}
+
+// Suv ombori bashorat natijasi
+export interface ReservoirForecast {
+  daily: ReservoirData[];
+  weekly: ReservoirData[];
+  monthly: ReservoirData[];
+}
+
+// Suv ombori bashorati uchun model parametrlari
+export interface ReservoirModelParams {
+  inflowModel: tf.LayersModel | null;
+  outflowModel: tf.LayersModel | null;
+  levelModel: tf.LayersModel | null;
+  inflowNormalization: { min: number, max: number };
+  outflowNormalization: { min: number, max: number };
+  levelNormalization: { min: number, max: number };
+}
+
 // Ekinlarning o'sish davrlari va suvga talabi
 export interface CropGrowthStage {
   name: string; // Bosqich nomi
