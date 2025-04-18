@@ -80,7 +80,11 @@
     "wheat_fields": "Bug'doy maydonlari",
     "other_crops": "Boshqa ekinlar",
     "allocation_efficiency": "Taqsimot samaradorligi",
-    "current_period": "Aprel joriy davr suv sarfi yuqorida ko'rsatilgan"
+    "current_period": "Aprel joriy davr suv sarfi yuqorida ko'rsatilgan",
+    "filled": "to'ldirilgan",
+    "used_water": "Ishlatilgan suv",
+    "available_water": "Mavjud suv",
+    "current_period_usage": "Joriy davr suv sarfi yuqorida ko'rsatilgan"
   },
   "settings": {
     "general_settings": "Umumiy sozlamalar",
@@ -147,6 +151,17 @@
     "allocation_approved_desc": "Qo'shimcha {{amount}} m³ suv so'rovingiz tasdiqlandi.",
     "notification_details": "Bildirishnoma tafsilotlari"
   },
+  "crops": {
+    "rice_fields": "Sholi maydonlari",
+    "vegetable_farms": "Sabzavot fermalari",
+    "wheat_fields": "Bug'doy maydonlari",
+    "other_crops": "Boshqa ekinlar"
+  },
+  "time": {
+    "last_6_months": "So'nggi 6 oy",
+    "last_year": "O'tgan yil",
+    "all_time": "Barcha vaqt"
+  },
   "common": {
     "search": "Qidirish",
     "add": "Qo'shish",
@@ -160,6 +175,11 @@
     "refreshing": "Yangilanmoqda...",
     "real_time_on": "Real vaqt: YOQILGAN",
     "real_time_off": "Real vaqt: O'CHIRILGAN",
+    "realtime_on": "Real vaqt: YOQILGAN",
+    "last_updated": "So'nggi yangilanish",
+    "just_now": "Hozirgina",
+    "updated": "Yangilandi",
+    "minutes_ago": "daqiqa oldin",
     "success": "Muvaffaqiyat",
     "error": "Xato",
     "warning": "Ogohlantirish",
@@ -184,6 +204,7 @@
     "yesterday_with_time": "Kecha, {{time}}",
     "date_format": "{{date}}",
     "additional": "Qo'shimcha",
+    "not_specified": "Ko'rsatilmagan",
     "data_refreshed": "Ma'lumotlar yangilandi",
     "refresh_failed": "Yangilash amalga oshmadi",
     "notifications_marked": "Barcha bildirishnomalar o'qilgan deb belgilandi",
