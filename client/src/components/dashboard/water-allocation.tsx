@@ -5,6 +5,7 @@ import { Check, Info, RefreshCw, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 type Allocation = {
   id: number;
@@ -15,6 +16,7 @@ type Allocation = {
 
 export default function WaterAllocation() {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isRealTimeEnabled, setIsRealTimeEnabled] = useState(true);
@@ -233,7 +235,7 @@ export default function WaterAllocation() {
   return (
     <Card className="w-full overflow-visible max-w-full">
       <CardHeader className="pb-2 flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0">
-        <CardTitle className="text-lg md:text-xl font-semibold">Water Allocation</CardTitle>
+        <CardTitle className="text-lg md:text-xl font-semibold">{t("dashboard.water_allocation")}</CardTitle>
         <div className="flex flex-wrap gap-2">
           <Button 
             variant="outline" 
@@ -243,7 +245,7 @@ export default function WaterAllocation() {
             className="whitespace-nowrap"
           >
             <RefreshCw className={`h-4 w-4 mr-1 ${isRefreshing ? 'animate-spin' : ''}`} />
-            Refresh
+            {t('common.refresh')}
           </Button>
           <Button 
             variant={isRealTimeEnabled ? "default" : "outline"} 
@@ -259,7 +261,7 @@ export default function WaterAllocation() {
               });
             }}
           >
-            {isRealTimeEnabled ? "Real-time: ON" : "Real-time: OFF"}
+            {isRealTimeEnabled ? t('common.realtime_on') : t('common.realtime_off')}
           </Button>
         </div>
       </CardHeader>
@@ -273,7 +275,7 @@ export default function WaterAllocation() {
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <div className="w-3 h-3 rounded-full bg-blue-500 mr-2"></div>
-              <span className="text-sm font-medium">Rice Fields</span>
+              <span className="text-sm font-medium">{t('crops.rice_fields')}</span>
             </div>
             <span className="text-sm font-medium">45%</span>
           </div>
@@ -284,7 +286,7 @@ export default function WaterAllocation() {
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <div className="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
-              <span className="text-sm font-medium">Vegetable Farms</span>
+              <span className="text-sm font-medium">{t('crops.vegetable_farms')}</span>
             </div>
             <span className="text-sm font-medium">30%</span>
           </div>
@@ -295,7 +297,7 @@ export default function WaterAllocation() {
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <div className="w-3 h-3 rounded-full bg-blue-400 mr-2"></div>
-              <span className="text-sm font-medium">Wheat Fields</span>
+              <span className="text-sm font-medium">{t('crops.wheat_fields')}</span>
             </div>
             <span className="text-sm font-medium">15%</span>
           </div>
@@ -306,7 +308,7 @@ export default function WaterAllocation() {
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <div className="w-3 h-3 rounded-full bg-amber-500 mr-2"></div>
-              <span className="text-sm font-medium">Other Crops</span>
+              <span className="text-sm font-medium">{t('crops.other_crops')}</span>
             </div>
             <span className="text-sm font-medium">10%</span>
           </div>
