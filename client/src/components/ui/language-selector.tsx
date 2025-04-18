@@ -28,7 +28,12 @@ export function LanguageSelector() {
   const { i18n } = useTranslation();
 
   const handleLanguageChange = (value: string) => {
-    i18n.changeLanguage(value);
+    // Force language change and reload resources
+    i18n.changeLanguage(value).then(() => {
+      console.log(`Language changed to ${value}`);
+      // Force re-render of components
+      window.dispatchEvent(new Event('languageChanged'));
+    });
   };
 
   return (
