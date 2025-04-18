@@ -28,8 +28,37 @@ let DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
+// Add TypeScript type for weather data
+type WeatherData = {
+  [key: string]: {
+    temp: number;
+    condition: string;
+    humidity: number;
+    windSpeed: number;
+    precipitation: string;
+    forecastNext5Days: Array<{
+      day: string;
+      temp: number;
+      condition: string;
+      precipitation: string;
+    }>;
+  }
+};
+
+// Define reservoir location type
+type Reservoir = {
+  id: number;
+  name: string;
+  location: [number, number]; // Ensuring it's a tuple with exactly 2 elements
+  capacity: string;
+  level: string;
+  inflow: string;
+  outflow: string;
+  region: string;
+};
+
 // Reservoir locations across Uzbekistan regions
-const reservoirLocations = [
+const reservoirLocations: Reservoir[] = [
   // Tashkent region
   { id: 1, name: "Chorvoq suv ombori", location: [41.4639, 70.0253], capacity: "2000 mln m³", level: "78%", inflow: "35 m³/s", outflow: "25 m³/s", region: "Toshkent" },
   { id: 2, name: "Tuyabug'iz suv ombori", location: [40.9505, 69.3639], capacity: "250 mln m³", level: "62%", inflow: "15 m³/s", outflow: "12 m³/s", region: "Toshkent" },
@@ -71,7 +100,7 @@ const reservoirLocations = [
 ];
 
 // Weather forecast data for different regions
-const weatherData = {
+const weatherData: WeatherData = {
   "Toshkent": { temp: 28, condition: "Quyoshli", humidity: 45, windSpeed: 12, precipitation: "0 mm", forecastNext5Days: [
     { day: "Dushanba", temp: 29, condition: "Quyoshli", precipitation: "0 mm" },
     { day: "Seshanba", temp: 30, condition: "Quyoshli", precipitation: "0 mm" },
@@ -195,7 +224,7 @@ export default function ReservoirLiveMonitoring() {
   const [reservoirData, setReservoirData] = useState(reservoirLocations);
   const [isUpdating, setIsUpdating] = useState(false);
   const [lastUpdate, setLastUpdate] = useState(new Date());
-  const [weatherRegion, setWeatherRegion] = useState("Toshkent");
+  const [weatherRegion, setWeatherRegion] = useState<keyof WeatherData>("Toshkent");
   const mapRef = useRef<any>(null);
   
   // Handle region selection
@@ -294,7 +323,7 @@ export default function ReservoirLiveMonitoring() {
   };
   
   return (
-    <DashboardLayout>
+    <DashboardLayout title="Suv omborlari monitoringi">
       <div className="p-6">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6">
           <div>
