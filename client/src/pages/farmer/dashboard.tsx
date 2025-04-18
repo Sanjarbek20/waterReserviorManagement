@@ -279,7 +279,7 @@ export default function FarmerDashboard() {
                 disabled={isRefreshing}
               >
                 <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-                {isRefreshing ? 'Refreshing...' : 'Refresh Data'}
+                {isRefreshing ? t('common.refreshing') : t('common.refresh_data')}
               </Button>
             </div>
           </CardContent>
@@ -335,10 +335,10 @@ export default function FarmerDashboard() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-2 px-4 text-xs font-medium text-gray-500">Date</th>
-                    <th className="text-left py-2 px-4 text-xs font-medium text-gray-500">Type</th>
-                    <th className="text-left py-2 px-4 text-xs font-medium text-gray-500">Amount</th>
-                    <th className="text-left py-2 px-4 text-xs font-medium text-gray-500">Status</th>
+                    <th className="text-left py-2 px-4 text-xs font-medium text-gray-500">{t('common.date')}</th>
+                    <th className="text-left py-2 px-4 text-xs font-medium text-gray-500">{t('common.type')}</th>
+                    <th className="text-left py-2 px-4 text-xs font-medium text-gray-500">{t('common.amount')}</th>
+                    <th className="text-left py-2 px-4 text-xs font-medium text-gray-500">{t('common.status')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -358,19 +358,19 @@ export default function FarmerDashboard() {
                         <td className="py-2 px-4 text-sm">
                           {request.status === 'approved' ? (
                             <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
-                              Approved
+                              {t('common.approved')}
                             </span>
                           ) : request.status === 'denied' ? (
                             <span className="px-2 py-1 rounded-full text-xs bg-red-100 text-red-800">
-                              Denied
+                              {t('common.denied')}
                             </span>
                           ) : request.status === 'pending' ? (
                             <span className="px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-800">
-                              Pending
+                              {t('common.pending')}
                             </span>
                           ) : (
                             <span className="px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-800">
-                              {request.status || 'Unknown'}
+                              {request.status || t('common.unknown')}
                             </span>
                           )}
                         </td>
@@ -379,7 +379,7 @@ export default function FarmerDashboard() {
                   ) : (
                     <tr>
                       <td colSpan={4} className="py-4 px-4 text-center text-sm text-gray-500">
-                        No water requests found
+                        {t('farmer.no_water_requests')}
                       </td>
                     </tr>
                   )}
@@ -405,8 +405,8 @@ export default function FarmerDashboard() {
           <CardContent>
             <div className="space-y-3">
               <div className="border-l-4 border-blue-500 p-3 rounded bg-blue-50">
-                <p className="text-sm font-medium text-gray-800">Water Schedule Updated</p>
-                <p className="text-xs text-gray-500 mt-1">Your irrigation schedule has been updated for next week.</p>
+                <p className="text-sm font-medium text-gray-800">{t('notifications.water_schedule_updated')}</p>
+                <p className="text-xs text-gray-500 mt-1">{t('notifications.irrigation_update_desc')}</p>
                 <div className="mt-2 flex justify-between items-center">
                   <p className="text-xs text-blue-500 flex items-center">
                     <CalendarIcon className="h-3 w-3 mr-1" />
@@ -419,8 +419,8 @@ export default function FarmerDashboard() {
               </div>
               
               <div className="border-l-4 border-amber-500 p-3 rounded bg-amber-50">
-                <p className="text-sm font-medium text-gray-800">Conservation Alert</p>
-                <p className="text-xs text-gray-500 mt-1">Water conservation measures may be implemented starting next month.</p>
+                <p className="text-sm font-medium text-gray-800">{t('notifications.conservation_alert')}</p>
+                <p className="text-xs text-gray-500 mt-1">{t('notifications.conservation_desc')}</p>
                 <div className="mt-2 flex justify-between items-center">
                   <p className="text-xs text-blue-500 flex items-center">
                     <CalendarIcon className="h-3 w-3 mr-1" />
