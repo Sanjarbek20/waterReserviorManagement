@@ -134,23 +134,23 @@ export default function FarmerDashboard() {
   const forecastData = [
     {
       icon: <SunIcon className="h-5 w-5 text-amber-500" />,
-      title: "Expected Dry Period",
-      value: "May 10-20",
-      description: "Plan your irrigation schedule accordingly"
+      title: t('farmer.forecast.dry_period'),
+      value: t('farmer.forecast.may_10_20'),
+      description: t('farmer.forecast.plan_irrigation')
     },
     {
       icon: <Droplet className="h-5 w-5 text-blue-500" />,
-      title: "Reservoir Level Trend",
-      value: "+5%",
+      title: t('farmer.forecast.reservoir_trend'),
+      value: t('farmer.forecast.increase_percentage', {percent: 5}),
       valueColor: "text-green-500",
-      description: "Increase expected due to spring rains"
+      description: t('farmer.forecast.spring_rains')
     },
     {
       icon: <ThumbsUp className="h-5 w-5 text-green-500" />,
-      title: "Allocation Sufficiency",
-      value: "Excellent",
+      title: t('farmer.forecast.allocation_sufficiency'),
+      value: t('farmer.forecast.excellent'),
       valueColor: "text-green-500",
-      description: "Allocation increased for growing season"
+      description: t('farmer.forecast.allocation_increase')
     }
   ];
 
@@ -178,7 +178,7 @@ export default function FarmerDashboard() {
                     <div className="flex-1 bg-green-100 border-b border-gray-300 flex items-center justify-center relative">
                       <div className="text-center">
                         <span className="text-xl font-semibold text-green-700">{allocationData.monthly.toLocaleString()} m³</span>
-                        <div className="text-xs text-green-600">Base Allocation</div>
+                        <div className="text-xs text-green-600">{t('farmer.base_allocation')}</div>
                       </div>
                       {requests.some(req => req.status === 'approved') && (
                         <div className="absolute bottom-0 left-0 right-0 bg-green-200 py-1.5 text-center border-t border-green-300">
@@ -201,7 +201,7 @@ export default function FarmerDashboard() {
                   <div className="bg-gray-100 h-32 rounded-md relative overflow-hidden">
                     <WaterLevel percentage={percentage} height="h-32" />
                     <div className="px-4 py-2 text-sm text-center border-t border-gray-200 absolute bottom-0 left-0 right-0 bg-white bg-opacity-70">
-                      <span className="font-medium">{allocationData.used.toLocaleString()} m³</span> used of <span className="font-medium">{allocationData.monthly.toLocaleString()} m³</span> allocation
+                      <span className="font-medium">{allocationData.used.toLocaleString()} m³</span> {t('farmer.used_of')} <span className="font-medium">{allocationData.monthly.toLocaleString()} m³</span> {t('farmer.allocation')}
                     </div>
                   </div>
                 </div>
@@ -236,7 +236,7 @@ export default function FarmerDashboard() {
                 )}
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-500">{t("farmer.crop_type")}:</span>
-                  <span className="text-sm font-medium capitalize">{user?.cropType || 'Not specified'}</span>
+                  <span className="text-sm font-medium capitalize">{user?.cropType || t('common.not_specified')}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-500">{t("farmer.next_allocation_date")}:</span>
@@ -287,8 +287,8 @@ export default function FarmerDashboard() {
                   <YAxis />
                   <Tooltip formatter={(value) => `${value.toLocaleString()} m³`} />
                   <Legend />
-                  <Bar dataKey="used" name="Used" fill="#3b82f6" />
-                  <Bar dataKey="allocated" name="Allocated" fill="#22c55e" />
+                  <Bar dataKey="used" name={t('common.used')} fill="#3b82f6" />
+                  <Bar dataKey="allocated" name={t('common.allocated')} fill="#22c55e" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -372,7 +372,7 @@ export default function FarmerDashboard() {
                             : format(new Date(), 'MMM dd, yyyy')
                           }
                         </td>
-                        <td className="py-2 px-4 text-sm">{request.type || 'Additional'}</td>
+                        <td className="py-2 px-4 text-sm">{request.type || t('common.additional')}</td>
                         <td className="py-2 px-4 text-sm">
                           {request.amount ? `${request.amount} m³` : '--'}
                         </td>

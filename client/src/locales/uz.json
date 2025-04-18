@@ -30,7 +30,24 @@
     "water_forecast": "Suv bashorati",
     "next_30_days": "Keyingi 30 kun",
     "recent_water_requests": "So'nggi suv so'rovlari",
-    "irrigation_efficiency": "Sug'orish samaradorligi"
+    "irrigation_efficiency": "Sug'orish samaradorligi",
+    "base_allocation": "Bazaviy taqsimot",
+    "additional": "Qo'shimcha",
+    "used_of": "ishlatilgan,",
+    "allocation": "taqsimot",
+    "no_water_requests": "Suv so'rovlari mavjud emas",
+    "irrigation_tip": "Quruq davrlar kutilayotganligi sababli irrigatsiya samaradorligi uchun tomchilatib sug'orishdan foydalaning",
+    "forecast": {
+      "dry_period": "Kutilayotgan quruq davr",
+      "may_10_20": "10-20 may",
+      "plan_irrigation": "Sug'orish jadvalingizni tegishli ravishda rejalashtiring",
+      "reservoir_trend": "Suv ombori daraja tendensiyasi",
+      "increase_percentage": "+{{percent}}%",
+      "spring_rains": "Bahorgi yomg'irlar sababli o'sish kutilmoqda",
+      "allocation_sufficiency": "Taqsimot yetarliligi",
+      "excellent": "A'lo",
+      "allocation_increase": "O'sish mavsumi uchun taqsimot ko'paytirildi"
+    }
   },
   "admin": {
     "total_capacity": "Umumiy sig'im",
@@ -121,6 +138,15 @@
     "field_size": "Dala maydoni",
     "crop_type": "Ekin turi"
   },
+  "notifications": {
+    "water_schedule_updated": "Suv jadvali yangilandi",
+    "irrigation_update_desc": "Ertangi kun uchun sug'orish vaqtingiz yangilandi.",
+    "conservation_alert": "Suv tejash ogohlantirishi",
+    "conservation_desc": "Joriy ob-havo sharoitlari tufayli suv tejash choralarini qo'llang.",
+    "allocation_approved": "Suv taqsimoti tasdiqlandi",
+    "allocation_approved_desc": "Qo'shimcha {{amount}} m³ suv so'rovingiz tasdiqlandi.",
+    "notification_details": "Bildirishnoma tafsilotlari"
+  },
   "common": {
     "search": "Qidirish",
     "add": "Qo'shish",
@@ -130,6 +156,8 @@
     "save": "Saqlash",
     "confirm": "Tasdiqlash",
     "refresh": "Yangilash",
+    "refresh_data": "Ma'lumotlarni yangilash",
+    "refreshing": "Yangilanmoqda...",
     "real_time_on": "Real vaqt: YOQILGAN",
     "real_time_off": "Real vaqt: O'CHIRILGAN",
     "success": "Muvaffaqiyat",
@@ -141,6 +169,24 @@
     "yes": "Ha",
     "no": "Yo'q",
     "confirm_delete": "Rostdan ham o'chirishni xohlaysizmi?",
-    "action_cannot_undone": "Bu amalni qaytarib bo'lmaydi."
+    "action_cannot_undone": "Bu amalni qaytarib bo'lmaydi.",
+    "used": "Ishlatilgan",
+    "allocated": "Taqsimlangan",
+    "date": "Sana",
+    "type": "Turi",
+    "amount": "Miqdori",
+    "status": "Holati",
+    "approved": "Tasdiqlangan",
+    "denied": "Rad etilgan",
+    "pending": "Kutilmoqda",
+    "unknown": "Noma'lum",
+    "today_with_time": "Bugun, {{time}}",
+    "yesterday_with_time": "Kecha, {{time}}",
+    "date_format": "{{date}}",
+    "additional": "Qo'shimcha",
+    "data_refreshed": "Ma'lumotlar yangilandi",
+    "refresh_failed": "Yangilash amalga oshmadi",
+    "notifications_marked": "Barcha bildirishnomalar o'qilgan deb belgilandi",
+    "notifications_marked_desc": "Barcha bildirishnomalar muvaffaqiyatli o'qilgan deb belgilandi"
   }
 }
