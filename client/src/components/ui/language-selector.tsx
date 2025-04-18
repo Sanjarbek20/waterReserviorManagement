@@ -28,23 +28,14 @@ export function LanguageSelector() {
   const { i18n } = useTranslation();
 
   const handleLanguageChange = (value: string) => {
-    // Ensure language change is properly applied and update all components
+    // Save the language preference to localStorage
+    localStorage.setItem('i18nextLng', value);
+    
+    // Log the language change
     console.log(`Changing language to ${value}`);
     
-    // Force clear cache and reload resources
-    i18n.reloadResources().then(() => {
-      i18n.changeLanguage(value).then(() => {
-        console.log(`Language changed to ${value}`);
-        
-        // Force re-render of components by dispatching a custom event
-        window.dispatchEvent(new Event('languageChanged'));
-        
-        // Force refresh if needed (in case event does not work)
-        setTimeout(() => {
-          window.dispatchEvent(new Event('languageChangeComplete'));
-        }, 100);
-      });
-    });
+    // Force page reload for complete language update
+    window.location.reload();
   };
 
   return (
