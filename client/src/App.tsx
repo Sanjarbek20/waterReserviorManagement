@@ -25,7 +25,9 @@ import FarmerReports from "@/pages/farmer/reports";
 import NotificationDetailPage from "@/pages/farmer/notifications/[id]";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import { ThemeProvider } from "@/lib/theme-provider";
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
+import { I18nextProvider } from "react-i18next";
+import i18n from "./lib/i18n";
 
 function ProtectedRoute({ 
   component: Component, 
@@ -187,12 +189,16 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light">
-        <AuthProvider>
-          <Router />
-          <Toaster />
-        </AuthProvider>
-      </ThemeProvider>
+      <I18nextProvider i18n={i18n}>
+        <Suspense fallback={<div className="flex h-screen items-center justify-center">Loading translations...</div>}>
+          <ThemeProvider defaultTheme="light">
+            <AuthProvider>
+              <Router />
+              <Toaster />
+            </AuthProvider>
+          </ThemeProvider>
+        </Suspense>
+      </I18nextProvider>
     </QueryClientProvider>
   );
 }
