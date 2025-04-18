@@ -19,8 +19,11 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import ReservoirStatus from "@/components/dashboard/reservoir-status";
 import WaterAllocation from "@/components/dashboard/water-allocation";
+import { useTranslation } from "react-i18next";
 
 export default function AdminDashboard() {
+  const { t } = useTranslation();
+  
   // Fetch data
   const { data: reservoirs, isLoading: isLoadingReservoirs } = useQuery({
     queryKey: ["/api/reservoirs"],
@@ -61,7 +64,7 @@ export default function AdminDashboard() {
   // Real-time data based on api responses
   const summaryCards = [
     {
-      title: "Total Capacity",
+      title: t("admin.total_capacity"),
       value: stats.totalCapacity.toLocaleString(),
       unit: "m³",
       icon: <Droplet className="h-5 w-5 text-blue-500" />,
@@ -69,7 +72,7 @@ export default function AdminDashboard() {
       trendDirection: "up"
     },
     {
-      title: "Current Level",
+      title: t("admin.current_level"),
       value: stats.currentLevel.toLocaleString(),
       unit: "m³",
       icon: <Droplet className="h-5 w-5 text-blue-500" />,
@@ -77,7 +80,7 @@ export default function AdminDashboard() {
       trendDirection: "up"
     },
     {
-      title: "Daily Outflow",
+      title: t("admin.daily_outflow"),
       value: "2,845",
       unit: "m³/day",
       icon: <TrendingDown className="h-5 w-5 text-green-500" />,
@@ -85,7 +88,7 @@ export default function AdminDashboard() {
       trendDirection: "down"
     },
     {
-      title: "Active Farmers",
+      title: t("admin.active_farmers"),
       value: farmerCount.toString(),
       unit: "",
       icon: <Users className="h-5 w-5 text-green-500" />,
@@ -150,7 +153,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <DashboardLayout title="Admin Dashboard">
+    <DashboardLayout title={t("general.admin_dashboard")}>
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         {summaryCards.map((card, index) => (
