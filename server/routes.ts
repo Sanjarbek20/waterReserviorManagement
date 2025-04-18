@@ -708,6 +708,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (ws.readyState === WebSocket.OPEN) {
         const reservoirs = await storage.getAllReservoirs();
         const users = await storage.getAllUsers();
+        const allAllocations = await storage.getAllocations();
         const farmerCount = users.filter(user => user.role === 'farmer').length;
         
         // Calculate reservoir statistics
@@ -718,13 +719,82 @@ export async function registerRoutes(app: Express): Promise<Server> {
           currentLevel += parseInt(reservoir.currentLevel);
         });
         
-        // Calculate allocation data
-        const allocations = [
-          { name: "Rice Fields", percentage: 45, color: "bg-blue-500" },
-          { name: "Vegetable Farms", percentage: 30, color: "bg-green-500" },
-          { name: "Wheat Fields", percentage: 15, color: "bg-blue-400" },
-          { name: "Other Crops", percentage: 10, color: "bg-amber-500" }
-        ];
+        // Calculate real allocation data from farmers' crop types
+        // Group by crop type
+        const cropAllocations = new Map<string, number>();
+        const allocatedByCropType = new Map<string, number>();
+        let totalAllocated = 0;
+        
+        // Process allocations
+        allAllocations.forEach(allocation => {
+          // Find the user for this allocation
+          const user = users.find(u => u.id === allocation.userId);
+          if (user) {
+            const cropType = (user.cropType || "boshqa").toLowerCase();
+            const allocatedAmount = parseInt(allocation.amount);
+            
+            // Update crop type allocation
+            const currentAmount = allocatedByCropType.get(cropType) || 0;
+            allocatedByCropType.set(cropType, currentAmount + allocatedAmount);
+            totalAllocated += allocatedAmount;
+          }
+        });
+        
+        // Convert to percentage and create allocation items
+        const cropPercentages = new Map<string, number>();
+        allocatedByCropType.forEach((amount, cropType) => {
+          const percentage = Math.round((amount / totalAllocated) * 100) || 0;
+          cropPercentages.set(cropType, percentage);
+        });
+        
+        // Define color mappings
+        const cropColorMap: { [key: string]: string } = {
+          "sholi": "bg-blue-500",
+          "bug'doy": "bg-blue-300",
+          "sabzavot": "bg-green-500",
+          "paxta": "bg-purple-500",
+          "meva": "bg-red-400",
+          "uzum": "bg-pink-500",
+          "boshqa": "bg-amber-500"
+        };
+        
+        // Define name mappings
+        const cropNameMap: { [key: string]: string } = {
+          "sholi": "Sholi maydonlari",
+          "bug'doy": "Bug'doy maydonlari",
+          "sabzavot": "Sabzavot fermalari",
+          "paxta": "Paxta dalasi",
+          "meva": "Meva bog'lari",
+          "uzum": "Uzumzorlar",
+          "boshqa": "Boshqa ekinlar"
+        };
+        
+        // Create allocation data
+        const allocations = Array.from(cropPercentages.entries())
+          .map(([cropType, percentage]) => ({
+            name: cropNameMap[cropType] || "Boshqa ekinlar",
+            value: percentage,
+            color: cropColorMap[cropType] || "bg-amber-500"
+          }))
+          .sort((a, b) => b.value - a.value);
+        
+        // If no data, use defaults
+        if (allocations.length === 0) {
+          allocations.push(
+            { name: "Sholi maydonlari", value: 45, color: "bg-blue-500" },
+            { name: "Sabzavot fermalari", value: 30, color: "bg-green-500" },
+            { name: "Bug'doy maydonlari", value: 15, color: "bg-blue-300" },
+            { name: "Boshqa ekinlar", value: 10, color: "bg-amber-500" }
+          );
+        }
+        
+        // Make sure percentages sum to 100%
+        if (allocations.length > 0) {
+          const sum = allocations.reduce((acc, item) => acc + item.value, 0);
+          if (sum !== 100 && allocations.length > 0) {
+            allocations[0].value += (100 - sum);
+          }
+        }
         
         const dashboardData = {
           type: 'dashboard_data',
@@ -760,13 +830,86 @@ export async function registerRoutes(app: Express): Promise<Server> {
         currentLevel += parseInt(reservoir.currentLevel);
       });
       
-      // Calculate allocation data
-      const allocations = [
-        { name: "Rice Fields", percentage: 45, color: "bg-blue-500" },
-        { name: "Vegetable Farms", percentage: 30, color: "bg-green-500" },
-        { name: "Wheat Fields", percentage: 15, color: "bg-blue-400" },
-        { name: "Other Crops", percentage: 10, color: "bg-amber-500" }
-      ];
+      // Calculate real allocation data from farmers' crop types
+      // Group by crop type
+      const cropAllocations = new Map<string, number>();
+      const allocatedByCropType = new Map<string, number>();
+      let totalAllocated = 0;
+      
+      // Get all allocations and farmers
+      const allAllocations = await storage.getAllocations();
+      const allUsers = await storage.getAllUsers();
+      
+      // Process allocations
+      allAllocations.forEach(allocation => {
+        // Find the user for this allocation
+        const user = allUsers.find(u => u.id === allocation.userId);
+        if (user) {
+          const cropType = (user.cropType || "boshqa").toLowerCase();
+          const allocatedAmount = parseInt(allocation.amount);
+          
+          // Update crop type allocation
+          const currentAmount = allocatedByCropType.get(cropType) || 0;
+          allocatedByCropType.set(cropType, currentAmount + allocatedAmount);
+          totalAllocated += allocatedAmount;
+        }
+      });
+      
+      // Convert to percentage and create allocation items
+      const cropPercentages = new Map<string, number>();
+      allocatedByCropType.forEach((amount, cropType) => {
+        const percentage = Math.round((amount / totalAllocated) * 100) || 0;
+        cropPercentages.set(cropType, percentage);
+      });
+      
+      // Define color mappings
+      const cropColorMap: { [key: string]: string } = {
+        "sholi": "bg-blue-500",
+        "bug'doy": "bg-blue-300",
+        "sabzavot": "bg-green-500",
+        "paxta": "bg-purple-500",
+        "meva": "bg-red-400",
+        "uzum": "bg-pink-500",
+        "boshqa": "bg-amber-500"
+      };
+      
+      // Define name mappings
+      const cropNameMap: { [key: string]: string } = {
+        "sholi": "Sholi maydonlari",
+        "bug'doy": "Bug'doy maydonlari",
+        "sabzavot": "Sabzavot fermalari",
+        "paxta": "Paxta dalasi",
+        "meva": "Meva bog'lari",
+        "uzum": "Uzumzorlar",
+        "boshqa": "Boshqa ekinlar"
+      };
+      
+      // Create allocation data
+      const allocations = Array.from(cropPercentages.entries())
+        .map(([cropType, percentage]) => ({
+          name: cropNameMap[cropType] || "Boshqa ekinlar",
+          value: percentage,
+          color: cropColorMap[cropType] || "bg-amber-500"
+        }))
+        .sort((a, b) => b.value - a.value);
+      
+      // If no data, use defaults
+      if (allocations.length === 0) {
+        allocations.push(
+          { name: "Sholi maydonlari", value: 45, color: "bg-blue-500" },
+          { name: "Sabzavot fermalari", value: 30, color: "bg-green-500" },
+          { name: "Bug'doy maydonlari", value: 15, color: "bg-blue-300" },
+          { name: "Boshqa ekinlar", value: 10, color: "bg-amber-500" }
+        );
+      }
+      
+      // Make sure percentages sum to 100%
+      if (allocations.length > 0) {
+        const sum = allocations.reduce((acc, item) => acc + item.value, 0);
+        if (sum !== 100 && allocations.length > 0) {
+          allocations[0].value += (100 - sum);
+        }
+      }
       
       const dashboardData = {
         type: 'dashboard_data',
@@ -803,6 +946,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const originalUpdateReservoirLevel = storage.updateReservoirLevel.bind(storage);
   storage.updateReservoirLevel = async (id, level) => {
     const result = await originalUpdateReservoirLevel(id, level);
+    broadcastReservoirData();
+    return result;
+  };
+  
+  // Also broadcast when allocations are updated
+  const originalCreateAllocation = storage.createAllocation.bind(storage);
+  storage.createAllocation = async (data) => {
+    const result = await originalCreateAllocation(data);
+    broadcastReservoirData();
+    return result;
+  };
+  
+  const originalUpdateAllocation = storage.updateAllocation.bind(storage);
+  storage.updateAllocation = async (id, used) => {
+    const result = await originalUpdateAllocation(id, used);
     broadcastReservoirData();
     return result;
   };
