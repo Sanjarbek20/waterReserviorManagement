@@ -268,7 +268,7 @@ export default function WaterAllocation() {
       <CardContent>
         <div className="mb-4 text-sm text-muted-foreground flex items-center justify-end">
           <Clock className="h-3.5 w-3.5 mr-1" />
-          <span>Last updated: {formatRelativeTime(lastUpdated)}</span>
+          <span>{t('common.last_updated')}: {formatRelativeTime(lastUpdated)}</span>
         </div>
         
         <div className="space-y-4 mb-6">
@@ -318,10 +318,10 @@ export default function WaterAllocation() {
         </div>
         
         <div className="border-t pt-4">
-          <h4 className="text-sm font-medium">Allocation Efficiency</h4>
+          <h4 className="text-sm font-medium">{t('dashboard.allocation_efficiency')}</h4>
           
           <div className="mt-3 text-sm text-muted-foreground">
-            <p>April current period water usage shown above</p>
+            <p>{t('dashboard.current_period_usage')}</p>
           </div>
         </div>
       </CardContent>

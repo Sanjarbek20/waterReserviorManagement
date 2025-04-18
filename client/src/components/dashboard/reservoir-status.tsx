@@ -200,11 +200,11 @@ export default function ReservoirStatus() {
       const diffMs = now.getTime() - dateObj.getTime();
       const diffMins = Math.floor(diffMs / (1000 * 60));
       
-      if (diffMins < 1) return "Just now";
-      if (diffMins < 60) return `${diffMins} minutes ago`;
+      if (diffMins < 1) return t('common.just_now');
+      if (diffMins < 60) return t('common.minutes_ago', { count: diffMins });
       
       const diffHours = Math.floor(diffMins / 60);
-      if (diffHours < 24) return `${diffHours} hours ago`;
+      if (diffHours < 24) return t('common.hours_ago', { count: diffHours });
       
       return dateObj.toLocaleDateString();
     } catch (error) {
@@ -249,7 +249,7 @@ export default function ReservoirStatus() {
       <CardContent>
         <div className="mb-4 text-sm text-muted-foreground flex items-center justify-end">
           <Clock className="h-3.5 w-3.5 mr-1" />
-          <span>Last updated: {formatRelativeTime(lastUpdated)}</span>
+          <span>{t('common.last_updated')}: {formatRelativeTime(lastUpdated)}</span>
         </div>
         <div className="space-y-6 w-full">
           {reservoirsWithStatus.map((reservoir) => (
@@ -259,7 +259,7 @@ export default function ReservoirStatus() {
                   <h3 className="text-lg font-medium truncate max-w-full">{reservoir.name}</h3>
                   <div className="flex items-center text-muted-foreground text-sm mt-1">
                     <MapPin className="h-3.5 w-3.5 mr-1 flex-shrink-0" />
-                    <span className="truncate">{reservoir.location || "Unknown location"}</span>
+                    <span className="truncate">{reservoir.location || t('common.unknown_location')}</span>
                   </div>
                 </div>
                 <Badge 
@@ -268,7 +268,7 @@ export default function ReservoirStatus() {
                           "default"}
                   className="ml-auto flex-shrink-0"
                 >
-                  {reservoir.fillPercentage}% Filled
+                  {reservoir.fillPercentage}% {t('dashboard.filled')}
                 </Badge>
               </div>
               
@@ -285,7 +285,7 @@ export default function ReservoirStatus() {
                   <div className="flex items-center">
                     <Droplet className="h-4 w-4 mr-2 text-blue-500 flex-shrink-0" />
                     <div>
-                      <p className="text-muted-foreground">Current Level</p>
+                      <p className="text-muted-foreground">{t('dashboard.current_level')}</p>
                       <p className="font-medium">{formatNumber(reservoir.currentLevel)} m³</p>
                     </div>
                   </div>
@@ -293,7 +293,7 @@ export default function ReservoirStatus() {
                   <div className="flex items-center">
                     <Droplet className="h-4 w-4 mr-2 text-blue-500 flex-shrink-0" />
                     <div>
-                      <p className="text-muted-foreground">Capacity</p>
+                      <p className="text-muted-foreground">{t('dashboard.capacity')}</p>
                       <p className="font-medium">{formatNumber(reservoir.capacity)} m³</p>
                     </div>
                   </div>
@@ -302,13 +302,13 @@ export default function ReservoirStatus() {
                 <div className="flex flex-wrap items-center justify-between text-xs text-muted-foreground w-full gap-2">
                   <div className="flex items-center">
                     <Clock className="h-3.5 w-3.5 mr-1 flex-shrink-0" />
-                    <span>Updated {formatRelativeTime(reservoir.lastUpdated)}</span>
+                    <span>{t('common.updated')} {formatRelativeTime(reservoir.lastUpdated)}</span>
                   </div>
                   
                   {reservoir.status === "low" && (
                     <div className="flex items-center text-red-500">
                       <AlertTriangle className="h-3.5 w-3.5 mr-1 flex-shrink-0" />
-                      <span>Low water level</span>
+                      <span>{t('dashboard.low_water_level')}</span>
                     </div>
                   )}
                 </div>
