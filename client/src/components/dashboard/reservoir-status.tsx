@@ -6,6 +6,7 @@ import { Droplet, MapPin, Clock, AlertTriangle, RefreshCw } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 type ReservoirData = {
   id: number;
@@ -18,6 +19,7 @@ type ReservoirData = {
 
 export default function ReservoirStatus() {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isRealTimeEnabled, setIsRealTimeEnabled] = useState(true);
@@ -214,7 +216,7 @@ export default function ReservoirStatus() {
   return (
     <Card className="w-full">
       <CardHeader className="pb-2 flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0">
-        <CardTitle className="text-lg md:text-xl font-semibold">Water Reservoir Management System</CardTitle>
+        <CardTitle className="text-lg md:text-xl font-semibold">{t("dashboard.reservoir_status")}</CardTitle>
         <div className="flex flex-wrap gap-2">
           <Button 
             variant="outline" 
@@ -224,7 +226,7 @@ export default function ReservoirStatus() {
             className="whitespace-nowrap"
           >
             <RefreshCw className={`h-4 w-4 mr-1 ${isRefreshing ? 'animate-spin' : ''}`} />
-            {isRefreshing ? 'Refreshing...' : 'Refresh'}
+            {isRefreshing ? t('common.loading') : t('common.refresh')}
           </Button>
           <Button 
             variant={isRealTimeEnabled ? "default" : "outline"} 
