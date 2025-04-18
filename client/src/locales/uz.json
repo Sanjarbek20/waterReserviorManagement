@@ -32,6 +32,22 @@
     "recent_water_requests": "So'nggi suv so'rovlari",
     "irrigation_efficiency": "Sug'orish samaradorligi"
   },
+  "admin": {
+    "total_capacity": "Umumiy sig'im",
+    "current_level": "Joriy daraja",
+    "daily_outflow": "Kunlik suv sarfi",
+    "active_farmers": "Faol fermerlar",
+    "recent_activity": "So'nggi faoliyat",
+    "alerts_notifications": "Ogohlantirishlar & Bildirishnomalar",
+    "view_all": "Barchasini ko'rish",
+    "clear_all": "Barchasini tozalash",
+    "rice_fields": "Sholi maydonlari",
+    "vegetable_farms": "Sabzavot fermalari",
+    "wheat_fields": "Bug'doy maydonlari",
+    "other_crops": "Boshqa ekinlar",
+    "increase": "o'sish",
+    "decrease": "pasayish"
+  },
   "dashboard": {
     "reservoir_status": "Suv Ombori Boshqaruvi Tizimi",
     "water_allocation": "Suv taqsimoti",
