@@ -242,9 +242,9 @@ export default function FarmerDashboard() {
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-lg">{t("farmer.usage_history")}</CardTitle>
             <select className="text-sm border rounded px-2 py-1">
-              <option>Last 6 Months</option>
-              <option>Last Year</option>
-              <option>All Time</option>
+              <option>{t('time.last_6_months')}</option>
+              <option>{t('time.last_year')}</option>
+              <option>{t('time.all_time')}</option>
             </select>
           </CardHeader>
           <CardContent>
@@ -308,7 +308,7 @@ export default function FarmerDashboard() {
               <div className="mt-4 p-3 bg-blue-50 rounded-md">
                 <p className="text-sm text-blue-700 flex items-start">
                   <LightbulbIcon className="h-4 w-4 mr-2 mt-0.5" />
-                  <span>Tip: Start preparing your irrigation systems now for the dry period forecasted for mid-May.</span>
+                  <span>{t('farmer.irrigation_tip')}</span>
                 </p>
               </div>
             </div>
@@ -410,7 +410,7 @@ export default function FarmerDashboard() {
                 <div className="mt-2 flex justify-between items-center">
                   <p className="text-xs text-blue-500 flex items-center">
                     <CalendarIcon className="h-3 w-3 mr-1" />
-                    Today, 8:32 AM
+                    {t('common.today_with_time', {time: '8:32 AM'})}
                   </p>
                   <Button variant="ghost" size="sm" className="h-7 px-2" onClick={() => window.location.href = "/farmer/notifications/1"}>
                     <ChevronRight className="h-4 w-4" />
@@ -424,7 +424,7 @@ export default function FarmerDashboard() {
                 <div className="mt-2 flex justify-between items-center">
                   <p className="text-xs text-blue-500 flex items-center">
                     <CalendarIcon className="h-3 w-3 mr-1" />
-                    Yesterday, 3:45 PM
+                    {t('common.yesterday_with_time', {time: '3:45 PM'})}
                   </p>
                   <Button variant="ghost" size="sm" className="h-7 px-2" onClick={() => window.location.href = "/farmer/notifications/2"}>
                     <ChevronRight className="h-4 w-4" />
@@ -433,12 +433,12 @@ export default function FarmerDashboard() {
               </div>
               
               <div className="border-l-4 border-green-500 p-3 rounded bg-green-50">
-                <p className="text-sm font-medium text-gray-800">Additional Allocation Approved</p>
-                <p className="text-xs text-gray-500 mt-1">Your request for additional 500 m³ has been approved.</p>
+                <p className="text-sm font-medium text-gray-800">{t('notifications.allocation_approved')}</p>
+                <p className="text-xs text-gray-500 mt-1">{t('notifications.allocation_approved_desc', {amount: 500})}</p>
                 <div className="mt-2 flex justify-between items-center">
                   <p className="text-xs text-blue-500 flex items-center">
                     <CalendarIcon className="h-3 w-3 mr-1" />
-                    Apr 02, 2025
+                    {t('common.date_format', {date: 'Apr 02, 2025'})}
                   </p>
                   <Button variant="ghost" size="sm" className="h-7 px-2" onClick={() => window.location.href = "/farmer/notifications/3"}>
                     <ChevronRight className="h-4 w-4" />
