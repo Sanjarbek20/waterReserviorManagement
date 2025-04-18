@@ -8,6 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import DatabaseDiagram from "@/components/admin/database-diagram";
+import DataTimeline from "@/components/admin/data-timeline";
 import { 
   Settings as SettingsIcon, 
   Bell, 
@@ -17,7 +19,8 @@ import {
   Save, 
   Video, 
   Grid,
-  Smartphone
+  Smartphone,
+  BarChart3
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -506,6 +509,22 @@ export default function Settings() {
                       </SelectContent>
                     </Select>
                   </div>
+                </div>
+                
+                <h3 className="text-lg font-medium pt-6 flex items-center">
+                  <DatabaseIcon className="h-5 w-5 mr-2" />
+                  Ma'lumotlar bazasi tuzilishi
+                </h3>
+                <div className="pt-2">
+                  <DatabaseDiagram />
+                </div>
+                
+                <h3 className="text-lg font-medium pt-6 flex items-center">
+                  <BarChart3 className="h-5 w-5 mr-2" />
+                  Vaqt bo'yicha ma'lumotlar o'zgarishlari
+                </h3>
+                <div className="pt-2">
+                  <DataTimeline />
                 </div>
               </CardContent>
               <CardFooter className="flex justify-end">
