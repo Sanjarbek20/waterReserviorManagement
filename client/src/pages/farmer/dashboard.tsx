@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import WaterLevel from "@/components/ui/water-level";
 import { format, addMonths } from "date-fns";
+import { useTranslation } from "react-i18next";
 import { 
   BarChart, 
   Bar,
@@ -34,6 +35,7 @@ export default function FarmerDashboard() {
   const [, setLocation] = useLocation();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isMarkingRead, setIsMarkingRead] = useState(false);
+  const { t } = useTranslation();
   
   // Fetch allocations data
   const { data: allocations, isLoading: isLoadingAllocations, refetch: refetchAllocations } = useQuery({
@@ -132,14 +134,14 @@ export default function FarmerDashboard() {
   ];
 
   return (
-    <DashboardLayout title="Farmer Dashboard">
+    <DashboardLayout title={t("general.dashboard")}>
       {/* Water Allocation Status */}
       <Card className="mb-6">
         <CardHeader>
           <div className="flex justify-between items-center">
-            <CardTitle>Your Water Allocation</CardTitle>
+            <CardTitle>{t("farmer.your_water_allocation")}</CardTitle>
             <div className="text-sm font-medium text-blue-500">
-              {user?.fieldSize} hectares
+              {user?.fieldSize} {t("farmer.hectares")}
             </div>
           </div>
         </CardHeader>
