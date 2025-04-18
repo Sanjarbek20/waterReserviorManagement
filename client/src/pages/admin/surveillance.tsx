@@ -13,7 +13,7 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { cn } from "@/lib/utils";
 
 // Define the available camera grid layouts
-type GridLayout = "2x2" | "4x4" | "8x8";
+type GridLayout = "1x1" | "2x2" | "4x2" | "4x4" | "8x8";
 
 // Define the reservoir location type
 type ReservoirLocation = {
@@ -21,6 +21,8 @@ type ReservoirLocation = {
   name: string;
   position: [number, number]; // [latitude, longitude]
   cameras: number[]; // IDs of cameras at this location
+  source?: string; // Water source (river, etc.)
+  canals?: string[]; // Canal networks from this reservoir
 };
 
 // Define the camera type
@@ -30,6 +32,7 @@ type Camera = {
   online: boolean;
   reservoirId?: number;
   minimized?: boolean;
+  ip?: string;
 };
 
 export default function AdminSurveillance() {
@@ -41,25 +44,77 @@ export default function AdminSurveillance() {
   const [selectedCamera, setSelectedCamera] = useState<Camera | null>(null);
   const [minimizedCameras, setMinimizedCameras] = useState<Camera[]>([]);
   
-  // Mock reservoir locations for the map
+  // Show/hide all cameras
+  const [showCameras, setShowCameras] = useState<boolean>(true);
+  
+  // Camera IP address input
+  const [cameraIpAddresses, setCameraIpAddresses] = useState<{[key: number]: string}>({});
+  
+  // Uzbekistan reservoir locations with water sources and canal networks
   const [reservoirLocations] = useState<ReservoirLocation[]>([
     {
       id: 1,
-      name: "Main Reservoir",
-      position: [41.2995, 69.2401], // Tashkent coordinates
-      cameras: [1, 2],
+      name: "Charvak Suv Ombori",
+      position: [41.6183, 70.0897],
+      cameras: [1, 2, 3],
+      source: "Chirchiq daryosi",
+      canals: ["Bozsuv", "Keles kanali", "Parkent kanali"]
     },
     {
       id: 2,
-      name: "Eastern Reservoir",
-      position: [41.3111, 69.2797],
-      cameras: [3, 4],
+      name: "Tuyamuyun Suv Ombori",
+      position: [41.2047, 61.4053],
+      cameras: [4, 5, 6, 7],
+      source: "Amudaryo",
+      canals: ["Qorakalpog'iston kanali", "Qoraqum kanali", "Xorazm suv arig'i"]
     },
     {
       id: 3,
-      name: "Southern Reservoir",
-      position: [41.2565, 69.2168],
-      cameras: [5, 6, 7, 8],
+      name: "Andijon Suv Ombori",
+      position: [40.7731, 73.0642],
+      cameras: [8, 9, 10],
+      source: "Qoradaryo",
+      canals: ["Shahrixonsoy", "Andijon kanali", "Namangan suv yo'li"]
+    },
+    {
+      id: 4,
+      name: "Kattaqo'rg'on Suv Ombori",
+      position: [39.8952, 66.2851],
+      cameras: [11, 12, 13],
+      source: "Zarafshon daryosi",
+      canals: ["Eski Angor", "Samarqand suv tizimi", "Qashqadaryo kanali"]
+    },
+    {
+      id: 5,
+      name: "Chimqo'rg'on Suv Ombori",
+      position: [39.5000, 67.2500],
+      cameras: [14, 15, 16],
+      source: "Qashqadaryo",
+      canals: ["Qamashi kanali", "Qarshi magistral kanali"]
+    },
+    {
+      id: 6,
+      name: "To'dako'l Suv Ombori",
+      position: [40.2500, 65.2000],
+      cameras: [17, 18, 19, 20],
+      source: "Amudaryo",
+      canals: ["Buxoro suv tizimi", "Qorakul kanali"]
+    },
+    {
+      id: 7,
+      name: "Janubiy Surxon Suv Ombori",
+      position: [37.8000, 67.5000],
+      cameras: [21, 22, 23],
+      source: "Surxondaryo",
+      canals: ["Sherobod suv tizimi", "Jarqo'rg'on kanali"]
+    },
+    {
+      id: 8,
+      name: "Toshkent Suv Ombori",
+      position: [41.2995, 69.2401],
+      cameras: [24, 25, 26, 27, 28],
+      source: "Chirchiq daryosi",
+      canals: ["Bozsuv", "Salar", "Qorasu", "Bo'zsuv kanali"]
     },
   ]);
 
@@ -78,7 +133,20 @@ export default function AdminSurveillance() {
   const closeMinimizedCamera = (cameraId: number) => {
     setMinimizedCameras(prevCameras => prevCameras.filter(cam => cam.id !== cameraId));
   };
-
+  
+  // Function to update camera IP
+  const updateCameraIp = (cameraId: number, ipAddress: string) => {
+    setCameraIpAddresses(prev => ({
+      ...prev,
+      [cameraId]: ipAddress
+    }));
+  };
+  
+  // Function to toggle visibility of all cameras
+  const toggleCamerasVisibility = () => {
+    setShowCameras(prev => !prev);
+  };
+  
   // In a real application, we would fetch the cameras from the API
   useEffect(() => {
     // Simulate loading cameras from an API
@@ -86,7 +154,7 @@ export default function AdminSurveillance() {
     const timeout = setTimeout(() => {
       // Generate mock camera data - in a real app, this would come from an API
       const generateCameras = (count: number) => {
-        return Array.from({ length: count }, (_, i) => {
+        return Array.from({ length: Math.min(count, 100) }, (_, i) => {
           // Assign cameras to reservoirs for the first few cameras
           let reservoirId: number | undefined = undefined;
           
@@ -97,16 +165,27 @@ export default function AdminSurveillance() {
             }
           }
           
+          // Generate a random IP address for this camera
+          const randomIp = `192.168.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}`;
+          
+          // Update the IP addresses state
+          updateCameraIp(i + 1, randomIp);
+          
           return {
             id: i + 1,
             name: `Reservoir Camera ${i + 1}`,
             online: Math.random() > 0.2, // 80% chance of being online
-            reservoirId
+            reservoirId,
+            ip: randomIp
           };
         });
       };
 
-      const cameraCount = layout === "2x2" ? 4 : layout === "4x4" ? 16 : 64;
+      const cameraCount = layout === "1x1" ? 1 : 
+                        layout === "2x2" ? 4 : 
+                        layout === "4x2" ? 8 : 
+                        layout === "4x4" ? 16 : 64;
+                        
       setCameras(generateCameras(cameraCount));
       setIsLoading(false);
     }, 1000);
@@ -117,8 +196,12 @@ export default function AdminSurveillance() {
   // Calculate grid class based on the selected layout
   const getGridClass = () => {
     switch (layout) {
+      case "1x1":
+        return "grid-cols-1";
       case "2x2":
         return "grid-cols-2";
+      case "4x2":
+        return "grid-cols-4 md:grid-rows-2";
       case "4x4":
         return "grid-cols-4";
       case "8x8":
@@ -141,15 +224,23 @@ export default function AdminSurveillance() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-xl font-bold">{t("Reservoir Surveillance Cameras")}</CardTitle>
-                <div className="flex items-center space-x-2">
+                <div className="flex flex-col sm:flex-row items-end sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
                   <RadioGroup
                     value={layout}
                     onValueChange={(value) => setLayout(value as GridLayout)}
-                    className="flex items-center space-x-4"
+                    className="flex flex-wrap items-center space-x-2 sm:space-x-4"
                   >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="1x1" id="layout-1x1" />
+                      <Label htmlFor="layout-1x1">1×1</Label>
+                    </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="2x2" id="layout-2x2" />
                       <Label htmlFor="layout-2x2">2×2</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="4x2" id="layout-4x2" />
+                      <Label htmlFor="layout-4x2">4×2</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="4x4" id="layout-4x4" />
@@ -160,6 +251,15 @@ export default function AdminSurveillance() {
                       <Label htmlFor="layout-8x8">8×8</Label>
                     </div>
                   </RadioGroup>
+                  
+                  <Button 
+                    variant={showCameras ? "outline" : "destructive"} 
+                    size="sm"
+                    onClick={toggleCamerasVisibility}
+                    className="whitespace-nowrap"
+                  >
+                    {showCameras ? t("Hide All Cameras") : t("Show All Cameras")}
+                  </Button>
                 </div>
               </CardHeader>
               <CardContent>
@@ -176,7 +276,7 @@ export default function AdminSurveillance() {
                       </div>
                     ))}
                   </div>
-                ) : (
+                ) : showCameras ? (
                   <div className={cn("grid gap-2 md:gap-4", getGridClass())}>
                     {cameras.map((camera) => (
                       <div key={camera.id} className="relative group">
@@ -241,6 +341,13 @@ export default function AdminSurveillance() {
                       </div>
                     ))}
                   </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-12">
+                    <Camera className="h-16 w-16 text-slate-300 mb-4" />
+                    <p className="text-slate-500 text-center">
+                      {t("All cameras are currently hidden. Click 'Show All Cameras' to display them.")}
+                    </p>
+                  </div>
                 )}
               </CardContent>
             </Card>
@@ -256,9 +363,9 @@ export default function AdminSurveillance() {
                   {typeof window !== 'undefined' && (
                     <MapContainer 
                       center={[41.2995, 69.2401] as [number, number]} 
-                      zoom={11} 
+                      zoom={8} 
                       scrollWheelZoom={false}
-                      style={{ height: '100%', width: '100%' }}
+                      style={{ height: '500px', width: '100%' }}
                     >
                       <TileLayer
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -271,11 +378,24 @@ export default function AdminSurveillance() {
                             <div className="p-2">
                               <h3 className="font-bold text-sm">{reservoir.name}</h3>
                               <p className="text-xs mt-1">
+                                {t("Source")}: {reservoir.source}
+                              </p>
+                              <p className="text-xs mt-1">
                                 {t("Cameras")}: {reservoir.cameras.length}
                               </p>
                               <p className="text-xs mt-1">
                                 {t("Online")}: {cameras.filter(cam => reservoir.cameras.includes(cam.id) && cam.online).length}
                               </p>
+                              {reservoir.canals && reservoir.canals.length > 0 && (
+                                <div className="mt-1">
+                                  <p className="text-xs font-medium">{t("Canal Networks")}:</p>
+                                  <ul className="text-xs list-disc pl-4 mt-1">
+                                    {reservoir.canals.map((canal, index) => (
+                                      <li key={index}>{canal}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
                               <Button 
                                 variant="outline" 
                                 size="sm" 
@@ -343,6 +463,51 @@ export default function AdminSurveillance() {
           </div>
         ))}
         
+        {/* Camera IP Address Configuration */}
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("Camera IP Configuration")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                {t("Configure IP addresses for up to 100 surveillance cameras.")}
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                {cameras.slice(0, 20).map(camera => (
+                  <div key={`ip-${camera.id}`} className="space-y-2">
+                    <Label htmlFor={`camera-ip-${camera.id}`} className="text-xs">
+                      {camera.name}
+                    </Label>
+                    <div className="flex">
+                      <input
+                        id={`camera-ip-${camera.id}`}
+                        type="text"
+                        value={cameraIpAddresses[camera.id] || ''}
+                        onChange={(e) => updateCameraIp(camera.id, e.target.value)}
+                        className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                        placeholder="192.168.1.100"
+                      />
+                      <Badge variant={camera.online ? "success" : "destructive"} className="ml-2 h-9 px-2 flex items-center">
+                        {camera.online ? t("Online") : t("Offline")}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              {cameras.length > 20 && (
+                <div className="flex justify-end">
+                  <Button variant="outline" size="sm">
+                    {t("Show All IP Addresses")}
+                  </Button>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card>
             <CardHeader>
@@ -399,14 +564,14 @@ export default function AdminSurveillance() {
                   <span>{t("Online")}:</span>
                   <span className="font-semibold text-green-600">
                     {cameras.filter(cam => cam.online).length} 
-                    ({Math.round((cameras.filter(cam => cam.online).length / cameras.length) * 100)}%)
+                    ({cameras.length > 0 ? Math.round((cameras.filter(cam => cam.online).length / cameras.length) * 100) : 0}%)
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span>{t("Offline")}:</span>
                   <span className="font-semibold text-red-600">
                     {cameras.filter(cam => !cam.online).length}
-                    ({Math.round((cameras.filter(cam => !cam.online).length / cameras.length) * 100)}%)
+                    ({cameras.length > 0 ? Math.round((cameras.filter(cam => !cam.online).length / cameras.length) * 100) : 0}%)
                   </span>
                 </div>
                 
