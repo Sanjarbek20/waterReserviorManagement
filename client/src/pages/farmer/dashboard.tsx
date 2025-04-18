@@ -320,14 +320,14 @@ export default function FarmerDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-lg">Recent Water Requests</CardTitle>
+            <CardTitle className="text-lg">{t("farmer.recent_water_requests")}</CardTitle>
             <Button 
               variant="link" 
               size="sm" 
               className="text-blue-500"
               onClick={navigateToRequests}
             >
-              View All
+              {t("admin.view_all")}
             </Button>
           </CardHeader>
           <CardContent className="p-0">
@@ -391,7 +391,7 @@ export default function FarmerDashboard() {
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-lg">Notifications</CardTitle>
+            <CardTitle className="text-lg">{t("general.notifications")}</CardTitle>
             <Button 
               variant="link" 
               size="sm" 
@@ -399,7 +399,7 @@ export default function FarmerDashboard() {
               onClick={handleMarkAllRead}
               disabled={isMarkingRead}
             >
-              {isMarkingRead ? 'Marking...' : 'Mark All Read'}
+              {isMarkingRead ? t("common.loading") : t("admin.mark_all_read")}
             </Button>
           </CardHeader>
           <CardContent>
