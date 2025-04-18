@@ -30,7 +30,24 @@
     "water_forecast": "Water Forecast",
     "next_30_days": "Next 30 days",
     "recent_water_requests": "Recent Water Requests",
-    "irrigation_efficiency": "Irrigation Efficiency"
+    "irrigation_efficiency": "Irrigation Efficiency",
+    "base_allocation": "Base Allocation",
+    "additional": "Additional",
+    "used_of": "used of",
+    "allocation": "allocation",
+    "no_water_requests": "No water requests available",
+    "irrigation_tip": "Use drip irrigation for efficiency as dry periods are expected",
+    "forecast": {
+      "dry_period": "Expected Dry Period",
+      "may_10_20": "May 10-20",
+      "plan_irrigation": "Plan your irrigation schedule accordingly",
+      "reservoir_trend": "Reservoir Level Trend",
+      "increase_percentage": "+{{percent}}%",
+      "spring_rains": "Increase expected due to spring rains",
+      "allocation_sufficiency": "Allocation Sufficiency",
+      "excellent": "Excellent",
+      "allocation_increase": "Allocation increased for growing season"
+    }
   },
   "admin": {
     "total_capacity": "Total Capacity",
@@ -121,6 +138,15 @@
     "field_size": "Field Size",
     "crop_type": "Crop Type"
   },
+  "notifications": {
+    "water_schedule_updated": "Water Schedule Updated",
+    "irrigation_update_desc": "Your irrigation time for tomorrow has been updated.",
+    "conservation_alert": "Water Conservation Alert",
+    "conservation_desc": "Implement water conservation measures due to current weather conditions.",
+    "allocation_approved": "Water Allocation Approved",
+    "allocation_approved_desc": "Your additional {{amount}} m³ water request has been approved.",
+    "notification_details": "Notification Details"
+  },
   "common": {
     "search": "Search",
     "add": "Add",
@@ -130,6 +156,8 @@
     "save": "Save",
     "confirm": "Confirm",
     "refresh": "Refresh",
+    "refresh_data": "Refresh Data",
+    "refreshing": "Refreshing...",
     "real_time_on": "Real-time: ON",
     "real_time_off": "Real-time: OFF",
     "success": "Success",
@@ -141,6 +169,25 @@
     "yes": "Yes",
     "no": "No",
     "confirm_delete": "Are you sure you want to delete?",
-    "action_cannot_undone": "This action cannot be undone."
+    "action_cannot_undone": "This action cannot be undone.",
+    "used": "Used",
+    "allocated": "Allocated",
+    "date": "Date",
+    "type": "Type",
+    "amount": "Amount",
+    "status": "Status",
+    "approved": "Approved",
+    "denied": "Denied",
+    "pending": "Pending",
+    "unknown": "Unknown",
+    "today_with_time": "Today, {{time}}",
+    "yesterday_with_time": "Yesterday, {{time}}",
+    "date_format": "{{date}}",
+    "additional": "Additional", 
+    "not_specified": "Not specified",
+    "data_refreshed": "Data refreshed",
+    "refresh_failed": "Refresh failed",
+    "notifications_marked": "All notifications marked as read",
+    "notifications_marked_desc": "All notifications have been successfully marked as read"
   }
 }
