@@ -191,20 +191,20 @@ export default function FarmerDashboard() {
             <div className="bg-gray-50 rounded-md p-4">
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-500">Monthly Allocation:</span>
+                  <span className="text-sm text-gray-500">{t("farmer.monthly_allocation")}:</span>
                   <span className="text-sm font-medium">{allocationData.monthly.toLocaleString()} m³</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-500">Used This Month:</span>
+                  <span className="text-sm text-gray-500">{t("farmer.used_this_month")}:</span>
                   <span className="text-sm font-medium">{allocationData.used.toLocaleString()} m³</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-500">Remaining:</span>
+                  <span className="text-sm text-gray-500">{t("farmer.remaining")}:</span>
                   <span className="text-sm font-medium text-blue-500">{allocationData.remaining.toLocaleString()} m³</span>
                 </div>
                 {requests && Array.isArray(requests) && requests.some((req: any) => req.status === 'approved') && (
                   <div className="flex justify-between">
-                    <span className="text-sm text-gray-500">Additional Approved:</span>
+                    <span className="text-sm text-gray-500">{t("farmer.additional_approved")}:</span>
                     <span className="text-sm font-medium text-green-600">
                       +{requests
                         .filter((req: any) => req.status === 'approved')
@@ -214,11 +214,11 @@ export default function FarmerDashboard() {
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-500">Crop Type:</span>
+                  <span className="text-sm text-gray-500">{t("farmer.crop_type")}:</span>
                   <span className="text-sm font-medium capitalize">{user?.cropType || 'Not specified'}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-500">Next Allocation Date:</span>
+                  <span className="text-sm text-gray-500">{t("farmer.next_allocation_date")}:</span>
                   <span className="text-sm font-medium">{format(allocationData.nextAllocationDate, 'MMM d, yyyy')}</span>
                 </div>
               </div>
@@ -228,7 +228,7 @@ export default function FarmerDashboard() {
                   className="w-full"
                   onClick={() => setLocation("/farmer/requests")}
                 >
-                  Request Additional Allocation
+                  {t("farmer.request_additional")}
                 </Button>
               </div>
             </div>
@@ -240,7 +240,7 @@ export default function FarmerDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-lg">Usage History</CardTitle>
+            <CardTitle className="text-lg">{t("farmer.usage_history")}</CardTitle>
             <select className="text-sm border rounded px-2 py-1">
               <option>Last 6 Months</option>
               <option>Last Year</option>
@@ -287,8 +287,8 @@ export default function FarmerDashboard() {
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-lg">Water Forecast</CardTitle>
-            <div className="text-sm text-gray-500">Next 30 days</div>
+            <CardTitle className="text-lg">{t("farmer.water_forecast")}</CardTitle>
+            <div className="text-sm text-gray-500">{t("farmer.next_30_days")}</div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
