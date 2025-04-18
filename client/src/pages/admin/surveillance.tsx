@@ -1,20 +1,83 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import DashboardLayout from "@/components/layout/dashboard-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Camera } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Camera, Map, Minimize2, Maximize2, MapPin, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { cn } from "@/lib/utils";
 
 // Define the available camera grid layouts
 type GridLayout = "2x2" | "4x4" | "8x8";
 
+// Define the reservoir location type
+type ReservoirLocation = {
+  id: number;
+  name: string;
+  position: [number, number]; // [latitude, longitude]
+  cameras: number[]; // IDs of cameras at this location
+};
+
+// Define the camera type
+type Camera = {
+  id: number;
+  name: string;
+  online: boolean;
+  reservoirId?: number;
+  minimized?: boolean;
+};
+
 export default function AdminSurveillance() {
+  const { t } = useTranslation();
   const [layout, setLayout] = useState<GridLayout>("2x2");
-  const [cameras, setCameras] = useState<{ id: number; name: string; online: boolean }[]>([]);
+  const [cameras, setCameras] = useState<Camera[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<string>("cameras");
+  const [selectedCamera, setSelectedCamera] = useState<Camera | null>(null);
+  const [minimizedCameras, setMinimizedCameras] = useState<Camera[]>([]);
+  
+  // Mock reservoir locations for the map
+  const [reservoirLocations] = useState<ReservoirLocation[]>([
+    {
+      id: 1,
+      name: "Main Reservoir",
+      position: [41.2995, 69.2401], // Tashkent coordinates
+      cameras: [1, 2],
+    },
+    {
+      id: 2,
+      name: "Eastern Reservoir",
+      position: [41.3111, 69.2797],
+      cameras: [3, 4],
+    },
+    {
+      id: 3,
+      name: "Southern Reservoir",
+      position: [41.2565, 69.2168],
+      cameras: [5, 6, 7, 8],
+    },
+  ]);
+
+  // Function to toggle camera minimization
+  const toggleMinimize = (camera: Camera) => {
+    // If camera is already minimized, remove it from minimized cameras
+    if (minimizedCameras.some(cam => cam.id === camera.id)) {
+      setMinimizedCameras(prevCameras => prevCameras.filter(cam => cam.id !== camera.id));
+    } else {
+      // Otherwise add it to minimized cameras
+      setMinimizedCameras(prevCameras => [...prevCameras, camera]);
+    }
+  };
+
+  // Close a minimized camera
+  const closeMinimizedCamera = (cameraId: number) => {
+    setMinimizedCameras(prevCameras => prevCameras.filter(cam => cam.id !== cameraId));
+  };
 
   // In a real application, we would fetch the cameras from the API
   useEffect(() => {
@@ -23,11 +86,24 @@ export default function AdminSurveillance() {
     const timeout = setTimeout(() => {
       // Generate mock camera data - in a real app, this would come from an API
       const generateCameras = (count: number) => {
-        return Array.from({ length: count }, (_, i) => ({
-          id: i + 1,
-          name: `Reservoir Camera ${i + 1}`,
-          online: Math.random() > 0.2, // 80% chance of being online
-        }));
+        return Array.from({ length: count }, (_, i) => {
+          // Assign cameras to reservoirs for the first few cameras
+          let reservoirId: number | undefined = undefined;
+          
+          for (const reservoir of reservoirLocations) {
+            if (reservoir.cameras.includes(i + 1)) {
+              reservoirId = reservoir.id;
+              break;
+            }
+          }
+          
+          return {
+            id: i + 1,
+            name: `Reservoir Camera ${i + 1}`,
+            online: Math.random() > 0.2, // 80% chance of being online
+            reservoirId
+          };
+        });
       };
 
       const cameraCount = layout === "2x2" ? 4 : layout === "4x4" ? 16 : 64;
@@ -36,7 +112,7 @@ export default function AdminSurveillance() {
     }, 1000);
 
     return () => clearTimeout(timeout);
-  }, [layout]);
+  }, [layout, reservoirLocations]);
 
   // Calculate grid class based on the selected layout
   const getGridClass = () => {
