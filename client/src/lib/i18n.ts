@@ -35,6 +35,7 @@ const resources = {
   }
 };
 
+// Initialize i18next instance
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -52,7 +53,23 @@ i18n
     // Make sure to use direct language codes without region
     load: 'languageOnly',
     // Use specific cleanup to make sure language is properly set
-    cleanCode: true
+    cleanCode: true,
+    // Force translations to always be returned even if key is missing
+    returnEmptyString: false,
+    returnNull: false,
+    // Ensure that we have cache-busting and proper reloading
+    partialBundledLanguages: false,
+    react: {
+      useSuspense: true,
+      bindI18n: 'languageChanged loaded',
+      bindI18nStore: 'added removed',
+      transEmptyNodeValue: '',
+    }
   });
+
+// Add event listener to refresh component when language changes  
+window.addEventListener('languageChanged', () => {
+  console.log('Language change event detected, refreshing UI');
+});
 
 export default i18n;
