@@ -60,15 +60,15 @@ export default function AdminReservoirs() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/reservoirs"] });
       toast({
-        title: "Reservoir updated",
-        description: "Water level has been updated successfully.",
+        title: t("common.reservoir_updated"),
+        description: t("common.water_level_updated"),
       });
       setOpenUpdateDialog(false);
     },
     onError: (error: any) => {
       toast({
         variant: "destructive",
-        title: "Update failed",
+        title: t("common.update_failed"),
         description: error.message || "Failed to update reservoir level",
       });
     },
