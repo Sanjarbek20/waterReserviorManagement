@@ -170,22 +170,22 @@ export default function AdminReservoirs() {
     <DashboardLayout title={t("general.reservoir_management")}>
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="details">Detailed View</TabsTrigger>
-          <TabsTrigger value="history">History</TabsTrigger>
+          <TabsTrigger value="overview">{t("reservoirs.overview")}</TabsTrigger>
+          <TabsTrigger value="details">{t("reservoirs.detailed_view")}</TabsTrigger>
+          <TabsTrigger value="history">{t("reservoirs.history")}</TabsTrigger>
         </TabsList>
         
         <TabsContent value="overview" className="space-y-4">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-bold">Reservoirs Overview</h2>
+            <h2 className="text-xl font-bold">{t("reservoirs.reservoirs_overview")}</h2>
             <div className="flex gap-2">
               <Button variant="outline" size="sm">
                 <RefreshCw className="h-4 w-4 mr-2" />
-                Refresh
+                {t("common.refresh")}
               </Button>
               <Button size="sm" onClick={() => setOpenAddDialog(true)}>
                 <Plus className="h-4 w-4 mr-2" />
-                Add Reservoir
+                {t("common.add_reservoir")}
               </Button>
             </div>
           </div>
@@ -239,19 +239,19 @@ export default function AdminReservoirs() {
                       
                       <div className="mt-4 space-y-1">
                         <div className="flex justify-between text-sm">
-                          <span className="text-gray-500">Current Level:</span>
+                          <span className="text-gray-500">{t("reservoirs.current_level")}:</span>
                           <span className="font-medium">
                             {Number(reservoir.currentLevel).toLocaleString()} m³
                           </span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-gray-500">Total Capacity:</span>
+                          <span className="text-gray-500">{t("reservoirs.capacity")}:</span>
                           <span className="font-medium">
                             {Number(reservoir.capacity).toLocaleString()} m³
                           </span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-gray-500">Last Updated:</span>
+                          <span className="text-gray-500">{t("reservoirs.last_updated")}:</span>
                           <span className="font-medium">
                             {format(new Date(reservoir.lastUpdated), 'MMM d, yyyy h:mm a')}
                           </span>
@@ -268,18 +268,18 @@ export default function AdminReservoirs() {
         <TabsContent value="details">
           <Card>
             <CardHeader>
-              <CardTitle>Detailed Reservoir Data</CardTitle>
+              <CardTitle>{t("reservoirs.detailed_reservoir_data")}</CardTitle>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Current Level (m³)</TableHead>
-                    <TableHead>Capacity (m³)</TableHead>
-                    <TableHead>Percentage</TableHead>
-                    <TableHead>Last Updated</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead>{t("reservoirs.name")}</TableHead>
+                    <TableHead>{t("reservoirs.current_level")} (m³)</TableHead>
+                    <TableHead>{t("reservoirs.capacity")} (m³)</TableHead>
+                    <TableHead>{t("reservoirs.percentage")}</TableHead>
+                    <TableHead>{t("reservoirs.last_updated")}</TableHead>
+                    <TableHead>{t("reservoirs.actions")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -325,7 +325,7 @@ export default function AdminReservoirs() {
                                 onClick={() => openEditDialog(reservoir)}
                               >
                                 <Edit className="h-4 w-4 mr-1" />
-                                Update
+                                {t("reservoirs.update")}
                               </Button>
                               <Button 
                                 variant="ghost" 
@@ -334,7 +334,7 @@ export default function AdminReservoirs() {
                                 className="text-red-500 hover:text-red-700"
                               >
                                 <Trash className="h-4 w-4 mr-1" />
-                                Delete
+                                {t("common.delete")}
                               </Button>
                             </div>
                           </TableCell>
@@ -351,12 +351,12 @@ export default function AdminReservoirs() {
         <TabsContent value="history">
           <Card>
             <CardHeader>
-              <CardTitle>Reservoir History</CardTitle>
+              <CardTitle>{t("reservoirs.reservoir_history")}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-center p-8 text-gray-500">
                 <Droplet className="h-8 w-8 mr-2 opacity-50" />
-                <p>Historical data visualization will be available soon.</p>
+                <p>{t("reservoirs.historical_data_soon")}</p>
               </div>
             </CardContent>
           </Card>
@@ -367,9 +367,9 @@ export default function AdminReservoirs() {
       <Dialog open={openUpdateDialog} onOpenChange={setOpenUpdateDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Update Reservoir Level</DialogTitle>
+            <DialogTitle>{t("reservoirs.update_reservoir_level")}</DialogTitle>
             <DialogDescription>
-              Adjust the water level for {selectedReservoir?.name}
+              {t("reservoirs.adjust_water_level")} {selectedReservoir?.name}
             </DialogDescription>
           </DialogHeader>
           
@@ -377,13 +377,13 @@ export default function AdminReservoirs() {
             <div className="py-4">
               <div className="mb-4">
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm font-medium">Current Level:</span>
+                  <span className="text-sm font-medium">{t("reservoirs.current_level")}:</span>
                   <span className="text-sm">
                     {Number(selectedReservoir.currentLevel).toLocaleString()} m³
                   </span>
                 </div>
                 <div className="flex justify-between mb-4">
-                  <span className="text-sm font-medium">Capacity:</span>
+                  <span className="text-sm font-medium">{t("reservoirs.capacity")}:</span>
                   <span className="text-sm">
                     {Number(selectedReservoir.capacity).toLocaleString()} m³
                   </span>
@@ -392,7 +392,7 @@ export default function AdminReservoirs() {
                 <div className="space-y-6">
                   <div>
                     <label className="text-sm font-medium">
-                      New Level: {Number(newLevel).toLocaleString()} m³ 
+                      {t("reservoirs.new_level")}: {Number(newLevel).toLocaleString()} m³ 
                       ({Math.round((newLevel / selectedReservoir.capacity) * 100)}%)
                     </label>
                     <Slider
@@ -406,7 +406,7 @@ export default function AdminReservoirs() {
                   
                   <div>
                     <label className="text-sm font-medium block mb-2">
-                      Or enter exact value:
+                      {t("reservoirs.or_enter_exact")}
                     </label>
                     <Input
                       type="number"
@@ -422,13 +422,13 @@ export default function AdminReservoirs() {
           
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpenUpdateDialog(false)}>
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button 
               onClick={handleUpdateLevel}
               disabled={updateLevelMutation.isPending}
             >
-              {updateLevelMutation.isPending ? "Updating..." : "Update Level"}
+              {updateLevelMutation.isPending ? t("common.updating") : t("common.update_level")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -438,16 +438,16 @@ export default function AdminReservoirs() {
       <Dialog open={openAddDialog} onOpenChange={setOpenAddDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add New Reservoir</DialogTitle>
+            <DialogTitle>{t("common.add_new_reservoir")}</DialogTitle>
             <DialogDescription>
-              Enter the details for the new water reservoir
+              {t("common.fill_details")}
             </DialogDescription>
           </DialogHeader>
           
           <div className="py-4">
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium block mb-2">Reservoir Name:</label>
+                <label className="text-sm font-medium block mb-2">{t("reservoirs.reservoir_name")}:</label>
                 <Input
                   name="name"
                   placeholder="Enter reservoir name"
@@ -457,7 +457,7 @@ export default function AdminReservoirs() {
               </div>
               
               <div>
-                <label className="text-sm font-medium block mb-2">Total Capacity (m³):</label>
+                <label className="text-sm font-medium block mb-2">{t("reservoirs.capacity")} (m³):</label>
                 <Input
                   name="capacity"
                   type="number"
@@ -468,7 +468,7 @@ export default function AdminReservoirs() {
               </div>
               
               <div>
-                <label className="text-sm font-medium block mb-2">Current Level (m³):</label>
+                <label className="text-sm font-medium block mb-2">{t("reservoirs.current_level")} (m³):</label>
                 <Input
                   name="currentLevel"
                   type="number"
@@ -479,7 +479,7 @@ export default function AdminReservoirs() {
               </div>
               
               <div>
-                <label className="text-sm font-medium block mb-2">Location:</label>
+                <label className="text-sm font-medium block mb-2">{t("reservoirs.location")}:</label>
                 <Input
                   name="location"
                   placeholder="Enter geographical location"
@@ -492,13 +492,13 @@ export default function AdminReservoirs() {
           
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpenAddDialog(false)}>
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button 
               onClick={handleAddReservoir}
               disabled={createReservoirMutation.isPending}
             >
-              {createReservoirMutation.isPending ? "Creating..." : "Add Reservoir"}
+              {createReservoirMutation.isPending ? t("common.creating") : t("common.create_reservoir")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -508,9 +508,9 @@ export default function AdminReservoirs() {
       <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete Reservoir</DialogTitle>
+            <DialogTitle>{t("common.delete")}</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete {reservoirToDelete?.name}? This action cannot be undone.
+              {t("common.confirm_delete")} {reservoirToDelete?.name}? {t("common.action_cannot_undone")}
             </DialogDescription>
           </DialogHeader>
           
@@ -518,20 +518,20 @@ export default function AdminReservoirs() {
             {reservoirToDelete && (
               <div className="space-y-4">
                 <div className="flex justify-between text-sm">
-                  <span className="font-medium">Name:</span>
+                  <span className="font-medium">{t("reservoirs.name")}:</span>
                   <span>{reservoirToDelete.name}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="font-medium">Current Level:</span>
+                  <span className="font-medium">{t("reservoirs.current_level")}:</span>
                   <span>{Number(reservoirToDelete.currentLevel).toLocaleString()} m³</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="font-medium">Capacity:</span>
+                  <span className="font-medium">{t("reservoirs.capacity")}:</span>
                   <span>{Number(reservoirToDelete.capacity).toLocaleString()} m³</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="font-medium">Location:</span>
-                  <span>{reservoirToDelete.location || "N/A"}</span>
+                  <span className="font-medium">{t("reservoirs.location")}:</span>
+                  <span>{reservoirToDelete.location || t("common.not_specified")}</span>
                 </div>
               </div>
             )}
@@ -539,14 +539,14 @@ export default function AdminReservoirs() {
           
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpenDeleteDialog(false)}>
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button 
               variant="destructive"
               onClick={confirmDeleteReservoir}
               disabled={deleteReservoirMutation.isPending}
             >
-              {deleteReservoirMutation.isPending ? "Deleting..." : "Delete Reservoir"}
+              {deleteReservoirMutation.isPending ? t("common.deleting") : t("common.delete")}
             </Button>
           </DialogFooter>
         </DialogContent>
