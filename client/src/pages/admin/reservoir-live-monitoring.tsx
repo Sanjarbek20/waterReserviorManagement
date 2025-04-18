@@ -1,834 +1,617 @@
-import { useState, useEffect, useRef } from "react";
-import DashboardLayout from "@/components/layout/dashboard-layout";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
+import { useEffect, useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { DropletIcon, CloudRainIcon, ThermometerIcon, Wind, Map, Clock, Calendar, RefreshCw } from "lucide-react";
-import { Reservoir } from "@shared/schema";
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { MapContainer, TileLayer, Marker, Popup, Tooltip, Circle } from "react-leaflet";
+import { Droplet, CloudRain, Wind, Thermometer, CloudSun, Calendar, Clock, RefreshCw } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
-import { format } from "date-fns";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
+import DashboardLayout from "@/components/layout/dashboard-layout";
+import WaterDistributionWidget from "@/components/dashboard/water-distribution-widget";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 
-// Leaflet ikonasi uchun workaround
-// @ts-ignore
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
-  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+// Fix the Leaflet icon issue
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+
+let DefaultIcon = L.icon({
+  iconUrl: icon,
+  shadowUrl: iconShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  tooltipAnchor: [16, -28],
+  shadowSize: [41, 41]
 });
 
-// Custom ikonalar uchun
-const dropletIcon = new L.Icon({
-  iconUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMwMDg4ZmYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0ibHVjaWRlIGx1Y2lkZS1kcm9wbGV0Ij48cGF0aCBkPSJNMTIgMmwtNS41IDkuNWE3IDcgMCAxIDAgNS41IDVjMS43Mi0yLjAxIDMuOC00Ljc2IDUuNS05LjUiLz48L3N2Zz4=',
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -32]
-});
+L.Marker.prototype.options.icon = DefaultIcon;
 
-// Viloyatlar uchun koordinatalar
-const regions = [
-  { id: 1, name: "Toshkent viloyati", lat: 41.2995, lng: 69.2401, reservoirs: 5 },
-  { id: 2, name: "Andijon viloyati", lat: 40.7828, lng: 72.3442, reservoirs: 4 },
-  { id: 3, name: "Farg'ona viloyati", lat: 40.3864, lng: 71.7834, reservoirs: 3 },
-  { id: 4, name: "Namangan viloyati", lat: 41.0011, lng: 71.6637, reservoirs: 3 },
-  { id: 5, name: "Sirdaryo viloyati", lat: 40.8370, lng: 68.6616, reservoirs: 2 },
-  { id: 6, name: "Jizzax viloyati", lat: 40.1158, lng: 67.8422, reservoirs: 2 },
-  { id: 7, name: "Samarqand viloyati", lat: 39.6542, lng: 66.9597, reservoirs: 3 },
-  { id: 8, name: "Qashqadaryo viloyati", lat: 38.8986, lng: 65.7986, reservoirs: 4 },
-  { id: 9, name: "Surxondaryo viloyati", lat: 37.9406, lng: 67.5710, reservoirs: 3 },
-  { id: 10, name: "Buxoro viloyati", lat: 39.7680, lng: 64.4216, reservoirs: 2 },
-  { id: 11, name: "Navoiy viloyati", lat: 40.1011, lng: 65.3792, reservoirs: 2 },
-  { id: 12, name: "Xorazm viloyati", lat: 41.3775, lng: 60.3594, reservoirs: 1 },
-  { id: 13, name: "Qoraqalpog'iston Respublikasi", lat: 43.8042, lng: 59.0196, reservoirs: 3 },
-];
-
-// Suv omborlari ma'lumotlari
+// Reservoir locations across Uzbekistan regions
 const reservoirLocations = [
-  { id: 1, name: "Chorvoq suv ombori", region: "Toshkent viloyati", lat: 41.5695, lng: 70.0848, capacity: 2000000, currentLevel: 1850000, inflowRate: 450, outflowRate: 380, type: "irrigation", lastUpdated: new Date().toISOString(), rainfallPrediction: 35, waterQuality: "Good" },
-  { id: 2, name: "Tuyamo'yin suv ombori", region: "Qoraqalpog'iston", lat: 41.2060, lng: 61.3784, capacity: 7800000, currentLevel: 5200000, inflowRate: 720, outflowRate: 750, type: "irrigation", lastUpdated: new Date().toISOString(), rainfallPrediction: 10, waterQuality: "Moderate" },
-  { id: 3, name: "Andijon suv ombori", region: "Andijon viloyati", lat: 40.8929, lng: 73.0651, capacity: 1900000, currentLevel: 1700000, inflowRate: 380, outflowRate: 360, type: "irrigation", lastUpdated: new Date().toISOString(), rainfallPrediction: 45, waterQuality: "Good" },
-  { id: 4, name: "Kattaqo'rg'on suv ombori", region: "Samarqand viloyati", lat: 39.9014, lng: 66.2669, capacity: 900000, currentLevel: 750000, inflowRate: 250, outflowRate: 280, type: "irrigation", lastUpdated: new Date().toISOString(), rainfallPrediction: 5, waterQuality: "Good" },
-  { id: 5, name: "Talimarjon suv ombori", region: "Qashqadaryo viloyati", lat: 38.4062, lng: 65.7145, capacity: 1525000, currentLevel: 1320000, inflowRate: 290, outflowRate: 320, type: "irrigation", lastUpdated: new Date().toISOString(), rainfallPrediction: 0, waterQuality: "Good" },
-  { id: 6, name: "Chim qo'rg'on suv ombori", region: "Qashqadaryo viloyati", lat: 38.7820, lng: 65.6348, capacity: 500000, currentLevel: 380000, inflowRate: 140, outflowRate: 155, type: "irrigation", lastUpdated: new Date().toISOString(), rainfallPrediction: 0, waterQuality: "Moderate" },
-  { id: 7, name: "Jizzax suv ombori", region: "Jizzax viloyati", lat: 40.1348, lng: 67.8456, capacity: 100000, currentLevel: 85000, inflowRate: 60, outflowRate: 65, type: "irrigation", lastUpdated: new Date().toISOString(), rainfallPrediction: 20, waterQuality: "Good" },
-  { id: 8, name: "Ahangaron suv ombori", region: "Toshkent viloyati", lat: 40.9437, lng: 69.8373, capacity: 260000, currentLevel: 230000, inflowRate: 80, outflowRate: 70, type: "irrigation", lastUpdated: new Date().toISOString(), rainfallPrediction: 30, waterQuality: "Good" },
-  { id: 9, name: "Quyimozor suv ombori", region: "Buxoro viloyati", lat: 39.7258, lng: 64.8772, capacity: 310000, currentLevel: 250000, inflowRate: 90, outflowRate: 95, type: "irrigation", lastUpdated: new Date().toISOString(), rainfallPrediction: 0, waterQuality: "Moderate" },
-  { id: 10, name: "To'dako'l suv ombori", region: "Navoiy viloyati", lat: 40.2385, lng: 65.0204, capacity: 520000, currentLevel: 480000, inflowRate: 120, outflowRate: 110, type: "irrigation", lastUpdated: new Date().toISOString(), rainfallPrediction: 0, waterQuality: "Good" },
+  // Tashkent region
+  { id: 1, name: "Chorvoq suv ombori", location: [41.4639, 70.0253], capacity: "2000 mln m³", level: "78%", inflow: "35 m³/s", outflow: "25 m³/s", region: "Toshkent" },
+  { id: 2, name: "Tuyabug'iz suv ombori", location: [40.9505, 69.3639], capacity: "250 mln m³", level: "62%", inflow: "15 m³/s", outflow: "12 m³/s", region: "Toshkent" },
+  
+  // Namangan region
+  { id: 3, name: "Kosonsoy suv ombori", location: [41.2333, 71.5500], capacity: "165 mln m³", level: "65%", inflow: "12 m³/s", outflow: "9 m³/s", region: "Namangan" },
+  
+  // Andijan region
+  { id: 4, name: "Andijon suv ombori", location: [40.7667, 73.0333], capacity: "1900 mln m³", level: "81%", inflow: "40 m³/s", outflow: "32 m³/s", region: "Andijon" },
+  
+  // Fergana region
+  { id: 5, name: "Karkidon suv ombori", location: [40.4667, 71.2667], capacity: "218 mln m³", level: "59%", inflow: "14 m³/s", outflow: "10 m³/s", region: "Farg'ona" },
+  
+  // Jizzakh region
+  { id: 6, name: "Zaamin suv ombori", location: [39.9570, 68.3945], capacity: "51 mln m³", level: "45%", inflow: "6 m³/s", outflow: "4 m³/s", region: "Jizzax" },
+  
+  // Samarkand region
+  { id: 7, name: "Qattaqo'rg'on suv ombori", location: [39.9000, 66.2500], capacity: "900 mln m³", level: "53%", inflow: "20 m³/s", outflow: "15 m³/s", region: "Samarqand" },
+  
+  // Kashkadarya region
+  { id: 8, name: "Chimqo'rg'on suv ombori", location: [39.1992, 66.8114], capacity: "500 mln m³", level: "48%", inflow: "12 m³/s", outflow: "9 m³/s", region: "Qashqadaryo" },
+  { id: 9, name: "Hisorak suv ombori", location: [38.9761, 66.6744], capacity: "170 mln m³", level: "42%", inflow: "8 m³/s", outflow: "5 m³/s", region: "Qashqadaryo" },
+  
+  // Surkhandarya region
+  { id: 10, name: "Janubiy Surkhan suv ombori", location: [37.8000, 67.2500], capacity: "800 mln m³", level: "64%", inflow: "18 m³/s", outflow: "14 m³/s", region: "Surxondaryo" },
+  { id: 11, name: "Toʻpalang suv ombori", location: [38.2000, 67.3500], capacity: "500 mln m³", level: "57%", inflow: "15 m³/s", outflow: "11 m³/s", region: "Surxondaryo" },
+  
+  // Navoi region
+  { id: 12, name: "Tudako'l suv ombori", location: [40.2200, 63.8300], capacity: "1200 mln m³", level: "38%", inflow: "10 m³/s", outflow: "8 m³/s", region: "Navoiy" },
+  
+  // Bukhara region
+  { id: 13, name: "Kuyimozor suv ombori", location: [39.8000, 64.8000], capacity: "310 mln m³", level: "35%", inflow: "8 m³/s", outflow: "6 m³/s", region: "Buxoro" },
+  
+  // Khorezm region
+  { id: 14, name: "Shovot suv ombori", location: [41.3500, 60.6000], capacity: "165 mln m³", level: "68%", inflow: "14 m³/s", outflow: "10 m³/s", region: "Xorazm" },
+  
+  // Karakalpakstan
+  { id: 15, name: "Qoraqalpog'iston suv ombori", location: [42.5000, 59.5000], capacity: "380 mln m³", level: "29%", inflow: "7 m³/s", outflow: "5 m³/s", region: "Qoraqalpog'iston" },
 ];
 
-// Yog'ingarchilik ma'lumotlari
-const rainData = [
-  { region: "Toshkent viloyati", prediction: 35, lastMonth: 42, lastYear: 38 },
-  { region: "Andijon viloyati", prediction: 45, lastMonth: 50, lastYear: 42 },
-  { region: "Farg'ona viloyati", prediction: 40, lastMonth: 45, lastYear: 40 },
-  { region: "Namangan viloyati", prediction: 38, lastMonth: 40, lastYear: 36 },
-  { region: "Sirdaryo viloyati", prediction: 20, lastMonth: 25, lastYear: 22 },
-  { region: "Jizzax viloyati", prediction: 20, lastMonth: 24, lastYear: 18 },
-  { region: "Samarqand viloyati", prediction: 30, lastMonth: 32, lastYear: 28 },
-  { region: "Qashqadaryo viloyati", prediction: 0, lastMonth: 10, lastYear: 8 },
-  { region: "Surxondaryo viloyati", prediction: 5, lastMonth: 12, lastYear: 10 },
-  { region: "Buxoro viloyati", prediction: 0, lastMonth: 5, lastYear: 4 },
-  { region: "Navoiy viloyati", prediction: 0, lastMonth: 8, lastYear: 6 },
-  { region: "Xorazm viloyati", prediction: 15, lastMonth: 20, lastYear: 18 },
-  { region: "Qoraqalpog'iston Respublikasi", prediction: 10, lastMonth: 15, lastYear: 12 },
+// Weather forecast data for different regions
+const weatherData = {
+  "Toshkent": { temp: 28, condition: "Quyoshli", humidity: 45, windSpeed: 12, precipitation: "0 mm", forecastNext5Days: [
+    { day: "Dushanba", temp: 29, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Seshanba", temp: 30, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Chorshanba", temp: 27, condition: "Qisman bulutli", precipitation: "0 mm" },
+    { day: "Payshanba", temp: 25, condition: "Bulutli", precipitation: "2 mm" },
+    { day: "Juma", temp: 24, condition: "Yomg'irli", precipitation: "5 mm" },
+  ]},
+  "Namangan": { temp: 30, condition: "Quyoshli", humidity: 40, windSpeed: 8, precipitation: "0 mm", forecastNext5Days: [
+    { day: "Dushanba", temp: 31, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Seshanba", temp: 32, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Chorshanba", temp: 30, condition: "Qisman bulutli", precipitation: "0 mm" },
+    { day: "Payshanba", temp: 29, condition: "Bulutli", precipitation: "0 mm" },
+    { day: "Juma", temp: 27, condition: "Qisman bulutli", precipitation: "2 mm" },
+  ]},
+  "Andijon": { temp: 29, condition: "Quyoshli", humidity: 42, windSpeed: 10, precipitation: "0 mm", forecastNext5Days: [
+    { day: "Dushanba", temp: 30, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Seshanba", temp: 31, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Chorshanba", temp: 29, condition: "Qisman bulutli", precipitation: "0 mm" },
+    { day: "Payshanba", temp: 27, condition: "Bulutli", precipitation: "1 mm" },
+    { day: "Juma", temp: 26, condition: "Yomg'irli", precipitation: "4 mm" },
+  ]},
+  "Farg'ona": { temp: 31, condition: "Quyoshli", humidity: 38, windSpeed: 9, precipitation: "0 mm", forecastNext5Days: [
+    { day: "Dushanba", temp: 32, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Seshanba", temp: 33, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Chorshanba", temp: 31, condition: "Qisman bulutli", precipitation: "0 mm" },
+    { day: "Payshanba", temp: 29, condition: "Qisman bulutli", precipitation: "0 mm" },
+    { day: "Juma", temp: 28, condition: "Bulutli", precipitation: "2 mm" },
+  ]},
+  "Jizzax": { temp: 32, condition: "Quyoshli", humidity: 35, windSpeed: 14, precipitation: "0 mm", forecastNext5Days: [
+    { day: "Dushanba", temp: 33, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Seshanba", temp: 34, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Chorshanba", temp: 33, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Payshanba", temp: 31, condition: "Qisman bulutli", precipitation: "0 mm" },
+    { day: "Juma", temp: 30, condition: "Qisman bulutli", precipitation: "0 mm" },
+  ]},
+  "Samarqand": { temp: 30, condition: "Quyoshli", humidity: 40, windSpeed: 11, precipitation: "0 mm", forecastNext5Days: [
+    { day: "Dushanba", temp: 31, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Seshanba", temp: 32, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Chorshanba", temp: 30, condition: "Qisman bulutli", precipitation: "0 mm" },
+    { day: "Payshanba", temp: 28, condition: "Bulutli", precipitation: "1 mm" },
+    { day: "Juma", temp: 27, condition: "Yomg'irli", precipitation: "3 mm" },
+  ]},
+  "Qashqadaryo": { temp: 33, condition: "Quyoshli", humidity: 30, windSpeed: 13, precipitation: "0 mm", forecastNext5Days: [
+    { day: "Dushanba", temp: 34, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Seshanba", temp: 35, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Chorshanba", temp: 34, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Payshanba", temp: 32, condition: "Qisman bulutli", precipitation: "0 mm" },
+    { day: "Juma", temp: 30, condition: "Qisman bulutli", precipitation: "0 mm" },
+  ]},
+  "Surxondaryo": { temp: 34, condition: "Quyoshli", humidity: 28, windSpeed: 12, precipitation: "0 mm", forecastNext5Days: [
+    { day: "Dushanba", temp: 35, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Seshanba", temp: 36, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Chorshanba", temp: 35, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Payshanba", temp: 34, condition: "Qisman bulutli", precipitation: "0 mm" },
+    { day: "Juma", temp: 32, condition: "Qisman bulutli", precipitation: "0 mm" },
+  ]},
+  "Navoiy": { temp: 31, condition: "Quyoshli", humidity: 32, windSpeed: 15, precipitation: "0 mm", forecastNext5Days: [
+    { day: "Dushanba", temp: 32, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Seshanba", temp: 33, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Chorshanba", temp: 32, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Payshanba", temp: 30, condition: "Qisman bulutli", precipitation: "0 mm" },
+    { day: "Juma", temp: 29, condition: "Qisman bulutli", precipitation: "0 mm" },
+  ]},
+  "Buxoro": { temp: 32, condition: "Quyoshli", humidity: 30, windSpeed: 14, precipitation: "0 mm", forecastNext5Days: [
+    { day: "Dushanba", temp: 33, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Seshanba", temp: 34, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Chorshanba", temp: 33, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Payshanba", temp: 31, condition: "Qisman bulutli", precipitation: "0 mm" },
+    { day: "Juma", temp: 30, condition: "Qisman bulutli", precipitation: "0 mm" },
+  ]},
+  "Xorazm": { temp: 29, condition: "Qisman bulutli", humidity: 45, windSpeed: 11, precipitation: "0 mm", forecastNext5Days: [
+    { day: "Dushanba", temp: 30, condition: "Qisman bulutli", precipitation: "0 mm" },
+    { day: "Seshanba", temp: 31, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Chorshanba", temp: 30, condition: "Qisman bulutli", precipitation: "0 mm" },
+    { day: "Payshanba", temp: 28, condition: "Bulutli", precipitation: "2 mm" },
+    { day: "Juma", temp: 26, condition: "Yomg'irli", precipitation: "5 mm" },
+  ]},
+  "Qoraqalpog'iston": { temp: 28, condition: "Qisman bulutli", humidity: 48, windSpeed: 13, precipitation: "0 mm", forecastNext5Days: [
+    { day: "Dushanba", temp: 29, condition: "Qisman bulutli", precipitation: "0 mm" },
+    { day: "Seshanba", temp: 30, condition: "Quyoshli", precipitation: "0 mm" },
+    { day: "Chorshanba", temp: 29, condition: "Qisman bulutli", precipitation: "0 mm" },
+    { day: "Payshanba", temp: 27, condition: "Bulutli", precipitation: "3 mm" },
+    { day: "Juma", temp: 25, condition: "Yomg'irli", precipitation: "7 mm" },
+  ]},
+};
+
+// Water sources and canal networks
+const waterSources = [
+  { id: 1, name: "Sirdaryo", type: "Daryo", regions: ["Toshkent", "Namangan", "Farg'ona"] },
+  { id: 2, name: "Amudaryo", type: "Daryo", regions: ["Surxondaryo", "Xorazm", "Qoraqalpog'iston"] },
+  { id: 3, name: "Zarafshon", type: "Daryo", regions: ["Samarqand", "Navoiy", "Buxoro"] },
+  { id: 4, name: "Qashqadaryo", type: "Daryo", regions: ["Qashqadaryo"] },
+  { id: 5, name: "Chirchiq", type: "Daryo", regions: ["Toshkent"] },
+  { id: 6, name: "Ohangaron", type: "Daryo", regions: ["Toshkent"] },
 ];
 
-// Suv taqsimoti ma'lumotlari (viloyatlarga ko'ra)
-const waterDistribution = [
-  { name: "Sholi maydonlari", value: 45 },
-  { name: "Sabzavot fermalari", value: 30 },
-  { name: "Bug'doy maydonlari", value: 15 },
-  { name: "Boshqa ekinlar", value: 10 },
+const canalNetworks = [
+  { id: 1, name: "Katta Farg'ona kanali", regions: ["Andijon", "Namangan", "Farg'ona"], sourceName: "Sirdaryo" },
+  { id: 2, name: "Janubiy Mirzacho'l kanali", regions: ["Jizzax", "Samarqand"], sourceName: "Sirdaryo" },
+  { id: 3, name: "Amu-Buxoro kanali", regions: ["Buxoro", "Navoiy"], sourceName: "Amudaryo" },
+  { id: 4, name: "Qoraqum kanali", regions: ["Surxondaryo", "Qashqadaryo"], sourceName: "Amudaryo" },
+  { id: 5, name: "Toshkent kanali", regions: ["Toshkent"], sourceName: "Chirchiq" },
 ];
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+// Utilities for real-time data
+const getRandomChange = (min = -2, max = 2) => {
+  return Math.round((Math.random() * (max - min) + min) * 10) / 10;
+};
 
-// Suv sifati indikatori
-type WaterQuality = "Good" | "Moderate" | "Poor";
-const getWaterQualityColor = (quality: WaterQuality) => {
-  switch (quality) {
-    case "Good": return "bg-green-500";
-    case "Moderate": return "bg-yellow-500";
-    case "Poor": return "bg-red-500";
-    default: return "bg-gray-500";
-  }
+const getColor = (value: number) => {
+  if (value >= 70) return "#4ade80"; // Green for good levels
+  if (value >= 40) return "#facc15"; // Yellow for medium levels
+  return "#f87171"; // Red for low levels
 };
 
 export default function ReservoirLiveMonitoring() {
   const { t } = useTranslation();
   const { toast } = useToast();
-  const [selectedReservoirId, setSelectedReservoirId] = useState<string>("");
-  const [selectedRegionId, setSelectedRegionId] = useState<string>("");
-  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
-  const [mapCenter, setMapCenter] = useState<[number, number]>([41.3111, 69.2402]);
-  const [mapZoom, setMapZoom] = useState<number>(6);
+  const [selectedRegion, setSelectedRegion] = useState<string>("all");
+  const [selectedReservoir, setSelectedReservoir] = useState<number | null>(null);
+  const [reservoirData, setReservoirData] = useState(reservoirLocations);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState(new Date());
+  const [weatherRegion, setWeatherRegion] = useState("Toshkent");
   const mapRef = useRef<any>(null);
-  const [reservoirs, setReservoirs] = useState<any[]>(reservoirLocations);
-  const [selectedReservoir, setSelectedReservoir] = useState<any | null>(null);
-  const [infoType, setInfoType] = useState<"current" | "forecast">("current");
-  const [waterlevelHistory, setWaterlevelHistory] = useState<any[]>([]);
-  const [weatherForecast, setWeatherForecast] = useState<any[]>([]);
-  const [regionalData, setRegionalData] = useState<any[]>(regions);
   
-  // WebSocket bilan bog'lanish
-  useEffect(() => {
-    const ws = new WebSocket(`${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`);
-    
-    ws.onopen = () => {
-      console.log('WebSocket connected');
-      ws.send(JSON.stringify({ type: 'get_reservoirs' }));
-    };
-    
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      
-      if (data.type === 'reservoir_data') {
-        // Real ma'lumotlar kelganda yangilash
-        // setReservoirs(data.reservoirs);
-      }
-    };
-    
-    ws.onclose = () => {
-      console.log('WebSocket disconnected');
-    };
-    
-    return () => {
-      ws.close();
-    };
-  }, []);
-  
-  // Suv ombori tanlanishi
-  useEffect(() => {
-    if (selectedReservoirId) {
-      const reservoir = reservoirLocations.find(r => r.id === parseInt(selectedReservoirId));
-      
-      if (reservoir) {
-        setSelectedReservoir(reservoir);
-        setMapCenter([reservoir.lat, reservoir.lng]);
-        setMapZoom(10);
-        
-        // Suv ombori tarixiy ma'lumotlarini generatsiya qilish
-        generateWaterLevelHistory(reservoir);
-        generateWeatherForecast(reservoir);
-      }
-    }
-  }, [selectedReservoirId]);
-  
-  // Viloyat tanlanishi
-  useEffect(() => {
-    if (selectedRegionId) {
-      const region = regions.find(r => r.id === parseInt(selectedRegionId));
-      
-      if (region) {
-        setMapCenter([region.lat, region.lng]);
-        setMapZoom(8);
-      }
-    }
-  }, [selectedRegionId]);
-  
-  // Ma'lumotlarni yangilash (har 10 sekundda)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      updateReservoirs();
-    }, 10000);
-    
-    return () => clearInterval(interval);
-  }, []);
-  
-  // Test uchun - so'nggi 30 kunlik tarixiy ma'lumotlarni generatsiya qilish
-  const generateWaterLevelHistory = (reservoir: any) => {
-    const now = new Date();
-    const history = [];
-    
-    // So'nggi 30 kun uchun
-    for (let i = 30; i >= 0; i--) {
-      const date = new Date(now);
-      date.setDate(date.getDate() - i);
-      
-      // Tarixiy ma'lumotlarni simulatsiya qilish
-      // Tarixda suv sathi biroz o'zgaruvchan
-      const randomFactor = Math.random() * 0.1 - 0.05; // -5% to +5%
-      const level = Math.round(reservoir.currentLevel * (1 + randomFactor));
-      
-      history.push({
-        date: date.toISOString().split('T')[0],
-        level,
-        inflow: Math.round(reservoir.inflowRate * (1 + Math.random() * 0.2 - 0.1)),
-        outflow: Math.round(reservoir.outflowRate * (1 + Math.random() * 0.2 - 0.1)),
-      });
-    }
-    
-    setWaterlevelHistory(history);
-  };
-  
-  // Test uchun - Keyingi 10 kunlik ob-havo bashorati
-  const generateWeatherForecast = (reservoir: any) => {
-    const now = new Date();
-    const forecast = [];
-    
-    // region uchun yog'ingarchilik ma'lumotlari
-    const regionRainData = rainData.find(r => r.region === reservoir.region) || {
-      prediction: 0,
-      lastMonth: 0,
-      lastYear: 0
-    };
-    
-    // Keyingi 10 kun uchun
-    for (let i = 1; i <= 10; i++) {
-      const date = new Date(now);
-      date.setDate(date.getDate() + i);
-      
-      // Ob-havo bashoratini simulatsiya qilish
-      // Yog'ingarchilik ehtimoli
-      const rainChance = Math.min(regionRainData.prediction + (Math.random() * 20 - 10), 100);
-      
-      // Harorat (25±5 °C)
-      const temperature = Math.round(25 + (Math.random() * 10 - 5));
-      
-      // Shamol tezligi (5±3 m/s)
-      const windSpeed = Math.round(5 + (Math.random() * 6 - 3));
-      
-      forecast.push({
-        date: date.toISOString().split('T')[0],
-        rainChance: Math.max(0, Math.round(rainChance)),
-        temperature,
-        windSpeed,
-      });
-    }
-    
-    setWeatherForecast(forecast);
-  };
-  
-  // Ma'lumotlarni yangilash (simulatsiya)
-  const updateReservoirs = () => {
-    // Barcha suv omborlarini yangilaymiz
-    const updatedReservoirs = reservoirs.map(reservoir => {
-      // Kiruvchi va chiquvchi suv o'zgarishlari
-      const inflowChange = Math.random() * 0.05 - 0.02; // -2% to +3%
-      const outflowChange = Math.random() * 0.05 - 0.02; // -2% to +3%
-      
-      const inflowRate = Math.round(reservoir.inflowRate * (1 + inflowChange));
-      const outflowRate = Math.round(reservoir.outflowRate * (1 + outflowChange));
-      
-      // Suv sathi o'zgarishi
-      const levelChange = inflowRate - outflowRate;
-      const currentLevel = Math.min(
-        Math.max(reservoir.currentLevel + levelChange, 0),
-        reservoir.capacity
-      );
-      
-      return {
-        ...reservoir,
-        inflowRate,
-        outflowRate,
-        currentLevel,
-        lastUpdated: new Date().toISOString()
-      };
-    });
-    
-    setReservoirs(updatedReservoirs);
-    
-    // Agar biror suv ombori tanlangan bo'lsa, uning ma'lumotlarini yangilash
-    if (selectedReservoir) {
-      const updatedReservoir = updatedReservoirs.find(r => r.id === selectedReservoir.id);
-      if (updatedReservoir) {
-        setSelectedReservoir(updatedReservoir);
-      }
+  // Handle region selection
+  const handleRegionChange = (value: string) => {
+    setSelectedRegion(value);
+    if (value === "all") {
+      setSelectedReservoir(null);
     }
   };
   
-  // Ma'lumotlarni yangilash (qo'lda)
-  const handleRefresh = () => {
-    setIsRefreshing(true);
-    updateReservoirs();
-    
-    toast({
-      title: t("Yangilandi"),
-      description: t("Suv omborlari ma'lumotlari muvaffaqiyatli yangilandi"),
-      variant: "default"
-    });
+  // Update data periodically to simulate real-time changes
+  const updateReservoirData = () => {
+    setIsUpdating(true);
     
     setTimeout(() => {
-      setIsRefreshing(false);
+      const updatedData = reservoirData.map(reservoir => {
+        // Randomly alter level, inflow and outflow slightly
+        const levelValue = parseInt(reservoir.level.replace("%", ""));
+        const inflowValue = parseInt(reservoir.inflow.replace(" m³/s", ""));
+        const outflowValue = parseInt(reservoir.outflow.replace(" m³/s", ""));
+        
+        const newLevelValue = Math.max(10, Math.min(95, levelValue + getRandomChange(-1, 1)));
+        const newInflowValue = Math.max(5, inflowValue + getRandomChange());
+        const newOutflowValue = Math.max(3, outflowValue + getRandomChange());
+        
+        return {
+          ...reservoir,
+          level: `${newLevelValue}%`,
+          inflow: `${newInflowValue} m³/s`,
+          outflow: `${newOutflowValue} m³/s`
+        };
+      });
+      
+      setReservoirData(updatedData);
+      setLastUpdate(new Date());
+      setIsUpdating(false);
+      
+      toast({
+        title: "Ma'lumotlar yangilandi",
+        description: `Barcha suv omborlari ma'lumotlari real vaqt rejimida yangilandi.`,
+      });
     }, 1000);
   };
   
-  // Suv omborining to'lganlik foizini hisoblash
-  const calculateFillPercentage = (reservoir: any) => {
-    return Math.round((reservoir.currentLevel / reservoir.capacity) * 100);
+  // Handle manual refresh
+  const handleRefresh = () => {
+    if (!isUpdating) {
+      updateReservoirData();
+    }
   };
   
-  // Suv ombori xavf darajasini aniqlash
-  const getReservoirStatus = (reservoir: any) => {
-    const fillPercentage = calculateFillPercentage(reservoir);
-    if (fillPercentage < 30) return { name: "Xavfli", color: "bg-red-500" };
-    if (fillPercentage < 60) return { name: "O'rtacha", color: "bg-yellow-500" };
-    return { name: "Yaxshi", color: "bg-green-500" };
+  // Format time
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString('uz-UZ', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      second: '2-digit'
+    });
   };
   
-  // Harita uchun suv ombori o'lchamini aniqlash
-  const getReservoirSizeForMap = (capacity: number) => {
-    // Suv ombori sigimi qanchalik katta bo'lsa, shunchalik katta aylana
-    return Math.max(Math.sqrt(capacity) / 30, 500);
+  // Format date
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString('uz-UZ', { 
+      day: '2-digit', 
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
+  
+  // Filter reservoirs based on selected region
+  const filteredReservoirs = selectedRegion === "all" 
+    ? reservoirData
+    : reservoirData.filter(r => r.region === selectedRegion);
+  
+  // Get selected reservoir details
+  const selectedReservoirDetails = selectedReservoir 
+    ? reservoirData.find(r => r.id === selectedReservoir)
+    : null;
+  
+  // Set up automatic updates
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      updateReservoirData();
+    }, 60000 * 5); // Update every 5 minutes
+    
+    return () => clearInterval(intervalId);
+  }, [reservoirData]);
+  
+  // Get related water sources and canals for a region
+  const getRegionSources = (region: string) => {
+    return waterSources.filter(source => source.regions.includes(region));
+  };
+  
+  const getRegionCanals = (region: string) => {
+    return canalNetworks.filter(canal => canal.regions.includes(region));
   };
   
   return (
-    <DashboardLayout title={t("Suv omborlari monitoringi")}>
-      <div className="space-y-6">
-        {/* Boshqaruv paneli */}
-        <Card>
-          <CardHeader>
-            <div className="flex justify-between items-center">
-              <div>
-                <CardTitle>{t("Suv omborlari real vaqt monitoringi")}</CardTitle>
+    <DashboardLayout>
+      <div className="p-6">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Suv omborlari monitoringi</h1>
+            <p className="text-gray-500 mt-1">
+              O'zbekiston Respublikasi suv omborlari va kanallari real vaqt monitoringi
+            </p>
+          </div>
+          <div className="mt-4 md:mt-0 flex items-center space-x-2">
+            <div className="flex items-center mr-2 text-sm text-gray-500">
+              <Calendar className="w-4 h-4 mr-1" />
+              <span>{formatDate(lastUpdate)}</span>
+              <Clock className="w-4 h-4 ml-2 mr-1" />
+              <span>{formatTime(lastUpdate)}</span>
+            </div>
+            <Button 
+              onClick={handleRefresh}
+              disabled={isUpdating}
+              className="flex items-center"
+            >
+              <RefreshCw className={`w-4 h-4 mr-2 ${isUpdating ? 'animate-spin' : ''}`} />
+              {isUpdating ? "Yangilanmoqda..." : "Yangilash"}
+            </Button>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <Card className="shadow-md">
+              <CardHeader className="pb-2">
+                <div className="flex justify-between items-center">
+                  <CardTitle>Suv omborlari xaritasi</CardTitle>
+                  <Select value={selectedRegion} onValueChange={handleRegionChange}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Viloyatni tanlang" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Barcha viloyatlar</SelectItem>
+                      <SelectItem value="Toshkent">Toshkent</SelectItem>
+                      <SelectItem value="Namangan">Namangan</SelectItem>
+                      <SelectItem value="Andijon">Andijon</SelectItem>
+                      <SelectItem value="Farg'ona">Farg'ona</SelectItem>
+                      <SelectItem value="Jizzax">Jizzax</SelectItem>
+                      <SelectItem value="Samarqand">Samarqand</SelectItem>
+                      <SelectItem value="Qashqadaryo">Qashqadaryo</SelectItem>
+                      <SelectItem value="Surxondaryo">Surxondaryo</SelectItem>
+                      <SelectItem value="Navoiy">Navoiy</SelectItem>
+                      <SelectItem value="Buxoro">Buxoro</SelectItem>
+                      <SelectItem value="Xorazm">Xorazm</SelectItem>
+                      <SelectItem value="Qoraqalpog'iston">Qoraqalpog'iston</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 <CardDescription>
-                  {t("Suv omborlari holati, suv sathi va ob-havo bashorati")
+                  {selectedRegion === "all" 
+                    ? "O'zbekiston bo'yicha barcha suv omborlari"
+                    : `${selectedRegion} viloyati suv omborlari`
                   }
                 </CardDescription>
-              </div>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={handleRefresh}
-                disabled={isRefreshing}
-              >
-                <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-                {t("Yangilash")}
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-              <div className="space-y-2">
-                <Label htmlFor="reservoir-select">{t("Suv omborini tanlang")}</Label>
-                <Select 
-                  value={selectedReservoirId} 
-                  onValueChange={setSelectedReservoirId}
-                >
-                  <SelectTrigger id="reservoir-select">
-                    <SelectValue placeholder={t("Suv omborini tanlang")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {reservoirs.map(reservoir => (
-                      <SelectItem key={reservoir.id} value={String(reservoir.id)}>
-                        {reservoir.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="region-select">{t("Viloyatni tanlang")}</Label>
-                <Select 
-                  value={selectedRegionId} 
-                  onValueChange={setSelectedRegionId}
-                >
-                  <SelectTrigger id="region-select">
-                    <SelectValue placeholder={t("Viloyatni tanlang")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {regions.map(region => (
-                      <SelectItem key={region.id} value={String(region.id)}>
-                        {region.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="info-type">{t("Axborot turi")}</Label>
-                <Select 
-                  value={infoType} 
-                  onValueChange={(value) => setInfoType(value as "current" | "forecast")}
-                >
-                  <SelectTrigger id="info-type">
-                    <SelectValue placeholder={t("Axborot turini tanlang")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="current">{t("Joriy ma'lumotlar")}</SelectItem>
-                    <SelectItem value="forecast">{t("Bashorat ma'lumotlari")}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        {/* Xarita seksiyasi */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("Suv omborlari joylashuvi")}</CardTitle>
-            <CardDescription>
-              {t("O'zbekiston hududidagi barcha suv omborlarining joylashuvi")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div style={{ height: "500px", width: "100%" }}>
-              <MapContainer 
-                center={mapCenter} 
-                zoom={mapZoom} 
-                style={{ height: "100%", width: "100%" }}
-                ref={mapRef}
-              >
-                <TileLayer
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                
-                {/* Suv omborlari markerlarini chizish */}
-                {reservoirs.map(reservoir => (
-                  <div key={reservoir.id}>
-                    <Marker 
-                      position={[reservoir.lat, reservoir.lng]}
-                      icon={dropletIcon}
-                      eventHandlers={{
-                        click: () => {
-                          setSelectedReservoirId(String(reservoir.id));
-                        }
-                      }}
-                    >
-                      <Popup>
-                        <div className="text-sm">
-                          <h3 className="font-bold mb-1">{reservoir.name}</h3>
-                          <p><strong>{t("Suv sathi")}:</strong> {Math.round(reservoir.currentLevel / 1000)} ming m³</p>
-                          <p><strong>{t("Sig'imi")}:</strong> {Math.round(reservoir.capacity / 1000)} ming m³</p>
-                          <p><strong>{t("To'ldirilgan")}:</strong> {calculateFillPercentage(reservoir)}%</p>
-                          <div className="mt-1">
-                            <Progress value={calculateFillPercentage(reservoir)} />
-                          </div>
-                        </div>
-                      </Popup>
-                    </Marker>
-                    
-                    <Circle 
-                      center={[reservoir.lat, reservoir.lng]} 
-                      radius={getReservoirSizeForMap(reservoir.capacity)}
-                      pathOptions={{
-                        fillColor: '#0080ff',
-                        fillOpacity: 0.3,
-                        weight: 1,
-                        color: '#0066cc'
-                      }}
-                    />
-                  </div>
-                ))}
-                
-                {/* Viloyat markerlarini chizish */}
-                {regions.map(region => (
-                  <Marker 
-                    key={region.id} 
-                    position={[region.lat, region.lng]}
-                    eventHandlers={{
-                      click: () => {
-                        setSelectedRegionId(String(region.id));
-                      }
-                    }}
+              </CardHeader>
+              <CardContent>
+                <div className="h-[500px] rounded-md overflow-hidden">
+                  {/* Map component */}
+                  <MapContainer
+                    center={[41.3775, 64.5853]} // Center on Uzbekistan
+                    zoom={6}
+                    style={{ height: "100%", width: "100%" }}
+                    ref={mapRef}
                   >
-                    <Popup>
-                      <div className="text-sm">
-                        <h3 className="font-bold mb-1">{region.name}</h3>
-                        <p><strong>{t("Suv omborlari soni")}:</strong> {region.reservoirs}</p>
-                        <p>
-                          <strong>{t("Yog'ingarchilik bashorati")}:</strong>{" "}
-                          {rainData.find(r => r.region === region.name)?.prediction || 0}mm
-                        </p>
-                      </div>
-                    </Popup>
-                  </Marker>
-                ))}
-              </MapContainer>
-            </div>
-          </CardContent>
-        </Card>
-        
-        {/* Tanlangan suv ombori ma'lumotlari */}
-        {selectedReservoir && (
-          <Card>
-            <CardHeader>
-              <CardTitle>{selectedReservoir.name}</CardTitle>
-              <CardDescription>
-                {selectedReservoir.region} {t("hududida joylashgan")}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-                {/* Suv sathi */}
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      {t("Suv sathi")}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">
-                      {Math.round(selectedReservoir.currentLevel / 1000)} ming m³
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {t("Sig'imdan")} {calculateFillPercentage(selectedReservoir)}%
-                    </p>
-                    <Progress 
-                      value={calculateFillPercentage(selectedReservoir)} 
-                      className="mt-2"
+                    <TileLayer
+                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
-                  </CardContent>
-                </Card>
-                
-                {/* Suv oqimi */}
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      {t("Suv oqimi")}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <div className="text-sm font-medium">{t("Kirish")}</div>
-                        <div className="text-xl font-bold text-green-500">
-                          {selectedReservoir.inflowRate} m³/s
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-sm font-medium">{t("Chiqish")}</div>
-                        <div className="text-xl font-bold text-red-500">
-                          {selectedReservoir.outflowRate} m³/s
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                {/* Yog'ingarchilik bashorati */}
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      {t("Yog'ingarchilik bashorati")}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">
-                      {selectedReservoir.rainfallPrediction} mm
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {t("Keyingi 7 kun uchun")}
-                    </p>
-                    <div className="flex items-center mt-2">
-                      <CloudRainIcon className={`h-4 w-4 mr-1 ${selectedReservoir.rainfallPrediction > 0 ? 'text-blue-500' : 'text-gray-400'}`} />
-                      <span className="text-sm">
-                        {selectedReservoir.rainfallPrediction > 30
-                          ? t("Kuchli yog'ingarchilik")
-                          : selectedReservoir.rainfallPrediction > 10
-                          ? t("O'rtacha yog'ingarchilik")
-                          : selectedReservoir.rainfallPrediction > 0
-                          ? t("Yengil yog'ingarchilik")
-                          : t("Yog'ingarchilik kutilmaydi")
-                        }
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                {/* Suv sifati */}
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      {t("Suv sifati")}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center">
-                      <div className={`h-3 w-3 rounded-full ${getWaterQualityColor(selectedReservoir.waterQuality as WaterQuality)} mr-2`}></div>
-                      <div className="text-xl font-bold">
-                        {selectedReservoir.waterQuality === "Good" 
-                          ? t("Yaxshi") 
-                          : selectedReservoir.waterQuality === "Moderate"
-                          ? t("O'rtacha")
-                          : t("Yomon")
-                        }
-                      </div>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {t("So'nggi yangilanish")}: {format(new Date(selectedReservoir.lastUpdated), 'dd.MM.yyyy HH:mm')}
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-              
-              {/* Ma'lumotlar tahlili */}
-              <Tabs defaultValue="water-level" className="mt-6">
-                <TabsList>
-                  <TabsTrigger value="water-level">{t("Suv sathi")}</TabsTrigger>
-                  <TabsTrigger value="flow-rate">{t("Suv oqimi")}</TabsTrigger>
-                  <TabsTrigger value="weather">{t("Ob-havo bashorati")}</TabsTrigger>
-                  <TabsTrigger value="distribution">{t("Suv taqsimoti")}</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="water-level" className="space-y-4">
-                  <div className="h-[300px] mt-4">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart
-                        data={waterlevelHistory}
-                        margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="date" />
-                        <YAxis />
-                        <Tooltip 
-                          formatter={(value) => [`${Number(value).toLocaleString()} m³`, t("Suv sathi")]}
-                        />
-                        <Legend />
-                        <Area 
-                          type="monotone" 
-                          dataKey="level" 
-                          stroke="#8884d8" 
-                          fill="#8884d8" 
-                          name={t("Suv sathi")}
-                        />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {t("So'nggi 30 kunlik suv sathi o'zgarishi")}
-                  </div>
-                </TabsContent>
-                
-                <TabsContent value="flow-rate" className="space-y-4">
-                  <div className="h-[300px] mt-4">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart
-                        data={waterlevelHistory}
-                        margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="date" />
-                        <YAxis />
-                        <Tooltip 
-                          formatter={(value) => [`${value} m³/s`, ""]}
-                        />
-                        <Legend />
-                        <Line 
-                          type="monotone" 
-                          dataKey="inflow" 
-                          stroke="#82ca9d" 
-                          name={t("Kiruvchi suv")}
-                        />
-                        <Line 
-                          type="monotone" 
-                          dataKey="outflow" 
-                          stroke="#ff7300" 
-                          name={t("Chiquvchi suv")}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {t("So'nggi 30 kunlik suv oqimi o'zgarishi")}
-                  </div>
-                </TabsContent>
-                
-                <TabsContent value="weather" className="space-y-4">
-                  <div className="h-[300px] mt-4">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart
-                        data={weatherForecast}
-                        margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="date" />
-                        <YAxis yAxisId="left" orientation="left" />
-                        <YAxis yAxisId="right" orientation="right" />
-                        <Tooltip />
-                        <Legend />
-                        <Bar 
-                          yAxisId="left" 
-                          dataKey="rainChance" 
-                          fill="#8884d8" 
-                          name={t("Yog'ingarchilik ehtimoli (%)")}
-                        />
-                        <Bar 
-                          yAxisId="right" 
-                          dataKey="temperature" 
-                          fill="#ff7300" 
-                          name={t("Harorat (°C)")}
-                        />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {t("Keyingi 10 kunlik ob-havo bashorati")}
-                  </div>
-                </TabsContent>
-                
-                <TabsContent value="distribution" className="space-y-4">
-                  <div className="h-[300px] mt-4">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={waterDistribution}
-                          cx="50%"
-                          cy="50%"
-                          labelLine={false}
-                          label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                          outerRadius={100}
-                          fill="#8884d8"
-                          dataKey="value"
-                        >
-                          {waterDistribution.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                          ))}
-                        </Pie>
-                        <Tooltip formatter={(value) => [`${value}%`, ""]} />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {t("Suv taqsimoti bo'yicha ma'lumotlar")}
-                  </div>
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
-        )}
-        
-        {/* Suv taqsimoti umumiy ma'lumotlari */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("Suv taqsimoti")}</CardTitle>
-            <CardDescription>
-              {t("Suv resurslarining taqsimlanishi bo'yicha umumiy ma'lumotlar")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              {/* Ekin turlari bo'yicha suv taqsimoti */}
-              <div>
-                <h3 className="text-lg font-semibold mb-4">{t("Ekin turlari bo'yicha taqsimot")}</h3>
-                <div className="space-y-3">
-                  {waterDistribution.map((item, index) => (
-                    <div key={index} className="space-y-1">
-                      <div className="flex justify-between">
-                        <span>{item.name}</span>
-                        <span className="font-medium">{item.value}%</span>
-                      </div>
-                      <Progress value={item.value} className="h-2" 
-                        style={{ backgroundColor: 'rgba(0,0,0,0.1)' }}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-              <Separator />
-              
-              {/* Viloyatlar bo'yicha suv taqsimoti */}
-              <div>
-                <h3 className="text-lg font-semibold mb-4">{t("Viloyatlar bo'yicha suv ombori zaxiralari")}</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {regions.map((region) => {
-                    // Viloyatdagi suv omborlari
-                    const regionReservoirs = reservoirs.filter(r => r.region === region.name);
                     
-                    // Umumiy suv zaxirasi va sig'imi
-                    const totalWater = regionReservoirs.reduce((sum, r) => sum + r.currentLevel, 0);
-                    const totalCapacity = regionReservoirs.reduce((sum, r) => sum + r.capacity, 0);
-                    
-                    // To'lganlik foizi
-                    const fillPercentage = totalCapacity > 0 ? Math.round((totalWater / totalCapacity) * 100) : 0;
-                    
-                    // Yog'ingarchilik ma'lumotlari
-                    const regionRain = rainData.find(r => r.region === region.name);
-                    
-                    return (
-                      <Card key={region.id} className="overflow-hidden">
-                        <CardHeader className="p-4 pb-0">
-                          <CardTitle className="text-base">{region.name}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="p-4">
-                          <div className="text-sm space-y-2">
-                            <div className="flex justify-between">
-                              <span>{t("Suv omborlari")}:</span>
-                              <span className="font-medium">{region.reservoirs}</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span>{t("Suv zaxirasi")}:</span>
-                              <span className="font-medium">{Math.round(totalWater / 1000000)} mln m³</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span>{t("To'ldirilgan")}:</span>
-                              <span className="font-medium">{fillPercentage}%</span>
-                            </div>
-                            <Progress value={fillPercentage} className="h-2 mt-1" />
-                            
-                            <div className="flex justify-between items-center mt-3">
-                              <div className="flex items-center">
-                                <CloudRainIcon className="h-4 w-4 mr-1 text-blue-500" />
-                                <span>{t("Yog'ingarchilik")}:</span>
+                    {/* Reservoir markers */}
+                    {filteredReservoirs.map((reservoir) => {
+                      const levelPercent = parseInt(reservoir.level.replace("%", ""));
+                      return (
+                        <div key={reservoir.id}>
+                          <Marker 
+                            position={reservoir.location}
+                            eventHandlers={{
+                              click: () => setSelectedReservoir(reservoir.id)
+                            }}
+                          >
+                            <Tooltip direction="top" offset={[0, -10]} opacity={0.9} permanent>
+                              {reservoir.name}: {reservoir.level}
+                            </Tooltip>
+                            <Popup>
+                              <div className="p-1">
+                                <h3 className="font-bold">{reservoir.name}</h3>
+                                <p className="text-sm">Sig'imi: {reservoir.capacity}</p>
+                                <p className="text-sm">Suv sathi: <span className="font-semibold">{reservoir.level}</span></p>
+                                <p className="text-sm">Oqim kirishi: {reservoir.inflow}</p>
+                                <p className="text-sm">Oqim chiqishi: {reservoir.outflow}</p>
+                                <div className="mt-2">
+                                  <Button 
+                                    size="sm" 
+                                    className="w-full text-xs"
+                                    onClick={() => setSelectedReservoir(reservoir.id)}
+                                  >
+                                    To'liq ma'lumot
+                                  </Button>
+                                </div>
                               </div>
-                              <span className="font-medium">{regionRain?.prediction || 0} mm</span>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
+                            </Popup>
+                          </Marker>
+                          
+                          {/* Circle to indicate water level */}
+                          <Circle
+                            center={reservoir.location}
+                            radius={10000}
+                            pathOptions={{
+                              color: getColor(levelPercent),
+                              fillColor: getColor(levelPercent),
+                              fillOpacity: 0.3
+                            }}
+                          />
+                        </div>
+                      );
+                    })}
+                  </MapContainer>
                 </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <div className="space-y-6">
+            {/* Weather information panel */}
+            <Card className="shadow-md">
+              <CardHeader className="pb-2">
+                <div className="flex justify-between items-center">
+                  <CardTitle className="text-base">Ob-havo ma'lumotlari</CardTitle>
+                  <Select value={weatherRegion} onValueChange={setWeatherRegion}>
+                    <SelectTrigger className="w-[160px]">
+                      <SelectValue placeholder="Viloyatni tanlang" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Toshkent">Toshkent</SelectItem>
+                      <SelectItem value="Namangan">Namangan</SelectItem>
+                      <SelectItem value="Andijon">Andijon</SelectItem>
+                      <SelectItem value="Farg'ona">Farg'ona</SelectItem>
+                      <SelectItem value="Jizzax">Jizzax</SelectItem>
+                      <SelectItem value="Samarqand">Samarqand</SelectItem>
+                      <SelectItem value="Qashqadaryo">Qashqadaryo</SelectItem>
+                      <SelectItem value="Surxondaryo">Surxondaryo</SelectItem>
+                      <SelectItem value="Navoiy">Navoiy</SelectItem>
+                      <SelectItem value="Buxoro">Buxoro</SelectItem>
+                      <SelectItem value="Xorazm">Xorazm</SelectItem>
+                      <SelectItem value="Qoraqalpog'iston">Qoraqalpog'iston</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col space-y-4">
+                  <div className="flex justify-between items-center">
+                    <div className="flex flex-col">
+                      <span className="text-2xl font-bold">{weatherData[weatherRegion].temp}°C</span>
+                      <span className="text-sm text-gray-500">{weatherData[weatherRegion].condition}</span>
+                    </div>
+                    <div>
+                      <CloudSun className="w-12 h-12 text-blue-500" />
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-3 gap-2 pt-2">
+                    <div className="flex flex-col items-center text-center p-2 bg-gray-50 rounded">
+                      <CloudRain className="w-5 h-5 text-blue-500 mb-1" />
+                      <span className="text-xs text-gray-500">Yog'ingarchilik</span>
+                      <span className="text-sm font-medium">{weatherData[weatherRegion].precipitation}</span>
+                    </div>
+                    <div className="flex flex-col items-center text-center p-2 bg-gray-50 rounded">
+                      <Wind className="w-5 h-5 text-blue-500 mb-1" />
+                      <span className="text-xs text-gray-500">Shamol</span>
+                      <span className="text-sm font-medium">{weatherData[weatherRegion].windSpeed} km/s</span>
+                    </div>
+                    <div className="flex flex-col items-center text-center p-2 bg-gray-50 rounded">
+                      <Droplet className="w-5 h-5 text-blue-500 mb-1" />
+                      <span className="text-xs text-gray-500">Namlik</span>
+                      <span className="text-sm font-medium">{weatherData[weatherRegion].humidity}%</span>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4">
+                    <h3 className="text-sm font-medium mb-2">5 kunlik bashorat</h3>
+                    <div className="grid grid-cols-5 gap-1">
+                      {weatherData[weatherRegion].forecastNext5Days.map((day, index) => (
+                        <div key={index} className="flex flex-col items-center text-center p-1">
+                          <span className="text-xs font-medium">{day.day.substring(0, 2)}</span>
+                          <span className="text-xs">{day.temp}°C</span>
+                          <span className="text-xs text-blue-500">{day.precipitation}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Reservoir detail panel or water distribution widget */}
+            {selectedReservoirDetails ? (
+              <Card className="shadow-md">
+                <CardHeader className="pb-2">
+                  <div className="flex justify-between items-center">
+                    <CardTitle className="text-base font-medium">{selectedReservoirDetails.name}</CardTitle>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => setSelectedReservoir(null)}
+                    >
+                      Yopish
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <Tabs defaultValue="details">
+                    <TabsList className="grid grid-cols-2 mb-4">
+                      <TabsTrigger value="details">Tafsilotlar</TabsTrigger>
+                      <TabsTrigger value="sources">Suv manbalari</TabsTrigger>
+                    </TabsList>
+                    
+                    <TabsContent value="details" className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="bg-blue-50 p-3 rounded-lg">
+                          <div className="text-xs text-blue-500 mb-1">Sig'imi</div>
+                          <div className="font-semibold">{selectedReservoirDetails.capacity}</div>
+                        </div>
+                        <div className="bg-green-50 p-3 rounded-lg">
+                          <div className="text-xs text-green-500 mb-1">Suv sathi</div>
+                          <div className="font-semibold">{selectedReservoirDetails.level}</div>
+                        </div>
+                        <div className="bg-amber-50 p-3 rounded-lg">
+                          <div className="text-xs text-amber-500 mb-1">Oqim kirishi</div>
+                          <div className="font-semibold">{selectedReservoirDetails.inflow}</div>
+                        </div>
+                        <div className="bg-red-50 p-3 rounded-lg">
+                          <div className="text-xs text-red-500 mb-1">Oqim chiqishi</div>
+                          <div className="font-semibold">{selectedReservoirDetails.outflow}</div>
+                        </div>
+                      </div>
+                      
+                      <div className="pt-2">
+                        <h3 className="text-sm font-medium mb-2">Suv manbaalari</h3>
+                        <div className="text-sm">
+                          {getRegionSources(selectedReservoirDetails.region).map(source => (
+                            <div key={source.id} className="flex items-center py-1.5">
+                              <Droplet className="w-4 h-4 text-blue-500 mr-2" />
+                              <span>{source.name} ({source.type})</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="pt-2">
+                        <h3 className="text-sm font-medium mb-2">Suv kanallari</h3>
+                        <div className="text-sm">
+                          {getRegionCanals(selectedReservoirDetails.region).map(canal => (
+                            <div key={canal.id} className="flex items-center py-1.5">
+                              <Droplet className="w-4 h-4 text-blue-500 mr-2" />
+                              <span>{canal.name}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </TabsContent>
+                    
+                    <TabsContent value="sources">
+                      <div className="space-y-4">
+                        <div>
+                          <h3 className="text-sm font-medium mb-2">Hudud suv manbalari</h3>
+                          <div className="space-y-2">
+                            {getRegionSources(selectedReservoirDetails.region).map(source => (
+                              <div key={source.id} className="bg-blue-50 p-3 rounded-lg">
+                                <div className="flex justify-between items-center">
+                                  <div>
+                                    <div className="font-medium">{source.name}</div>
+                                    <div className="text-xs text-gray-500">{source.type}</div>
+                                  </div>
+                                  <Droplet className="w-5 h-5 text-blue-500" />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <h3 className="text-sm font-medium mb-2">Suv kanallari</h3>
+                          <div className="space-y-2">
+                            {getRegionCanals(selectedReservoirDetails.region).map(canal => (
+                              <div key={canal.id} className="bg-blue-50 p-3 rounded-lg">
+                                <div className="flex justify-between items-center">
+                                  <div>
+                                    <div className="font-medium">{canal.name}</div>
+                                    <div className="text-xs text-gray-500">
+                                      Manba: {canal.sourceName}
+                                    </div>
+                                  </div>
+                                  <Droplet className="w-5 h-5 text-blue-500" />
+                                </div>
+                                <div className="text-xs mt-1 text-gray-500">
+                                  {canal.regions.join(', ')}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+                </CardContent>
+              </Card>
+            ) : (
+              <WaterDistributionWidget />
+            )}
+          </div>
+        </div>
       </div>
     </DashboardLayout>
   );
