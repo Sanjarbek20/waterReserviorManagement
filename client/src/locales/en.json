@@ -32,6 +32,22 @@
     "recent_water_requests": "Recent Water Requests",
     "irrigation_efficiency": "Irrigation Efficiency"
   },
+  "admin": {
+    "total_capacity": "Total Capacity",
+    "current_level": "Current Level",
+    "daily_outflow": "Daily Outflow",
+    "active_farmers": "Active Farmers",
+    "recent_activity": "Recent Activity",
+    "alerts_notifications": "Alerts & Notifications",
+    "view_all": "View All",
+    "clear_all": "Clear All",
+    "rice_fields": "Rice Fields",
+    "vegetable_farms": "Vegetable Farms",
+    "wheat_fields": "Wheat Fields",
+    "other_crops": "Other Crops",
+    "increase": "increase",
+    "decrease": "decrease"
+  },
   "dashboard": {
     "reservoir_status": "Water Reservoir Management System",
     "water_allocation": "Water Allocation",
