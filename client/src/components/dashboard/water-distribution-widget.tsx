@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/lib/auth";
 import { WaterAllocation } from "@shared/schema";
+import { apiRequest } from "@/lib/queryClient";
 
 // Suv taqsimoti uchun ma'lumotlar turi
 type DistributionItem = {
@@ -28,6 +29,17 @@ const cropColorMap: { [key: string]: string } = {
   "boshqa": "bg-amber-500"
 };
 
+// Crop types to readable names mapping
+const cropNameMap: { [key: string]: string } = {
+  "sholi": "Sholi maydonlari",
+  "bug'doy": "Bug'doy maydonlari",
+  "sabzavot": "Sabzavot fermalari",
+  "paxta": "Paxta dalasi",
+  "meva": "Meva bog'lari",
+  "uzum": "Uzumzorlar",
+  "boshqa": "Boshqa ekinlar"
+};
+
 // Default distribution if API data is not available
 const defaultDistribution: DistributionItem[] = [
   { name: "Sholi maydonlari", value: 45, color: "bg-blue-500" },
@@ -36,6 +48,14 @@ const defaultDistribution: DistributionItem[] = [
   { name: "Boshqa ekinlar", value: 10, color: "bg-amber-500" },
 ];
 
+// Type for our enhanced allocation with user info
+type EnhancedAllocation = WaterAllocation & {
+  user?: {
+    id: number;
+    cropType?: string; 
+  }
+};
+
 export default function WaterDistributionWidget() {
   const { t } = useTranslation();
   const { toast } = useToast();
@@ -43,11 +63,69 @@ export default function WaterDistributionWidget() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
   const [distribution, setDistribution] = useState<DistributionItem[]>(defaultDistribution);
+  const [websocket, setWebsocket] = useState<WebSocket | null>(null);
   
-  // Fetch water allocations from API
+  // Establish WebSocket connection
+  useEffect(() => {
+    // Create WebSocket connection for real-time updates
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = `${protocol}//${window.location.host}/ws`;
+    const ws = new WebSocket(wsUrl);
+    
+    ws.onopen = () => {
+      console.log('WebSocket connected for water distribution widget');
+      // Request the initial data
+      ws.send(JSON.stringify({ type: 'get_dashboard_data' }));
+    };
+    
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        
+        // Handle dashboard data which includes allocations
+        if (data.type === 'dashboard_data' && data.allocations) {
+          // Update with the allocation data from WebSocket
+          const allocations = data.allocations;
+          // Convert to our DistributionItem format if needed
+          const formattedAllocations = allocations.map((item: any) => ({
+            name: item.name,
+            value: item.value || item.percentage, // Support both formats
+            color: item.color
+          }));
+          setDistribution(formattedAllocations);
+          setLastUpdate(new Date());
+        }
+      } catch (error) {
+        console.error('Error parsing WebSocket message:', error);
+      }
+    };
+    
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+    
+    ws.onclose = () => {
+      console.log('WebSocket connection closed');
+    };
+    
+    setWebsocket(ws);
+    
+    // Clean up on unmount
+    return () => {
+      ws.close();
+    };
+  }, []);
+  
+  // Fetch water allocations from API for backup
   const { data: allocations, isLoading, isError, refetch } = useQuery<WaterAllocation[]>({
     queryKey: ["/api/allocations"],
     enabled: !!user, // Only fetch if user is logged in
+  });
+
+  // Fetch users to get crop types
+  const { data: users } = useQuery<any[]>({
+    queryKey: ["/api/users"],
+    enabled: !!user && (user.role === 'admin' || user.role === 'data_admin'),
   });
   
   // Process allocation data to create distribution data when allocations change
@@ -60,13 +138,11 @@ export default function WaterDistributionWidget() {
       let totalAllocated = 0;
       
       // Process all allocations
-      // Add different crop types for variety in the demo
-      const cropTypes = ["sholi", "bug'doy", "sabzavot", "paxta", "boshqa"];
-      
-      allocations.forEach((allocation, index) => {
-        // Determine crop type based on the allocation index for demo purposes
-        // In real implementation, we would fetch the user details with crop types
-        const userCropType = cropTypes[index % cropTypes.length];
+      allocations.forEach((allocation) => {
+        // Find user by ID to get the crop type
+        const farmUser = users?.find(u => u.id === allocation.userId);
+        // Default to a crop type if user not found
+        const userCropType = (farmUser?.cropType || "boshqa").toLowerCase();
         
         // Get existing data or initialize
         const existing = cropAllocations.get(userCropType) || {total: 0, used: 0};
@@ -90,14 +166,7 @@ export default function WaterDistributionWidget() {
           const percentage = Math.round((amounts.total / totalAllocated) * 100);
           
           // Map crop type to readable name
-          let name = cropType;
-          if (cropType === "sholi") name = "Sholi maydonlari";
-          else if (cropType === "bug'doy") name = "Bug'doy maydonlari";
-          else if (cropType === "sabzavot") name = "Sabzavot fermalari";
-          else if (cropType === "paxta") name = "Paxta dalasi";
-          else if (cropType === "meva") name = "Meva bog'lari";
-          else if (cropType === "uzum") name = "Uzumzorlar";
-          else name = "Boshqa ekinlar";
+          const name = cropNameMap[cropType] || "Boshqa ekinlar";
           
           return {
             name,
@@ -111,21 +180,35 @@ export default function WaterDistributionWidget() {
       if (newDistribution.length > 0) {
         const sum = newDistribution.reduce((acc, item) => acc + item.value, 0);
         if (sum !== 100) {
-          newDistribution[0].value += (100 - sum); // Adjust the largest allocation
+          // Create a copy of the array to avoid modifying the first element directly
+          const adjustedDistribution = [...newDistribution];
+          adjustedDistribution[0] = {
+            ...adjustedDistribution[0],
+            value: adjustedDistribution[0].value + (100 - sum)
+          };
+          
+          // Update state with real data
+          setDistribution(adjustedDistribution);
+          setLastUpdate(new Date());
+        } else {
+          // Update state with real data
+          setDistribution(newDistribution);
+          setLastUpdate(new Date());
         }
-        
-        // Update state with real data
-        setDistribution(newDistribution);
-        setLastUpdate(new Date());
       }
     }
-  }, [allocations]);
+  }, [allocations, users]);
   
-  // Yangilash harakati - Refresh data from API
+  // Yangilash harakati - Refresh data from API and WebSocket
   const handleRefresh = () => {
     setIsUpdating(true);
     
-    // Fetch new data from API
+    // Request updated data via WebSocket
+    if (websocket && websocket.readyState === WebSocket.OPEN) {
+      websocket.send(JSON.stringify({ type: 'get_dashboard_data' }));
+    }
+    
+    // Also fetch from REST API as backup
     refetch().then(() => {
       setLastUpdate(new Date());
       setIsUpdating(false);
