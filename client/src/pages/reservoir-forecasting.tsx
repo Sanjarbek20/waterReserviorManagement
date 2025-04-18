@@ -133,7 +133,7 @@ export default function ReservoirForecasting() {
       toast({
         title: t("Warning"),
         description: t("Please select a reservoir first"),
-        variant: "warning"
+        variant: "destructive"
       });
       return;
     }
