@@ -28,7 +28,7 @@
     "request_additional": "Request Additional Allocation",
     "usage_history": "Usage History",
     "water_forecast": "Water Forecast",
-    "next_days": "Next 30 days",
+    "next_30_days": "Next 30 days",
     "recent_water_requests": "Recent Water Requests",
     "irrigation_efficiency": "Irrigation Efficiency"
   },
@@ -41,6 +41,7 @@
     "alerts_notifications": "Alerts & Notifications",
     "view_all": "View All",
     "clear_all": "Clear All",
+    "mark_all_read": "Mark All Read",
     "rice_fields": "Rice Fields",
     "vegetable_farms": "Vegetable Farms",
     "wheat_fields": "Wheat Fields",
