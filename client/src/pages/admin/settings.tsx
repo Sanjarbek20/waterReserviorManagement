@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import DatabaseDiagram from "@/components/admin/database-diagram";
 import DataTimeline from "@/components/admin/data-timeline";
 import FragmentationSchema from "@/components/admin/fragmentation-schema";
+import DatabaseAlgorithm from "@/components/admin/database-algorithm";
+import WaterAlgorithms from "@/components/admin/water-algorithms";
 import { 
   Settings as SettingsIcon, 
   Bell, 
@@ -534,6 +536,22 @@ export default function Settings() {
                 </h3>
                 <div className="pt-2">
                   <FragmentationSchema />
+                </div>
+                
+                <h3 className="text-lg font-medium pt-6 flex items-center">
+                  <DatabaseIcon className="h-5 w-5 mr-2" />
+                  Ma'lumotlar bazasi algoritmi
+                </h3>
+                <div className="pt-2">
+                  <DatabaseAlgorithm />
+                </div>
+                
+                <h3 className="text-lg font-medium pt-6 flex items-center">
+                  <DatabaseIcon className="h-5 w-5 mr-2" />
+                  Suv resurslarini boshqarish algoritmlari
+                </h3>
+                <div className="pt-2">
+                  <WaterAlgorithms />
                 </div>
               </CardContent>
               <CardFooter className="flex justify-end">
