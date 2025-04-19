@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import DatabaseDiagram from "@/components/admin/database-diagram";
 import DataTimeline from "@/components/admin/data-timeline";
+import FragmentationSchema from "@/components/admin/fragmentation-schema";
 import { 
   Settings as SettingsIcon, 
   Bell, 
@@ -525,6 +526,14 @@ export default function Settings() {
                 </h3>
                 <div className="pt-2">
                   <DataTimeline />
+                </div>
+                
+                <h3 className="text-lg font-medium pt-6 flex items-center">
+                  <DatabaseIcon className="h-5 w-5 mr-2" />
+                  Ma'lumotlarni fragmentlash algoritmi
+                </h3>
+                <div className="pt-2">
+                  <FragmentationSchema />
                 </div>
               </CardContent>
               <CardFooter className="flex justify-end">
