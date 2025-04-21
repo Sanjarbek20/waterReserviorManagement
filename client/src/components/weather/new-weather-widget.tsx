@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CloudRain, Wind, Droplet, CloudSun } from "lucide-react";
+import { CloudRain, Wind, Droplet } from "lucide-react";
 
 type WeatherDataItem = {
   temp: number;
@@ -66,20 +66,33 @@ const weatherData: WeatherData = {
   ]},
 };
 
-export default function WeatherWidget() {
+export default function NewWeatherWidget() {
   const [selectedCity, setSelectedCity] = useState<keyof WeatherData>("Toshkent");
+
+  // Icon rendering function based on condition
+  const renderWeatherIcon = () => {
+    // You can replace this with more detailed SVG icons for different weather conditions
+    return (
+      <svg width="80" height="80" viewBox="0 0 64 64" className="text-blue-500">
+        <path fill="currentColor" d="M16 10a6 6 0 0112 0 6 6 0 01-12 0zm6-8a8 8 0 100 16 8 8 0 000-16zM4 30a4 4 0 018 0 4 4 0 01-8 0zm4-6a6 6 0 100 12 6 6 0 000-12zm10 8a3 3 0 01-3-3h-2a5 5 0 005 5h22a5 5 0 000-10H33a1 1 0 01-1-1c0-2.21-1.79-4-4-4a4 4 0 00-3.91 3.18 1 1 0 01-.78.82A5 5 0 0018 28h-2a7 7 0 1113.91-1h7.09a7 7 0 110 14H18z"/>
+      </svg>
+    );
+  };
 
   return (
     <Card className="shadow-md">
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-center">
-          <CardTitle className="text-base">Ob-havo ma'lumotlari</CardTitle>
+      <CardContent className="p-6 pb-4">
+        <div className="flex justify-between items-start mb-4">
+          <div>
+            <h2 className="text-lg font-semibold mb-1">Ob-havo ma'lumotlari</h2>
+            <div className="text-sm text-gray-500">O'zbekiston viloyati</div>
+          </div>
           <Select 
             value={selectedCity} 
             onValueChange={(value: string) => setSelectedCity(value as keyof WeatherData)}
           >
-            <SelectTrigger className="w-[160px]">
-              <SelectValue placeholder="Shaharni tanlang" />
+            <SelectTrigger className="w-[130px]">
+              <SelectValue placeholder="Shahar" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Toshkent">Toshkent</SelectItem>
@@ -91,40 +104,39 @@ export default function WeatherWidget() {
             </SelectContent>
           </Select>
         </div>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-col space-y-4">
+        
+        <div className="flex flex-col">
           <div className="flex justify-between items-center">
-            <div className="flex flex-col">
-              <span className="text-3xl font-bold">{weatherData[selectedCity].temp}°C</span>
-              <span className="text-sm text-gray-500">{selectedCity}, Quyoshli</span>
-            </div>
             <div>
-              <CloudSun className="w-16 h-16 text-blue-500" />
+              <div className="text-3xl font-bold mb-1">{weatherData[selectedCity].temp}°C</div>
+              <div className="text-base">{selectedCity}</div>
+            </div>
+            <div className="text-blue-500">
+              {renderWeatherIcon()}
             </div>
           </div>
           
-          <div className="grid grid-cols-3 gap-2 mt-4">
-            <div className="flex flex-col items-center text-center p-2 bg-blue-50 rounded">
-              <CloudRain className="w-6 h-6 text-blue-500 mb-2" />
-              <span className="text-xs text-gray-500">Yog'ingarchilik</span>
+          <div className="grid grid-cols-3 gap-4 mt-6">
+            <div className="flex flex-col items-center bg-gray-50 rounded-md p-3">
+              <CloudRain className="w-5 h-5 text-blue-500 mb-1" />
+              <span className="text-xs text-gray-500 mb-1">Yog'ingarchilik</span>
               <span className="text-sm font-medium">{weatherData[selectedCity].precipitation}</span>
             </div>
-            <div className="flex flex-col items-center text-center p-2 bg-blue-50 rounded">
-              <Wind className="w-6 h-6 text-blue-500 mb-2" />
-              <span className="text-xs text-gray-500">Shamol</span>
+            <div className="flex flex-col items-center bg-gray-50 rounded-md p-3">
+              <Wind className="w-5 h-5 text-blue-500 mb-1" />
+              <span className="text-xs text-gray-500 mb-1">Shamol</span>
               <span className="text-sm font-medium">{weatherData[selectedCity].windSpeed} km/s</span>
             </div>
-            <div className="flex flex-col items-center text-center p-2 bg-blue-50 rounded">
-              <Droplet className="w-6 h-6 text-blue-500 mb-2" />
-              <span className="text-xs text-gray-500">Namlik</span>
+            <div className="flex flex-col items-center bg-gray-50 rounded-md p-3">
+              <Droplet className="w-5 h-5 text-blue-500 mb-1" />
+              <span className="text-xs text-gray-500 mb-1">Namlik</span>
               <span className="text-sm font-medium">{weatherData[selectedCity].humidity}%</span>
             </div>
           </div>
           
-          <div className="mt-4">
+          <div className="mt-6">
             <h3 className="text-sm font-medium mb-2">5 kunlik bashorat</h3>
-            <div className="grid grid-cols-5 gap-2 bg-gray-50 rounded-lg p-2">
+            <div className="grid grid-cols-5 divide-x divide-gray-100">
               {weatherData[selectedCity].forecastNext5Days.map((day, index) => (
                 <div key={index} className="flex flex-col items-center text-center p-1">
                   <span className="text-xs font-medium">{day.day}</span>
