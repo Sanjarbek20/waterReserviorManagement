@@ -88,7 +88,7 @@ export default function NewWeatherWidget() {
             <div className="text-sm text-gray-500">O'zbekiston viloyati</div>
           </div>
           <Select 
-            value={selectedCity} 
+            value={String(selectedCity)} 
             onValueChange={(value: string) => setSelectedCity(value as keyof WeatherData)}
           >
             <SelectTrigger className="w-[130px]">

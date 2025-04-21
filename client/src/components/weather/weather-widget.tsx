@@ -75,7 +75,7 @@ export default function WeatherWidget() {
         <div className="flex justify-between items-center">
           <CardTitle className="text-base">Ob-havo ma'lumotlari</CardTitle>
           <Select 
-            value={selectedCity} 
+            value={String(selectedCity)} 
             onValueChange={(value: string) => setSelectedCity(value as keyof WeatherData)}
           >
             <SelectTrigger className="w-[160px]">
