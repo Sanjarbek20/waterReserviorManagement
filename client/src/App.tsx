@@ -21,6 +21,7 @@ import AdminActivities from "@/pages/admin/activities";
 import AdminNotifications from "@/pages/admin/notifications";
 import ReservoirLiveMonitoring from "@/pages/admin/reservoir-live-monitoring";
 import ReservoirCombinedMonitoring from "@/pages/admin/reservoir-combined-monitoring";
+import WeatherPage from "@/pages/admin/weather-page";
 import FarmerDashboard from "@/pages/farmer/dashboard";
 import FarmerRequests from "@/pages/farmer/requests";
 import FarmerProfile from "@/pages/farmer/profile";
@@ -140,6 +141,9 @@ function Router() {
       </Route>
       <Route path="/admin/reservoir-live-monitoring">
         <ProtectedRoute component={ReservoirCombinedMonitoring} adminOnly={true} dataAdminAllowed={true} />
+      </Route>
+      <Route path="/admin/weather">
+        <ProtectedRoute component={WeatherPage} adminOnly={true} dataAdminAllowed={true} />
       </Route>
       
       <Route path="/settings">
