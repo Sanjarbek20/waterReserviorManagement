@@ -20,6 +20,7 @@ import AdminSettings from "@/pages/admin/settings";
 import AdminActivities from "@/pages/admin/activities";
 import AdminNotifications from "@/pages/admin/notifications";
 import ReservoirLiveMonitoring from "@/pages/admin/reservoir-live-monitoring";
+import CrossBorderReservoirs from "@/pages/admin/cross-border-reservoirs";
 import FarmerDashboard from "@/pages/farmer/dashboard";
 import FarmerRequests from "@/pages/farmer/requests";
 import FarmerProfile from "@/pages/farmer/profile";
@@ -27,7 +28,7 @@ import FarmerReports from "@/pages/farmer/reports";
 import NotificationDetailPage from "@/pages/farmer/notifications/[id]";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import { ThemeProvider } from "@/lib/theme-provider";
-import { useEffect, Suspense } from "react";
+import { useEffect, Suspense, lazy } from "react";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./lib/i18n";
 
@@ -139,6 +140,9 @@ function Router() {
       </Route>
       <Route path="/admin/reservoir-live-monitoring">
         <ProtectedRoute component={ReservoirLiveMonitoring} adminOnly={true} dataAdminAllowed={true} />
+      </Route>
+      <Route path="/admin/cross-border-reservoirs">
+        <ProtectedRoute component={CrossBorderReservoirs} adminOnly={true} dataAdminAllowed={true} />
       </Route>
       
       <Route path="/settings">
