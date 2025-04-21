@@ -18,7 +18,8 @@ import {
   Globe,
   LineChart,
   Activity,
-  GaugeCircle
+  GaugeCircle,
+  Map
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -47,6 +48,11 @@ export default function Sidebar() {
       name: "Suv omborlari monitoringi", 
       path: "/admin/reservoir-live-monitoring", 
       icon: <GaugeCircle className="h-4 w-4 mr-3" /> 
+    },
+    { 
+      name: "Chegaradoshi davlatlar suv omborlari", 
+      path: "/admin/cross-border-reservoirs", 
+      icon: <Map className="h-4 w-4 mr-3" /> 
     },
     { 
       name: t("dashboard.water_allocation"), 
@@ -110,6 +116,11 @@ export default function Sidebar() {
       name: "Suv omborlari monitoringi", 
       path: "/admin/reservoir-live-monitoring", 
       icon: <GaugeCircle className="h-4 w-4 mr-3" /> 
+    },
+    { 
+      name: "Chegaradoshi davlatlar suv omborlari", 
+      path: "/admin/cross-border-reservoirs", 
+      icon: <Map className="h-4 w-4 mr-3" /> 
     },
     { 
       name: t("water_prediction.title"), 
