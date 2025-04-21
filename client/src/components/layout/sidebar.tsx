@@ -50,11 +50,6 @@ export default function Sidebar() {
       icon: <GaugeCircle className="h-4 w-4 mr-3" /> 
     },
     { 
-      name: "Chegaradoshi davlatlar suv omborlari", 
-      path: "/admin/cross-border-reservoirs", 
-      icon: <Map className="h-4 w-4 mr-3" /> 
-    },
-    { 
       name: t("dashboard.water_allocation"), 
       path: "/admin/allocation", 
       icon: <Share2 className="h-4 w-4 mr-3" /> 
@@ -116,11 +111,6 @@ export default function Sidebar() {
       name: "Suv omborlari monitoringi", 
       path: "/admin/reservoir-live-monitoring", 
       icon: <GaugeCircle className="h-4 w-4 mr-3" /> 
-    },
-    { 
-      name: "Chegaradoshi davlatlar suv omborlari", 
-      path: "/admin/cross-border-reservoirs", 
-      icon: <Map className="h-4 w-4 mr-3" /> 
     },
     { 
       name: t("water_prediction.title"), 
