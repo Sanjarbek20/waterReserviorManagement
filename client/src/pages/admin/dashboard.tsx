@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import DashboardLayout from "@/components/layout/dashboard-layout";
 import { Card, CardContent } from "@/components/ui/card";
 import WaterLevel from "@/components/ui/water-level";
+import SimpleWeatherCard from "@/components/weather/simple-weather-card"; 
 import { 
   Droplet, 
   TrendingDown, 
@@ -182,16 +183,19 @@ export default function AdminDashboard() {
         ))}
       </div>
       
-      {/* Reservoir Level & Allocation */}
+      {/* Reservoir Level & Allocation & Weather */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <div className="lg:col-span-2">
           {/* Import the new ReservoirStatus component */}
           <ReservoirStatus />
         </div>
         
-        <div>
+        <div className="space-y-6">
           {/* Import the new WaterAllocation component */}
           <WaterAllocation />
+          
+          {/* Weather Card */}
+          <SimpleWeatherCard />
         </div>
       </div>
       
