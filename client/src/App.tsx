@@ -20,7 +20,7 @@ import AdminSettings from "@/pages/admin/settings";
 import AdminActivities from "@/pages/admin/activities";
 import AdminNotifications from "@/pages/admin/notifications";
 import ReservoirLiveMonitoring from "@/pages/admin/reservoir-live-monitoring";
-import CrossBorderReservoirs from "@/pages/admin/cross-border-reservoirs";
+import ReservoirCombinedMonitoring from "@/pages/admin/reservoir-combined-monitoring";
 import FarmerDashboard from "@/pages/farmer/dashboard";
 import FarmerRequests from "@/pages/farmer/requests";
 import FarmerProfile from "@/pages/farmer/profile";
@@ -139,10 +139,7 @@ function Router() {
         <ProtectedRoute component={AdminNotifications} adminOnly={true} dataAdminAllowed={true} />
       </Route>
       <Route path="/admin/reservoir-live-monitoring">
-        <ProtectedRoute component={ReservoirLiveMonitoring} adminOnly={true} dataAdminAllowed={true} />
-      </Route>
-      <Route path="/admin/cross-border-reservoirs">
-        <ProtectedRoute component={CrossBorderReservoirs} adminOnly={true} dataAdminAllowed={true} />
+        <ProtectedRoute component={ReservoirCombinedMonitoring} adminOnly={true} dataAdminAllowed={true} />
       </Route>
       
       <Route path="/settings">
