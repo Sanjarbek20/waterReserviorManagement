@@ -452,14 +452,20 @@ export default function ReservoirLiveMonitoring() {
           </div>
           
           <div className="space-y-6">
-            {/* Weather information panel */}
+            {/* Weather information panel - New style based on image */}
             <Card className="shadow-md">
-              <CardHeader className="pb-2">
-                <div className="flex justify-between items-center">
-                  <CardTitle className="text-base">Ob-havo ma'lumotlari</CardTitle>
-                  <Select value={weatherRegion} onValueChange={setWeatherRegion}>
-                    <SelectTrigger className="w-[160px]">
-                      <SelectValue placeholder="Viloyatni tanlang" />
+              <CardContent className="p-6">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h2 className="text-lg font-semibold mb-1">Ob-havo ma'lumotlari</h2>
+                    <p className="text-sm text-gray-500">O'zbekiston viloyati</p>
+                  </div>
+                  <Select 
+                    value={String(weatherRegion)} 
+                    onValueChange={(value: string) => setWeatherRegion(value as keyof WeatherData)}
+                  >
+                    <SelectTrigger className="w-[130px]">
+                      <SelectValue placeholder="Shahar" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Toshkent">Toshkent</SelectItem>
@@ -477,48 +483,45 @@ export default function ReservoirLiveMonitoring() {
                     </SelectContent>
                   </Select>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col space-y-4">
-                  <div className="flex justify-between items-center">
-                    <div className="flex flex-col">
-                      <span className="text-2xl font-bold">{weatherData[weatherRegion].temp}°C</span>
-                      <span className="text-sm text-gray-500">{weatherData[weatherRegion].condition}</span>
-                    </div>
-                    <div>
-                      <CloudSun className="w-12 h-12 text-blue-500" />
-                    </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-3xl font-bold mb-1">{weatherData[weatherRegion].temp}°C</p>
+                    <p className="text-sm">{weatherRegion}</p>
                   </div>
-                  
-                  <div className="grid grid-cols-3 gap-2 pt-2">
-                    <div className="flex flex-col items-center text-center p-2 bg-gray-50 rounded">
-                      <CloudRain className="w-5 h-5 text-blue-500 mb-1" />
-                      <span className="text-xs text-gray-500">Yog'ingarchilik</span>
-                      <span className="text-sm font-medium">{weatherData[weatherRegion].precipitation}</span>
-                    </div>
-                    <div className="flex flex-col items-center text-center p-2 bg-gray-50 rounded">
-                      <Wind className="w-5 h-5 text-blue-500 mb-1" />
-                      <span className="text-xs text-gray-500">Shamol</span>
-                      <span className="text-sm font-medium">{weatherData[weatherRegion].windSpeed} km/s</span>
-                    </div>
-                    <div className="flex flex-col items-center text-center p-2 bg-gray-50 rounded">
-                      <Droplet className="w-5 h-5 text-blue-500 mb-1" />
-                      <span className="text-xs text-gray-500">Namlik</span>
-                      <span className="text-sm font-medium">{weatherData[weatherRegion].humidity}%</span>
-                    </div>
+                  <div className="text-blue-500">
+                    <CloudSun size={64} />
                   </div>
-                  
-                  <div className="mt-4">
-                    <h3 className="text-sm font-medium mb-2">5 kunlik bashorat</h3>
-                    <div className="grid grid-cols-5 gap-1">
-                      {weatherData[weatherRegion].forecastNext5Days.map((day, index) => (
-                        <div key={index} className="flex flex-col items-center text-center p-1">
-                          <span className="text-xs font-medium">{day.day.substring(0, 2)}</span>
-                          <span className="text-xs">{day.temp}°C</span>
-                          <span className="text-xs text-blue-500">{day.precipitation}</span>
-                        </div>
-                      ))}
-                    </div>
+                </div>
+                
+                <div className="grid grid-cols-3 gap-4 mt-6">
+                  <div className="flex flex-col items-center bg-gray-50 rounded-md p-3">
+                    <CloudRain className="w-5 h-5 text-blue-500 mb-1" />
+                    <span className="text-xs text-gray-500 mb-1">Yog'ingarchilik</span>
+                    <span className="text-sm font-medium">{weatherData[weatherRegion].precipitation}</span>
+                  </div>
+                  <div className="flex flex-col items-center bg-gray-50 rounded-md p-3">
+                    <Wind className="w-5 h-5 text-blue-500 mb-1" />
+                    <span className="text-xs text-gray-500 mb-1">Shamol</span>
+                    <span className="text-sm font-medium">{weatherData[weatherRegion].windSpeed} km/s</span>
+                  </div>
+                  <div className="flex flex-col items-center bg-gray-50 rounded-md p-3">
+                    <Droplet className="w-5 h-5 text-blue-500 mb-1" />
+                    <span className="text-xs text-gray-500 mb-1">Namlik</span>
+                    <span className="text-sm font-medium">{weatherData[weatherRegion].humidity}%</span>
+                  </div>
+                </div>
+                
+                <div className="mt-6">
+                  <h3 className="text-sm font-medium mb-2">5 kunlik bashorat</h3>
+                  <div className="grid grid-cols-5 gap-2 bg-gray-50 rounded-lg p-2">
+                    {weatherData[weatherRegion].forecastNext5Days.map((day, index) => (
+                      <div key={index} className="flex flex-col items-center text-center p-1">
+                        <span className="text-xs font-medium">{day.day.substring(0, 2)}</span>
+                        <span className="text-sm font-semibold my-1">{day.temp}°C</span>
+                        <span className="text-xs text-blue-500">{day.precipitation}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </CardContent>
