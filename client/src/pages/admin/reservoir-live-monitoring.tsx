@@ -227,6 +227,16 @@ export default function ReservoirLiveMonitoring() {
   const [weatherRegion, setWeatherRegion] = useState<keyof WeatherData>("Toshkent");
   const mapRef = useRef<any>(null);
   
+  // Update weather region based on selected reservoir
+  useEffect(() => {
+    if (selectedReservoir !== null) {
+      const reservoir = reservoirData.find(r => r.id === selectedReservoir);
+      if (reservoir) {
+        setWeatherRegion(reservoir.region as keyof WeatherData);
+      }
+    }
+  }, [selectedReservoir, reservoirData]);
+  
   // Handle region selection
   const handleRegionChange = (value: string) => {
     setSelectedRegion(value);
@@ -455,66 +465,38 @@ export default function ReservoirLiveMonitoring() {
             {/* Weather information panel - New style based on image */}
             <Card className="shadow-md">
               <CardContent className="p-6">
-                <div className="flex justify-between items-start mb-4">
+                <div className="flex justify-between items-start mb-2">
                   <div>
                     <h2 className="text-lg font-semibold mb-1">Ob-havo ma'lumotlari</h2>
-                    <p className="text-sm text-gray-500">O'zbekiston viloyati</p>
+                    <p className="text-sm text-gray-500">{weatherRegion} viloyati</p>
                   </div>
-                  <Select 
-                    value={String(weatherRegion)} 
-                    onValueChange={(value: string) => setWeatherRegion(value as keyof WeatherData)}
-                  >
-                    <SelectTrigger className="w-[130px]">
-                      <SelectValue placeholder="Shahar" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Toshkent">Toshkent</SelectItem>
-                      <SelectItem value="Namangan">Namangan</SelectItem>
-                      <SelectItem value="Andijon">Andijon</SelectItem>
-                      <SelectItem value="Farg'ona">Farg'ona</SelectItem>
-                      <SelectItem value="Jizzax">Jizzax</SelectItem>
-                      <SelectItem value="Samarqand">Samarqand</SelectItem>
-                      <SelectItem value="Qashqadaryo">Qashqadaryo</SelectItem>
-                      <SelectItem value="Surxondaryo">Surxondaryo</SelectItem>
-                      <SelectItem value="Navoiy">Navoiy</SelectItem>
-                      <SelectItem value="Buxoro">Buxoro</SelectItem>
-                      <SelectItem value="Xorazm">Xorazm</SelectItem>
-                      <SelectItem value="Qoraqalpog'iston">Qoraqalpog'iston</SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
                 
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-3xl font-bold mb-1">{weatherData[weatherRegion].temp}°C</p>
-                    <p className="text-sm">{weatherRegion}</p>
+                    <p className="text-3xl font-bold">
+                      {weatherData[weatherRegion].temp}°C
+                    </p>
+                    <div className="flex items-center mt-1 text-sm text-gray-600">
+                      <p className="font-medium">Quyoshli</p>
+                      <div className="flex items-center ml-4">
+                        <CloudRain className="w-4 h-4 mr-1 text-blue-500" />
+                        <span>{weatherData[weatherRegion].precipitation}</span>
+                      </div>
+                      <div className="flex items-center ml-4">
+                        <Wind className="w-4 h-4 mr-1 text-blue-500" />
+                        <span>{weatherData[weatherRegion].windSpeed} km/s</span>
+                      </div>
+                    </div>
                   </div>
                   <div className="text-blue-500">
-                    <CloudSun size={64} />
+                    <CloudSun size={56} />
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-3 gap-4 mt-6">
-                  <div className="flex flex-col items-center bg-gray-50 rounded-md p-3">
-                    <CloudRain className="w-5 h-5 text-blue-500 mb-1" />
-                    <span className="text-xs text-gray-500 mb-1">Yog'ingarchilik</span>
-                    <span className="text-sm font-medium">{weatherData[weatherRegion].precipitation}</span>
-                  </div>
-                  <div className="flex flex-col items-center bg-gray-50 rounded-md p-3">
-                    <Wind className="w-5 h-5 text-blue-500 mb-1" />
-                    <span className="text-xs text-gray-500 mb-1">Shamol</span>
-                    <span className="text-sm font-medium">{weatherData[weatherRegion].windSpeed} km/s</span>
-                  </div>
-                  <div className="flex flex-col items-center bg-gray-50 rounded-md p-3">
-                    <Droplet className="w-5 h-5 text-blue-500 mb-1" />
-                    <span className="text-xs text-gray-500 mb-1">Namlik</span>
-                    <span className="text-sm font-medium">{weatherData[weatherRegion].humidity}%</span>
-                  </div>
-                </div>
-                
-                <div className="mt-6">
+                <div className="mt-4">
                   <h3 className="text-sm font-medium mb-2">5 kunlik bashorat</h3>
-                  <div className="grid grid-cols-5 gap-2 bg-gray-50 rounded-lg p-2">
+                  <div className="grid grid-cols-5 divide-x divide-gray-100 bg-gray-50 rounded-lg p-2">
                     {weatherData[weatherRegion].forecastNext5Days.map((day, index) => (
                       <div key={index} className="flex flex-col items-center text-center p-1">
                         <span className="text-xs font-medium">{day.day.substring(0, 2)}</span>
