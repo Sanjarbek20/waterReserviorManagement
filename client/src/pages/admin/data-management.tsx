@@ -150,7 +150,7 @@ export default function DataManagement() {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="database" className="w-full">
-              <TabsList className="grid w-full grid-cols-6">
+              <TabsList className="grid w-full grid-cols-7">
                 <TabsTrigger value="database">
                   <Database className="h-4 w-4 mr-2" />
                   Ma'lumotlar bazasi
