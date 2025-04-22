@@ -171,7 +171,7 @@ export default function DataManagement() {
                   <Cpu className="h-4 w-4 mr-2" />
                   Tizim arxitekturasi
                 </TabsTrigger>
-                <TabsTrigger value="idef0">
+                <TabsTrigger value="idef0model">
                   <GitBranch className="h-4 w-4 mr-2" />
                   IDEF0 model
                 </TabsTrigger>
@@ -362,10 +362,10 @@ export default function DataManagement() {
                     Ma'lumotlarni tahlil qilish va statistika algoritmlari diagrammasi
                   </p>
                   
-                  <div className="w-full overflow-x-auto mb-4 flex justify-center">
-                    <svg width="800" height="550" viewBox="0 0 800 550">
+                  <div className="p-2 bg-white rounded-lg shadow-sm mb-4 overflow-hidden">
+                    <svg width="800" height="800" viewBox="0 0 800 800">
                       {/* Algoritm boshi */}
-                      <ellipse cx="400" cy="30" rx="80" ry="30" fill="#bfdbfe" stroke="#0c4a6e" strokeWidth="2" />
+                      <ellipse cx="400" cy="30" rx="80" ry="30" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
                       <text x="400" y="35" textAnchor="middle" fontWeight="bold" fill="#0f172a">Boshlash</text>
                       
                       {/* Strelka */}
@@ -382,152 +382,223 @@ export default function DataManagement() {
                       <polygon points="395,190 405,190 400,200" fill="#64748b" />
                       
                       {/* Ma'lumotlarni yig'ish */}
-                      <rect x="300" y="200" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
-                      <text x="400" y="230" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlarni yig'ish va</text>
-                      <text x="400" y="250" textAnchor="middle" fontWeight="bold" fill="#0f172a">normalizatsiya qilish</text>
-                      
-                      {/* Shart tekshirish */}
-                      <polygon points="400,280 325,330 475,330" fill="#bfdbfe" stroke="#0c4a6e" strokeWidth="2" />
-                      <text x="400" y="315" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlar yetarli?</text>
-                      
-                      {/* Strelka yo'q */}
-                      <line x1="325" y1="330" x2="200" y2="330" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="210,325 200,330 210,335" fill="#64748b" />
-                      <text x="260" y="315" textAnchor="middle" fontSize="12" fill="#7f1d1d">Yo'q</text>
-                      
-                      {/* Ma'lumotlarni to'ldirish */}
-                      <rect x="100" y="300" width="100" height="60" rx="0" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
-                      <text x="150" y="330" textAnchor="middle" fontWeight="bold" fill="#0f172a">Qo'shimcha</text>
-                      <text x="150" y="350" textAnchor="middle" fontWeight="bold" fill="#0f172a">ma'lumotlar</text>
-                      
-                      {/* Strelka qaytish */}
-                      <line x1="100" y1="330" x2="100" y2="230" stroke="#64748b" strokeWidth="2" />
-                      <line x1="100" y1="230" x2="300" y2="230" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="290,225 300,230 290,235" fill="#64748b" />
-                      
-                      {/* Strelka ha */}
-                      <line x1="400" y1="330" x2="400" y2="360" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="395,360 405,360 400,370" fill="#64748b" />
-                      <text x="415" y="345" textAnchor="middle" fontSize="12" fill="#15803d">Ha</text>
-                      
-                      {/* Tahlil qilish */}
-                      <rect x="300" y="370" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
-                      <text x="400" y="400" textAnchor="middle" fontWeight="bold" fill="#0f172a">Statistik modellarni</text>
-                      <text x="400" y="420" textAnchor="middle" fontWeight="bold" fill="#0f172a">qo'llash va tahlil qilish</text>
+                      <rect x="300" y="200" width="200" height="60" rx="0" fill="#bfdbfe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="230" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlarni yig'ish</text>
+                      <text x="400" y="250" textAnchor="middle" fontWeight="bold" fill="#0f172a">va tozalash</text>
                       
                       {/* Strelka */}
-                      <line x1="400" y1="430" x2="400" y2="460" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="395,460 405,460 400,470" fill="#64748b" />
+                      <line x1="400" y1="260" x2="400" y2="290" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,290 405,290 400,300" fill="#64748b" />
                       
-                      {/* Natijalarni vizualizatsiya qilish */}
-                      <rect x="300" y="470" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
-                      <text x="400" y="500" textAnchor="middle" fontWeight="bold" fill="#0f172a">Natijalarni vizualizatsiya</text>
-                      <text x="400" y="520" textAnchor="middle" fontWeight="bold" fill="#0f172a">qilish va hisobot yaratish</text>
+                      {/* Ma'lumotlarni tahlil qilish yo'nalishi */}
+                      <polygon points="300,300 500,300 450,360 350,360" fill="#bfdbfe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="325" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlar turi?</text>
+                      <text x="400" y="345" textAnchor="middle" fontWeight="bold" fill="#0f172a">Tahlil yo'nalishini tanlash</text>
                       
-                      {/* Tugash */}
-                      <line x1="400" y1="530" x2="400" y2="560" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="395,560 405,560 400,570" fill="#64748b" />
+                      {/* 3 ta yo'nalish */}
+                      <line x1="300" y1="330" x2="200" y2="400" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="195,395 200,405 205,395" fill="#64748b" />
+                      <text x="240" y="360" textAnchor="middle" fontSize="12" fill="#0f172a">Suv sarfiyotlari</text>
                       
-                      {/* Algoritm oxiri */}
-                      <ellipse cx="400" cy="590" rx="80" ry="30" fill="#bfdbfe" stroke="#0c4a6e" strokeWidth="2" />
-                      <text x="400" y="595" textAnchor="middle" fontWeight="bold" fill="#0f172a">Yakunlash</text>
+                      <line x1="400" y1="360" x2="400" y2="400" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,395 400,405 405,395" fill="#64748b" />
+                      <text x="400" y="385" textAnchor="middle" fontSize="12" fill="#0f172a">Suv omborlari</text>
                       
-                      {/* Yon ta'riflar */}
-                      <rect x="550" y="300" width="150" height="80" rx="5" fill="#f5f5f4" stroke="#78716c" strokeWidth="1.5" />
-                      <text x="625" y="330" textAnchor="middle" fontSize="12" fill="#0f172a">LSTM modeli</text>
-                      <text x="625" y="350" textAnchor="middle" fontSize="12" fill="#0f172a">bashorat uchun</text>
+                      <line x1="500" y1="330" x2="600" y2="400" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="595,395 600,405 605,395" fill="#64748b" />
+                      <text x="550" y="360" textAnchor="middle" fontSize="12" fill="#0f172a">Fermer talablari</text>
+                      
+                      {/* Tahlil turlari */}
+                      <rect x="100" y="400" width="200" height="60" rx="0" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="200" y="430" textAnchor="middle" fontWeight="bold" fill="#0f172a">Sarfiyot dinamikasi</text>
+                      <text x="200" y="450" textAnchor="middle" fontWeight="bold" fill="#0f172a">tahlili</text>
+                      
+                      <rect x="300" y="400" width="200" height="60" rx="0" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="430" textAnchor="middle" fontWeight="bold" fill="#0f172a">Suv sathi</text>
+                      <text x="400" y="450" textAnchor="middle" fontWeight="bold" fill="#0f172a">o'zgarishlari tahlili</text>
+                      
+                      <rect x="500" y="400" width="200" height="60" rx="0" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="600" y="430" textAnchor="middle" fontWeight="bold" fill="#0f172a">Fermer ehtiyojlari</text>
+                      <text x="600" y="450" textAnchor="middle" fontWeight="bold" fill="#0f172a">tahlili</text>
+                      
+                      {/* Keyingi qadamlar */}
+                      <line x1="200" y1="460" x2="200" y2="500" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="195,495 200,505 205,495" fill="#64748b" />
+                      
+                      <line x1="400" y1="460" x2="400" y2="500" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,495 400,505 405,495" fill="#64748b" />
+                      
+                      <line x1="600" y1="460" x2="600" y2="500" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="595,495 600,505 605,495" fill="#64748b" />
+                      
+                      {/* Analitika usullari */}
+                      <rect x="100" y="500" width="200" height="60" rx="0" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="200" y="530" textAnchor="middle" fontWeight="bold" fill="#0f172a">Vaqt qatorlari tahlili</text>
+                      <text x="200" y="550" textAnchor="middle" fontWeight="bold" fill="#0f172a">va trendlar</text>
+                      
+                      <rect x="300" y="500" width="200" height="60" rx="0" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="530" textAnchor="middle" fontWeight="bold" fill="#0f172a">Mavsumiy o'zgarishlar</text>
+                      <text x="400" y="550" textAnchor="middle" fontWeight="bold" fill="#0f172a">tahlili</text>
+                      
+                      <rect x="500" y="500" width="200" height="60" rx="0" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="600" y="530" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ekin turlari va</text>
+                      <text x="600" y="550" textAnchor="middle" fontWeight="bold" fill="#0f172a">suv talabi tahlili</text>
+                      
+                      {/* Natijalarni birlashtirish */}
+                      <line x1="200" y1="560" x2="200" y2="600" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="195,595 200,605 205,595" fill="#64748b" />
+                      
+                      <line x1="400" y1="560" x2="400" y2="600" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,595 400,605 405,595" fill="#64748b" />
+                      
+                      <line x1="600" y1="560" x2="600" y2="600" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="595,595 600,605 605,595" fill="#64748b" />
+                      
+                      <rect x="200" y="600" width="400" height="60" rx="0" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="630" textAnchor="middle" fontWeight="bold" fill="#0f172a">Natijalarni birlashtirish</text>
+                      <text x="400" y="650" textAnchor="middle" fontWeight="bold" fill="#0f172a">va korrelyatsion tahlil</text>
+                      
+                      {/* Tavsiyalar tayyorlash */}
+                      <line x1="400" y1="660" x2="400" y2="700" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,695 400,705 405,695" fill="#64748b" />
+                      
+                      <rect x="200" y="700" width="400" height="60" rx="0" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="730" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlar asosida</text>
+                      <text x="400" y="750" textAnchor="middle" fontWeight="bold" fill="#0f172a">tavsiyalar tayyorlash</text>
+                      
+                      {/* Yakunlash */}
+                      <line x1="400" y1="760" x2="400" y2="790" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,785 400,795 405,785" fill="#64748b" />
+                      
+                      <ellipse cx="400" cy="830" rx="80" ry="30" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="835" textAnchor="middle" fontWeight="bold" fill="#0f172a">Yakunlash</text>
                     </svg>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                     <div className="bg-white p-3 rounded-md shadow-sm">
-                      <h4 className="font-medium mb-2">Ma'lumotlar normalizatsiyasi</h4>
+                      <h4 className="font-medium mb-2">Statistik tahlil algoritmi</h4>
                       <p className="text-gray-600">
-                        Turli ko'rinishdagi ma'lumotlarni standartlashtirish va tahlilga tayyorlash.
+                        Ma'lumotlarni statistik usullar orqali tahlil qilish, trend va mavsumiy o'zgarishlarni aniqlash.
                       </p>
                     </div>
                     <div className="bg-white p-3 rounded-md shadow-sm">
-                      <h4 className="font-medium mb-2">Tahlil modellari</h4>
+                      <h4 className="font-medium mb-2">Korrelyatsiya algoritmi</h4>
                       <p className="text-gray-600">
-                        Regressiya, klassifikatsiya va klusterlash modellari orqali ma'lumotlarni tahlil qilish.
+                        Turli omillar o'rtasidagi bog'liqlikni aniqlash va tahlil qilish uchun korrelyatsion tahlil.
                       </p>
                     </div>
                     <div className="bg-white p-3 rounded-md shadow-sm">
-                      <h4 className="font-medium mb-2">Vizualizatsiya usullari</h4>
+                      <h4 className="font-medium mb-2">Tavsiyalar tayyorlash</h4>
                       <p className="text-gray-600">
-                        Ma'lumotlarni grafiklar, diagrammalar va interaktiv ko'rinishda taqdim etish.
+                        Tahlil natijalari asosida qaror qabul qilish uchun tavsiyalar tayyorlash algoritmi.
                       </p>
                     </div>
                   </div>
                 </div>
               </TabsContent>
-              
+
               <TabsContent value="security" className="pt-4">
                 <div className="border p-4 rounded-md bg-slate-50">
                   <h3 className="text-lg font-medium mb-2 text-center">Xavfsizlik algoritmlari</h3>
                   <p className="text-sm text-gray-500 mb-4 text-center">
-                    Tizim xavfsizligini ta'minlash uchun qo'llaniladigan algoritmlar
+                    Tizim xavfsizligini ta'minlash algoritmlari
                   </p>
                   
-                  <div className="w-full overflow-x-auto mb-4 flex justify-center">
-                    <svg width="800" height="500" viewBox="0 0 800 500">
+                  <div className="p-2 bg-white rounded-lg shadow-sm mb-4 overflow-hidden">
+                    <svg width="800" height="800" viewBox="0 0 800 800">
                       {/* Algoritm boshi */}
-                      <ellipse cx="400" cy="30" rx="80" ry="30" fill="#fee2e2" stroke="#7f1d1d" strokeWidth="2" />
+                      <ellipse cx="400" cy="30" rx="80" ry="30" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
                       <text x="400" y="35" textAnchor="middle" fontWeight="bold" fill="#0f172a">Boshlash</text>
                       
-                      {/* Strelka */}
+                      {/* So'rov kelishi */}
                       <line x1="400" y1="60" x2="400" y2="90" stroke="#64748b" strokeWidth="2" />
                       <polygon points="395,90 405,90 400,100" fill="#64748b" />
                       
-                      {/* Kirish ma'lumotlari */}
-                      <rect x="300" y="100" width="200" height="60" rx="0" fill="#fecaca" stroke="#7f1d1d" strokeWidth="2" />
-                      <text x="400" y="130" textAnchor="middle" fontWeight="bold" fill="#0f172a">Kirish ma'lumotlarini</text>
-                      <text x="400" y="150" textAnchor="middle" fontWeight="bold" fill="#0f172a">qabul qilish</text>
+                      <rect x="300" y="100" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="130" textAnchor="middle" fontWeight="bold" fill="#0f172a">Foydalanuvchi</text>
+                      <text x="400" y="150" textAnchor="middle" fontWeight="bold" fill="#0f172a">so'rovi kelishi</text>
                       
-                      {/* Strelka */}
+                      {/* Foydalanuvchini tekshirish */}
                       <line x1="400" y1="160" x2="400" y2="190" stroke="#64748b" strokeWidth="2" />
                       <polygon points="395,190 405,190 400,200" fill="#64748b" />
                       
-                      {/* Autentifikatsiya tekshirish */}
-                      <rect x="300" y="200" width="200" height="60" rx="0" fill="#f8fafc" stroke="#7f1d1d" strokeWidth="2" />
-                      <text x="400" y="230" textAnchor="middle" fontWeight="bold" fill="#0f172a">Foydalanuvchi</text>
-                      <text x="400" y="250" textAnchor="middle" fontWeight="bold" fill="#0f172a">autentifikatsiyasi</text>
+                      <rect x="300" y="200" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="230" textAnchor="middle" fontWeight="bold" fill="#0f172a">Foydalanuvchini</text>
+                      <text x="400" y="250" textAnchor="middle" fontWeight="bold" fill="#0f172a">autentifikatsiya qilish</text>
                       
-                      {/* Shart tekshirish */}
-                      <polygon points="400,280 325,330 475,330" fill="#fee2e2" stroke="#7f1d1d" strokeWidth="2" />
-                      <text x="400" y="315" textAnchor="middle" fontWeight="bold" fill="#0f172a">Tasdiqlandi?</text>
+                      {/* Autentifikatsiya tekshiruvi */}
+                      <line x1="400" y1="260" x2="400" y2="290" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,290 405,290 400,300" fill="#64748b" />
                       
-                      {/* Strelka yo'q */}
-                      <line x1="325" y1="330" x2="200" y2="330" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="205,325 195,330 205,335" fill="#64748b" />
-                      <text x="260" y="315" textAnchor="middle" fontSize="12" fill="#7f1d1d">Yo'q</text>
+                      <polygon points="300,300 500,300 450,350 350,350" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="330" textAnchor="middle" fontWeight="bold" fill="#0f172a">Autentifikatsiya</text>
+                      <text x="400" y="330" textAnchor="middle" fontWeight="bold" fill="#0f172a">muvaffaqiytlimi?</text>
                       
-                      {/* Xatolik xabari */}
-                      <rect x="100" y="300" width="100" height="60" rx="0" fill="#fecaca" stroke="#7f1d1d" strokeWidth="2" />
-                      <text x="150" y="335" textAnchor="middle" fontWeight="bold" fill="#0f172a">Xatolik</text>
+                      {/* Yo'q yo'nalishi */}
+                      <line x1="300" y1="325" x2="200" y2="400" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="195,395 200,405 205,395" fill="#64748b" />
+                      <text x="220" y="360" textAnchor="middle" fontSize="12" fill="#0f172a">Yo'q</text>
                       
-                      {/* Strelka qaytish */}
-                      <line x1="150" y1="300" x2="150" y2="130" stroke="#64748b" strokeWidth="2" />
-                      <line x1="150" y1="130" x2="300" y2="130" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="290,125 300,130 290,135" fill="#64748b" />
+                      <rect x="100" y="400" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="200" y="430" textAnchor="middle" fontWeight="bold" fill="#0f172a">Kirish rad etildi</text>
+                      <text x="200" y="450" textAnchor="middle" fontWeight="bold" fill="#0f172a">xatolik qayd etildi</text>
                       
-                      {/* Strelka ha */}
-                      <line x1="400" y1="330" x2="400" y2="360" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="395,360 405,360 400,370" fill="#64748b" />
-                      <text x="415" y="345" textAnchor="middle" fontSize="12" fill="#15803d">Ha</text>
+                      {/* Ha yo'nalishi */}
+                      <line x1="500" y1="325" x2="600" y2="400" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="595,395 600,405 605,395" fill="#64748b" />
+                      <text x="570" y="360" textAnchor="middle" fontSize="12" fill="#0f172a">Ha</text>
                       
-                      {/* Avtorizatsiya */}
-                      <rect x="300" y="370" width="200" height="60" rx="0" fill="#f8fafc" stroke="#7f1d1d" strokeWidth="2" />
-                      <text x="400" y="400" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ruxsatlarni tekshirish</text>
-                      <text x="400" y="420" textAnchor="middle" fontWeight="bold" fill="#0f172a">(Avtorizatsiya)</text>
+                      <rect x="500" y="400" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="600" y="430" textAnchor="middle" fontWeight="bold" fill="#0f172a">Foydalanuvchi</text>
+                      <text x="600" y="450" textAnchor="middle" fontWeight="bold" fill="#0f172a">ruxsatlarini tekshirish</text>
                       
-                      {/* Strelka */}
-                      <line x1="400" y1="430" x2="400" y2="460" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="395,460 405,460 400,470" fill="#64748b" />
+                      {/* Ruxsat tekshiruvi */}
+                      <line x1="600" y1="460" x2="600" y2="490" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="595,490 605,490 600,500" fill="#64748b" />
                       
-                      {/* Algoritm soni */}
-                      <ellipse cx="400" cy="490" rx="80" ry="30" fill="#fee2e2" stroke="#7f1d1d" strokeWidth="2" />
-                      <text x="400" y="495" textAnchor="middle" fontWeight="bold" fill="#0f172a">Yakunlash</text>
+                      <polygon points="500,500 700,500 650,550 550,550" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="600" y="530" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ruxsatlar</text>
+                      <text x="600" y="530" textAnchor="middle" fontWeight="bold" fill="#0f172a">yetarlimi?</text>
+                      
+                      {/* Yo'q yo'nalishi */}
+                      <line x1="500" y1="525" x2="400" y2="600" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,595 400,605 405,595" fill="#64748b" />
+                      <text x="430" y="560" textAnchor="middle" fontSize="12" fill="#0f172a">Yo'q</text>
+                      
+                      <rect x="300" y="600" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="630" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ruxsat rad etildi</text>
+                      <text x="400" y="650" textAnchor="middle" fontWeight="bold" fill="#0f172a">qayd yozildi</text>
+                      
+                      {/* Ha yo'nalishi */}
+                      <line x1="700" y1="525" x2="800" y2="600" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="795,595 800,605 805,595" fill="#64748b" />
+                      <text x="770" y="560" textAnchor="middle" fontSize="12" fill="#0f172a">Ha</text>
+                      
+                      <rect x="700" y="600" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="800" y="630" textAnchor="middle" fontWeight="bold" fill="#0f172a">So'rov bajarildi</text>
+                      <text x="800" y="650" textAnchor="middle" fontWeight="bold" fill="#0f172a">qayd yozildi</text>
+                      
+                      {/* So'rov loglarini saqlash */}
+                      <line x1="200" y1="460" x2="200" y2="700" stroke="#64748b" strokeWidth="2" strokeDasharray="5,5" />
+                      <line x1="400" y1="660" x2="400" y2="700" stroke="#64748b" strokeWidth="2" strokeDasharray="5,5" />
+                      <line x1="800" y1="660" x2="800" y2="700" stroke="#64748b" strokeWidth="2" strokeDasharray="5,5" />
+                      
+                      <line x1="200" y1="700" x2="400" y2="700" stroke="#64748b" strokeWidth="2" strokeDasharray="5,5" />
+                      <line x1="400" y1="700" x2="800" y2="700" stroke="#64748b" strokeWidth="2" strokeDasharray="5,5" />
+                      <line x1="400" y1="700" x2="400" y2="740" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,735 400,745 405,735" fill="#64748b" />
+                      
+                      <rect x="300" y="740" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="770" textAnchor="middle" fontWeight="bold" fill="#0f172a">Audit log'larini</text>
+                      <text x="400" y="790" textAnchor="middle" fontWeight="bold" fill="#0f172a">saqlash</text>
+                      
+                      {/* Yakunlash */}
+                      <line x1="400" y1="800" x2="400" y2="830" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,825 400,835 405,825" fill="#64748b" />
+                      
+                      <ellipse cx="400" cy="860" rx="80" ry="30" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="865" textAnchor="middle" fontWeight="bold" fill="#0f172a">Yakunlash</text>
                     </svg>
                   </div>
                   
@@ -535,25 +606,25 @@ export default function DataManagement() {
                     <div className="bg-white p-3 rounded-md shadow-sm">
                       <h4 className="font-medium mb-2">Autentifikatsiya algoritmi</h4>
                       <p className="text-gray-600">
-                        Foydalanuvchi identifikatsiyasi va tasdiqlash jarayonlarini ta'minlash.
+                        Foydalanuvchi shaxsini aniqlash va tekshirish mexanizmlari, xavfsiz login tizimi.
                       </p>
                     </div>
                     <div className="bg-white p-3 rounded-md shadow-sm">
-                      <h4 className="font-medium mb-2">Ruxsat boshqaruvi</h4>
+                      <h4 className="font-medium mb-2">Avtorizatsiya algoritmi</h4>
                       <p className="text-gray-600">
-                        Rollar asosida resurslar va ma'lumotlarga ruxsat berish va ruxsatlarni boshqarish.
+                        Foydalanuvchi huquqlarini tekshirish va ruxsatlar asosida ma'lumotlarga kirishni boshqarish.
                       </p>
                     </div>
                     <div className="bg-white p-3 rounded-md shadow-sm">
-                      <h4 className="font-medium mb-2">Xavfsizlik auditi</h4>
+                      <h4 className="font-medium mb-2">Audit va monitoring</h4>
                       <p className="text-gray-600">
-                        Tizim operatsiyalari va foydalanuvchi harakatlarini qayd qilish va tekshirish.
+                        Tizimda sodir bo'layotgan barcha muhim voqealarni qayd etish va xavfsizlikni monitoring qilish.
                       </p>
                     </div>
                   </div>
                 </div>
               </TabsContent>
-              
+
               <TabsContent value="system" className="pt-4">
                 <div className="border p-4 rounded-md bg-slate-50">
                   <h3 className="text-lg font-medium mb-2 text-center">Tizim arxitekturasi</h3>
@@ -576,214 +647,268 @@ export default function DataManagement() {
                       <text x="150" y="125" textAnchor="middle" fontWeight="bold" fill="#0f172a">Front-end qismi</text>
                       <text x="150" y="150" textAnchor="middle" fontSize="12" fill="#64748b">React, TypeScript, Vite</text>
                       
-                      {/* Strelka */}
-                      <line x1="250" y1="140" x2="350" y2="140" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="340,135 350,140 340,145" fill="#64748b" />
-                      
-                      {/* Ma'lumotlar uzatish */}
-                      <rect x="350" y="100" width="100" height="80" rx="0" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="2" />
-                      <text x="400" y="140" textAnchor="middle" fontWeight="bold" fill="#0f172a">HTTP/</text>
-                      <text x="400" y="160" textAnchor="middle" fontWeight="bold" fill="#0f172a">WebSocket</text>
-                      
-                      {/* Strelka */}
-                      <line x1="450" y1="140" x2="550" y2="140" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="540,135 550,140 540,145" fill="#64748b" />
-                      
                       {/* Back-end qismi */}
-                      <rect x="550" y="100" width="200" height="80" rx="5" fill="#cffafe" stroke="#164e63" strokeWidth="2" />
-                      <text x="650" y="125" textAnchor="middle" fontWeight="bold" fill="#0f172a">Back-end qismi</text>
-                      <text x="650" y="150" textAnchor="middle" fontSize="12" fill="#64748b">Node.js, Express</text>
+                      <rect x="300" y="100" width="200" height="80" rx="5" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="125" textAnchor="middle" fontWeight="bold" fill="#0f172a">Back-end qismi</text>
+                      <text x="400" y="150" textAnchor="middle" fontSize="12" fill="#64748b">Express, TypeScript</text>
                       
-                      {/* AI modellari */}
-                      <rect x="150" y="250" width="200" height="80" rx="5" fill="#fef9c3" stroke="#713f12" strokeWidth="2" />
-                      <text x="250" y="285" textAnchor="middle" fontWeight="bold" fill="#0f172a">AI modellari</text>
-                      <text x="250" y="310" textAnchor="middle" fontSize="12" fill="#64748b">TensorFlow.js, LSTM</text>
+                      {/* Ma'lumotlar qismi */}
+                      <rect x="550" y="100" width="200" height="80" rx="5" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="650" y="125" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlar qismi</text>
+                      <text x="650" y="150" textAnchor="middle" fontSize="12" fill="#64748b">PostgreSQL, Drizzle ORM</text>
                       
-                      {/* Strelka */}
-                      <line x1="150" y1="180" x2="150" y2="250" stroke="#64748b" strokeWidth="2" />
-                      <line x1="150" y1="180" x2="150" y2="200" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="145,240 150,250 155,240" fill="#64748b" />
-                      <text x="110" y="220" textAnchor="middle" fontSize="12" fill="#64748b">JavaScript API</text>
+                      {/* Strelkalar */}
+                      <line x1="250" y1="140" x2="300" y2="140" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="295,135 305,145 295,145" fill="#64748b" />
                       
-                      {/* Ma'lumotlar bazasi */}
-                      <rect x="450" y="250" width="200" height="80" rx="5" fill="#ecfccb" stroke="#3f6212" strokeWidth="2" />
-                      <text x="550" y="285" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlar bazasi</text>
-                      <text x="550" y="310" textAnchor="middle" fontSize="12" fill="#64748b">PostgreSQL, Drizzle ORM</text>
+                      <line x1="500" y1="140" x2="550" y2="140" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="545,135 555,145 545,145" fill="#64748b" />
                       
-                      {/* Strelka */}
-                      <line x1="650" y1="180" x2="650" y2="250" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="645,240 650,250 655,240" fill="#64748b" />
-                      <text x="680" y="220" textAnchor="middle" fontSize="12" fill="#64748b">SQL</text>
+                      {/* Ikkinchi qator */}
+                      <line x1="150" y1="180" x2="150" y2="240" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="145,235 155,245 145,245" fill="#64748b" />
                       
-                      {/* Strelka */}
-                      <line x1="350" y1="290" x2="450" y2="290" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="440,285 450,290 440,295" fill="#64748b" />
-                      <text x="400" y="275" textAnchor="middle" fontSize="12" fill="#64748b">Ma'lumotlar uzatish</text>
+                      <line x1="400" y1="180" x2="400" y2="240" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,235 405,245 395,245" fill="#64748b" />
                       
-                      {/* Tizim boshqaruvi */}
-                      <rect x="300" y="400" width="200" height="80" rx="5" fill="#fae8ff" stroke="#701a75" strokeWidth="2" />
-                      <text x="400" y="435" textAnchor="middle" fontWeight="bold" fill="#0f172a">Tizim boshqaruvi</text>
-                      <text x="400" y="455" textAnchor="middle" fontSize="12" fill="#64748b">WebSocket, mikroxizmatlar</text>
+                      <line x1="650" y1="180" x2="650" y2="240" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="645,235 655,245 645,245" fill="#64748b" />
                       
-                      {/* Strelka */}
-                      <line x1="250" y1="330" x2="320" y2="400" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="313,392 320,400 327,392" fill="#64748b" />
+                      {/* Front-end modullar */}
+                      <rect x="50" y="240" width="200" height="80" rx="5" fill="#bfdbfe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="150" y="265" textAnchor="middle" fontWeight="bold" fill="#0f172a">UI komponentlari</text>
+                      <text x="150" y="285" textAnchor="middle" fontSize="12" fill="#64748b">ShadCN, Tailwind CSS</text>
                       
-                      {/* Strelka */}
-                      <line x1="550" y1="330" x2="480" y2="400" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="473,392 480,400 487,392" fill="#64748b" />
+                      {/* Back-end modullar */}
+                      <rect x="300" y="240" width="200" height="80" rx="5" fill="#bfdbfe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="265" textAnchor="middle" fontWeight="bold" fill="#0f172a">API servislari</text>
+                      <text x="400" y="285" textAnchor="middle" fontSize="12" fill="#64748b">REST, WebSocket</text>
                       
-                      {/* Strelka */}
-                      <line x1="400" y1="480" x2="400" y2="540" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="395,530 400,540 405,530" fill="#64748b" />
+                      {/* Ma'lumotlar modullar */}
+                      <rect x="550" y="240" width="200" height="80" rx="5" fill="#bfdbfe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="650" y="265" textAnchor="middle" fontWeight="bold" fill="#0f172a">Schema modellari</text>
+                      <text x="650" y="285" textAnchor="middle" fontSize="12" fill="#64748b">Drizzle, validatsiya</text>
                       
-                      {/* Algoritm tugashi */}
-                      <ellipse cx="400" cy="570" rx="80" ry="30" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
-                      <text x="400" y="575" textAnchor="middle" fontWeight="bold" fill="#0f172a">Yakunlash</text>
+                      {/* Uchinchi qator */}
+                      <line x1="150" y1="320" x2="150" y2="380" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="145,375 155,385 145,385" fill="#64748b" />
+                      
+                      <line x1="400" y1="320" x2="400" y2="380" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,375 405,385 395,385" fill="#64748b" />
+                      
+                      <line x1="650" y1="320" x2="650" y2="380" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="645,375 655,385 645,385" fill="#64748b" />
+                      
+                      {/* Front-end modullar */}
+                      <rect x="50" y="380" width="200" height="80" rx="5" fill="#bfdbfe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="150" y="405" textAnchor="middle" fontWeight="bold" fill="#0f172a">Sahifa boshqaruvi</text>
+                      <text x="150" y="425" textAnchor="middle" fontSize="12" fill="#64748b">Routing, TanStack Query</text>
+                      
+                      {/* Back-end modullar */}
+                      <rect x="300" y="380" width="200" height="80" rx="5" fill="#bfdbfe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="405" textAnchor="middle" fontWeight="bold" fill="#0f172a">Middleware</text>
+                      <text x="400" y="425" textAnchor="middle" fontSize="12" fill="#64748b">Auth, Validation, Logging</text>
+                      
+                      {/* Ma'lumotlar modullar */}
+                      <rect x="550" y="380" width="200" height="80" rx="5" fill="#bfdbfe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="650" y="405" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlar saqlash</text>
+                      <text x="650" y="425" textAnchor="middle" fontSize="12" fill="#64748b">CRUD operatsiyalari</text>
+                      
+                      {/* Yo'nalish liniyalari */}
+                      <line x1="400" y1="460" x2="400" y2="500" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,495 405,505 395,505" fill="#64748b" />
+                      
+                      <rect x="300" y="500" width="200" height="80" rx="5" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="525" textAnchor="middle" fontWeight="bold" fill="#0f172a">LSTM modeli</text>
+                      <text x="400" y="545" textAnchor="middle" fontSize="12" fill="#64748b">TensorFlow.js, Bashorat</text>
+                      
+                      {/* Yakunlash */}
+                      <line x1="400" y1="580" x2="400" y2="620" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,615 405,625 395,625" fill="#64748b" />
+                      
+                      <ellipse cx="400" cy="650" rx="80" ry="30" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="655" textAnchor="middle" fontWeight="bold" fill="#0f172a">Yakunlash</text>
                     </svg>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                     <div className="bg-white p-3 rounded-md shadow-sm">
-                      <h4 className="font-medium mb-2">Frontend arxitekturasi</h4>
+                      <h4 className="font-medium mb-2">UI arxitekturasi</h4>
                       <p className="text-gray-600">
-                        React va TypeScript asosida komponentli tizim, React Query orqali ma'lumotlarni boshqarish.
+                        Foydalanuvchi interfeysi, sahifa komponentlari va UI elementlari boshqaruvi.
                       </p>
                     </div>
                     <div className="bg-white p-3 rounded-md shadow-sm">
-                      <h4 className="font-medium mb-2">Backend arxitekturasi</h4>
+                      <h4 className="font-medium mb-2">API arxitekturasi</h4>
                       <p className="text-gray-600">
-                        Express.js, WebSocket serverlar va RESTful API endpointlari, Middleware qatlamlari.
+                        REST API va WebSocket orqali real vaqt ma'lumotlarini uzatish mexanizmlari.
                       </p>
                     </div>
                     <div className="bg-white p-3 rounded-md shadow-sm">
-                      <h4 className="font-medium mb-2">Ma'lumotlar bazasi</h4>
+                      <h4 className="font-medium mb-2">Ma'lumotlar modeli</h4>
                       <p className="text-gray-600">
-                        PostgreSQL asosida ma'lumotlar bazasi sxemasi, Drizzle ORM qatlamlari.
+                        PostgreSQL ma'lumotlar bazasi modeli va ORM orqali ma'lumotlar bilan ishlash qatlamlari.
                       </p>
                     </div>
                   </div>
                 </div>
               </TabsContent>
               
+              <TabsContent value="idef0model" className="pt-4">
+                <div className="border p-4 rounded-md bg-slate-50">
+                  <h3 className="text-lg font-medium mb-2 text-center">IDEF0 modeli</h3>
+                  <p className="text-sm text-gray-500 mb-4 text-center">
+                    Suv resurslari boshqarishning IDEF0 strukturaviy modeli
+                  </p>
+                  
+                  <div className="w-full overflow-x-auto mb-4">
+                    <IDEF0Model />
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div className="bg-white p-3 rounded-md shadow-sm">
+                      <h4 className="font-medium mb-2">Jarayonlar modellashtirish</h4>
+                      <p className="text-gray-600">
+                        IDEF0 modellashtirish standartiga asoslangan funksional jarayonlar tavsifi.
+                      </p>
+                    </div>
+                    <div className="bg-white p-3 rounded-md shadow-sm">
+                      <h4 className="font-medium mb-2">Xalqaro standart</h4>
+                      <p className="text-gray-600">
+                        IDEF0 (Integration Definition for Function Modeling) standartiga muvofiq tuzilgan diagrammalar.
+                      </p>
+                    </div>
+                    <div className="bg-white p-3 rounded-md shadow-sm">
+                      <h4 className="font-medium mb-2">Tizim dekompozitsiyasi</h4>
+                      <p className="text-gray-600">
+                        Tizimning yuqori darajadagi funksiyalaridan boshlab pastki darajadagi jarayonlarigacha bo'lgan dekompozitsiya.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+
               <TabsContent value="network" className="pt-4">
                 <div className="border p-4 rounded-md bg-slate-50">
                   <h3 className="text-lg font-medium mb-2 text-center">Tarmoq algoritmlari</h3>
                   <p className="text-sm text-gray-500 mb-4 text-center">
-                    Ma'lumotlarni uzatish va sinxronizatsiya algoritmlari
+                    Ma'lumotlarni uzatish va qayta ishlash uchun tarmoq algoritmlari
                   </p>
                   
-                  <div className="w-full overflow-x-auto mb-4 flex justify-center">
-                    <svg width="800" height="600" viewBox="0 0 800 600">
+                  <div className="p-2 bg-white rounded-lg shadow-sm mb-4 overflow-hidden">
+                    <svg width="800" height="700" viewBox="0 0 800 700">
                       {/* Algoritm boshi */}
-                      <ellipse cx="400" cy="30" rx="80" ry="30" fill="#e9d5ff" stroke="#581c87" strokeWidth="2" />
+                      <ellipse cx="400" cy="30" rx="80" ry="30" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
                       <text x="400" y="35" textAnchor="middle" fontWeight="bold" fill="#0f172a">Boshlash</text>
                       
                       {/* Strelka */}
                       <line x1="400" y1="60" x2="400" y2="90" stroke="#64748b" strokeWidth="2" />
                       <polygon points="395,90 405,90 400,100" fill="#64748b" />
                       
-                      {/* Server ishga tushirish */}
-                      <rect x="300" y="100" width="200" height="60" rx="0" fill="#e9d5ff" stroke="#581c87" strokeWidth="2" />
-                      <text x="400" y="130" textAnchor="middle" fontWeight="bold" fill="#0f172a">WebSocket serverni</text>
-                      <text x="400" y="150" textAnchor="middle" fontWeight="bold" fill="#0f172a">ishga tushirish</text>
+                      {/* Ulanish o'rnatish */}
+                      <rect x="300" y="100" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="130" textAnchor="middle" fontWeight="bold" fill="#0f172a">WebSocket server</text>
+                      <text x="400" y="150" textAnchor="middle" fontWeight="bold" fill="#0f172a">ishga tushirildi</text>
                       
                       {/* Strelka */}
                       <line x1="400" y1="160" x2="400" y2="190" stroke="#64748b" strokeWidth="2" />
                       <polygon points="395,190 405,190 400,200" fill="#64748b" />
                       
-                      {/* Mijoz ulangan? */}
-                      <polygon points="400,200 325,250 475,250" fill="#e9d5ff" stroke="#581c87" strokeWidth="2" />
-                      <text x="400" y="235" textAnchor="middle" fontWeight="bold" fill="#0f172a">Mijoz ulangan?</text>
-                      
-                      {/* Strelka yo'q */}
-                      <line x1="325" y1="250" x2="250" y2="250" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="255,245 245,250 255,255" fill="#64748b" />
-                      <text x="300" y="235" textAnchor="middle" fontSize="12" fill="#7f1d1d">Yo'q</text>
-                      
-                      {/* Kutish */}
-                      <rect x="150" y="220" width="100" height="60" rx="0" fill="#f5f5f4" stroke="#78716c" strokeWidth="2" />
-                      <text x="200" y="250" textAnchor="middle" fontWeight="bold" fill="#0f172a">Kutish</text>
-                      
-                      {/* Strelka qaytish */}
-                      <line x1="150" y1="250" x2="100" y2="250" stroke="#64748b" strokeWidth="2" />
-                      <line x1="100" y1="250" x2="100" y2="130" stroke="#64748b" strokeWidth="2" />
-                      <line x1="100" y1="130" x2="300" y2="130" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="290,125 300,130 290,135" fill="#64748b" />
-                      
-                      {/* Strelka ha */}
-                      <line x1="400" y1="250" x2="400" y2="280" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="395,280 405,280 400,290" fill="#64748b" />
-                      <text x="415" y="265" textAnchor="middle" fontSize="12" fill="#15803d">Ha</text>
-                      
-                      {/* Ulanishni o'rnatish */}
-                      <rect x="300" y="290" width="200" height="60" rx="0" fill="#f8fafc" stroke="#581c87" strokeWidth="2" />
-                      <text x="400" y="320" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ulanishni o'rnatish</text>
-                      <text x="400" y="340" textAnchor="middle" fontWeight="bold" fill="#0f172a">va autentifikatsiya</text>
+                      {/* Ulanishni kutish */}
+                      <rect x="300" y="200" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="230" textAnchor="middle" fontWeight="bold" fill="#0f172a">Mijoz ulanishini</text>
+                      <text x="400" y="250" textAnchor="middle" fontWeight="bold" fill="#0f172a">kutish</text>
                       
                       {/* Strelka */}
-                      <line x1="400" y1="350" x2="400" y2="380" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="395,380 405,380 400,390" fill="#64748b" />
+                      <line x1="400" y1="260" x2="400" y2="290" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,290 405,290 400,300" fill="#64748b" />
                       
-                      {/* Ma'lumotlarni uzatish */}
-                      <rect x="300" y="390" width="200" height="60" rx="0" fill="#f8fafc" stroke="#581c87" strokeWidth="2" />
-                      <text x="400" y="420" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlarni</text>
-                      <text x="400" y="440" textAnchor="middle" fontWeight="bold" fill="#0f172a">uzatish va qabul qilish</text>
+                      {/* Ulanish o'rnatildi */}
+                      <polygon points="300,300 500,300 450,350 350,350" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="330" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ulanish o'rnatildimi?</text>
+                      
+                      {/* Yo'q yo'nalishi */}
+                      <line x1="300" y1="325" x2="200" y2="400" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="195,395 200,405 205,395" fill="#64748b" />
+                      <text x="230" y="350" textAnchor="middle" fontSize="12" fill="#0f172a">Yo'q</text>
+                      
+                      <rect x="100" y="400" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="200" y="430" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ulanish xatosi</text>
+                      <text x="200" y="450" textAnchor="middle" fontWeight="bold" fill="#0f172a">qayta urinish</text>
+                      
+                      {/* Qayta urinish */}
+                      <path d="M 200,460 L 200,500 L 320,500 L 320,260 L 300,260" stroke="#64748b" strokeWidth="2" fill="none" strokeDasharray="5,5" />
+                      <polygon points="305,255 295,265 305,265" fill="#64748b" />
+                      
+                      {/* Ha yo'nalishi */}
+                      <line x1="500" y1="325" x2="600" y2="400" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="595,395 600,405 605,395" fill="#64748b" />
+                      <text x="570" y="350" textAnchor="middle" fontSize="12" fill="#0f172a">Ha</text>
+                      
+                      <rect x="500" y="400" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="600" y="430" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlar</text>
+                      <text x="600" y="450" textAnchor="middle" fontWeight="bold" fill="#0f172a">tayyorlash</text>
                       
                       {/* Strelka */}
-                      <line x1="400" y1="450" x2="400" y2="480" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="395,480 405,480 400,490" fill="#64748b" />
+                      <line x1="600" y1="460" x2="600" y2="490" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="595,490 605,490 600,500" fill="#64748b" />
                       
-                      {/* Ulanish uzildi? */}
-                      <polygon points="400,490 325,540 475,540" fill="#e9d5ff" stroke="#581c87" strokeWidth="2" />
-                      <text x="400" y="525" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ulanish uzildi?</text>
+                      {/* Uzluksiz siklni ko'rsatuvchi */}
+                      <polygon points="500,500 700,500 650,550 550,550" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="600" y="530" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlarni uzatish</text>
                       
-                      {/* Strelka yo'q (tsikl) */}
-                      <line x1="475" y1="540" x2="600" y2="540" stroke="#64748b" strokeWidth="2" />
-                      <line x1="600" y1="540" x2="600" y2="420" stroke="#64748b" strokeWidth="2" />
-                      <line x1="600" y1="420" x2="500" y2="420" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="510,415 500,420 510,425" fill="#64748b" />
-                      <text x="540" y="525" textAnchor="middle" fontSize="12" fill="#15803d">Yo'q</text>
+                      {/* Tarmoq yo'nalishlari */}
+                      <line x1="500" y1="525" x2="400" y2="580" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,575 400,585 405,575" fill="#64748b" />
+                      <text x="440" y="550" textAnchor="middle" fontSize="12" fill="#0f172a">Har 10 soniyada</text>
                       
-                      {/* Strelka ha */}
-                      <line x1="400" y1="540" x2="400" y2="570" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="395,570 405,570 400,580" fill="#64748b" />
-                      <text x="385" y="555" textAnchor="middle" fontSize="12" fill="#7f1d1d">Ha</text>
+                      <rect x="300" y="580" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="610" textAnchor="middle" fontWeight="bold" fill="#0f172a">Suv omborlari</text>
+                      <text x="400" y="630" textAnchor="middle" fontWeight="bold" fill="#0f172a">ma'lumotlarini uzatish</text>
                       
-                      {/* Algoritm oxiri */}
-                      <ellipse cx="400" cy="600" rx="80" ry="30" fill="#e9d5ff" stroke="#581c87" strokeWidth="2" />
-                      <text x="400" y="605" textAnchor="middle" fontWeight="bold" fill="#0f172a">Yakunlash</text>
+                      <line x1="700" y1="525" x2="800" y2="580" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="795,575 800,585 805,575" fill="#64748b" />
+                      <text x="760" y="550" textAnchor="middle" fontSize="12" fill="#0f172a">Talabga ko'ra</text>
                       
-                      {/* Yon ta'riflar */}
-                      <rect x="550" y="200" width="150" height="80" rx="5" fill="#f5f5f4" stroke="#78716c" strokeWidth="1.5" />
-                      <text x="625" y="230" textAnchor="middle" fontSize="12" fill="#0f172a">Har 10 soniyada</text>
-                      <text x="625" y="250" textAnchor="middle" fontSize="12" fill="#0f172a">ma'lumot yangilanadi</text>
+                      <rect x="700" y="580" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="800" y="610" textAnchor="middle" fontWeight="bold" fill="#0f172a">Maxsus so'rovlarga</text>
+                      <text x="800" y="630" textAnchor="middle" fontWeight="bold" fill="#0f172a">javob qaytarish</text>
                       
-                      <rect x="500" y="300" width="150" height="80" rx="5" fill="#f5f5f4" stroke="#78716c" strokeWidth="1.5" />
-                      <text x="575" y="330" textAnchor="middle" fontSize="12" fill="#0f172a">WebSocket</text>
-                      <text x="575" y="350" textAnchor="middle" fontSize="12" fill="#0f172a">real vaqtda aloqa</text>
+                      {/* Natija */}
+                      <line x1="400" y1="640" x2="400" y2="680" stroke="#64748b" strokeWidth="2" strokeDasharray="5,5" />
+                      <line x1="800" y1="640" x2="800" y2="660" stroke="#64748b" strokeWidth="2" strokeDasharray="5,5" />
+                      <line x1="800" y1="660" x2="400" y2="680" stroke="#64748b" strokeWidth="2" strokeDasharray="5,5" />
+                      <line x1="400" y1="680" x2="400" y2="710" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,705 400,715 405,705" fill="#64748b" />
                       
-                      <line x1="500" y1="320" x2="450" y2="320" stroke="#78716c" strokeWidth="1.5" strokeDasharray="5,5" />
+                      {/* Sessiya tugatilishi */}
+                      <rect x="300" y="710" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="740" textAnchor="middle" fontWeight="bold" fill="#0f172a">Sessiya davom etadi</text>
+                      <text x="400" y="760" textAnchor="middle" fontWeight="bold" fill="#0f172a">uzilish vaqtigacha</text>
+                      
+                      {/* Qaytar yo'l */}
+                      <path d="M 500,740 L 720,740 L 720,480 L 600,480" stroke="#64748b" strokeWidth="2" fill="none" />
+                      <polygon points="605,475 595,485 605,485" fill="#64748b" />
                     </svg>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                     <div className="bg-white p-3 rounded-md shadow-sm">
-                      <h4 className="font-medium mb-2">WebSocket protokoli</h4>
+                      <h4 className="font-medium mb-2">WebSocket algoritmi</h4>
                       <p className="text-gray-600">
-                        Doimiy ulanishni ta'minlash uchun WebSocket protokoli va ma'lumotlarni uzatish algoritmi.
+                        Real vaqt rejimida ma'lumotlarni uzatish uchun WebSocket protokolining ishlash algoritmi.
                       </p>
                     </div>
                     <div className="bg-white p-3 rounded-md shadow-sm">
-                      <h4 className="font-medium mb-2">Ma'lumotlarni tarqatish</h4>
+                      <h4 className="font-medium mb-2">Ma'lumotlarni sinxronlash</h4>
                       <p className="text-gray-600">
-                        Bir vaqtning o'zida ko'p foydalanuvchilarga ma'lumotlarni broadcast qilish algoritmi.
+                        Serverda yangilangan ma'lumotlarni barcha ulangan mijozlarga sinxron uzatish algoritmi.
                       </p>
                     </div>
                     <div className="bg-white p-3 rounded-md shadow-sm">
-                      <h4 className="font-medium mb-2">Xatoliklarni bartaraf etish</h4>
+                      <h4 className="font-medium mb-2">So'rovlarni qayta ishlash</h4>
                       <p className="text-gray-600">
-                        Ulanish uzilganda va xatoliklar yuz berganda qayta ulanish va ma'lumotlarni tiklash algoritmi.
+                        Mijozlar yuborgan so'rovlarni qayta ishlash va javob qaytarish algoritmi.
                       </p>
                     </div>
                   </div>
@@ -792,8 +917,8 @@ export default function DataManagement() {
             </Tabs>
           </CardContent>
         </Card>
-        
-        {/* Ma'lumotlarni yuklab olish qismi */}
+
+        {/* Ma'lumotlarni yuklab olish bo'limi */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -801,7 +926,7 @@ export default function DataManagement() {
               Ma'lumotlarni yuklab olish
             </CardTitle>
             <CardDescription>
-              Suv boshqaruvi ma'lumotlarini tahlil va hisobot uchun yuklab olish
+              Tizimdagi mavjud ma'lumotlarni CSV formatida yuklab olish
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -816,79 +941,178 @@ export default function DataManagement() {
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="filter" className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                  <div className="space-y-2">
-                    <h3 className="text-sm font-medium">Ma'lumotlar turi</h3>
-                    <Select value={dataType} onValueChange={setDataType}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Turni tanlang" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="reservoirs">Suv omborlari</SelectItem>
-                        <SelectItem value="allocations">Suv taqsimoti</SelectItem>
-                        <SelectItem value="requests">Suv so'rovlari</SelectItem>
-                      </SelectContent>
-                    </Select>
+              <TabsContent value="filter" className="pt-4">
+                <div className="border p-4 rounded-md bg-slate-50">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <p className="text-sm font-medium mb-2">Ma'lumot turini tanlang</p>
+                      <Select value={dataType} onValueChange={setDataType}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Ma'lumot turini tanlang" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="reservoirs">Suv omborlari</SelectItem>
+                          <SelectItem value="allocations">Suv taqsimoti</SelectItem>
+                          <SelectItem value="requests">Suv so'rovlari</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <p className="text-sm font-medium mb-2">Boshlanish vaqti</p>
+                      <DatePicker date={startDate} setDate={setStartDate} />
+                    </div>
+                    
+                    <div>
+                      <p className="text-sm font-medium mb-2">Tugash vaqti</p>
+                      <DatePicker date={endDate} setDate={setEndDate} />
+                    </div>
                   </div>
-
-                  <div className="space-y-2">
-                    <h3 className="text-sm font-medium">Boshlanish sanasi</h3>
-                    <DatePicker date={startDate} setDate={setStartDate} />
-                  </div>
-
-                  <div className="space-y-2">
-                    <h3 className="text-sm font-medium">Tugash sanasi</h3>
-                    <DatePicker date={endDate} setDate={setEndDate} />
-                  </div>
-
-                  <div className="flex items-end">
-                    <Button onClick={downloadData} className="w-full gap-1">
-                      <Download className="h-4 w-4" />
-                      Ma'lumotlarni yuklab olish
+                  
+                  <div className="flex justify-end mt-4">
+                    <Button onClick={downloadData} className="flex items-center">
+                      <Download className="mr-2 h-4 w-4" /> 
+                      Yuklab olish
                     </Button>
                   </div>
                 </div>
               </TabsContent>
-
-              <TabsContent value="preview">
-                <div className="rounded-md border h-[300px] overflow-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b bg-muted/50">
-                        <th className="h-10 px-4 text-left font-medium">ID</th>
-                        <th className="h-10 px-4 text-left font-medium">Nomi/Turi</th>
-                        <th className="h-10 px-4 text-left font-medium">Sana</th>
-                        <th className="h-10 px-4 text-left font-medium">Status/Daraja</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {dataType === "reservoirs" && reservoirs.map((reservoir: any) => (
-                        <tr key={reservoir.id} className="border-b">
-                          <td className="p-4">{reservoir.id}</td>
-                          <td className="p-4">{reservoir.name}</td>
-                          <td className="p-4">{reservoir.lastUpdated ? format(new Date(reservoir.lastUpdated), "yyyy-MM-dd") : "-"}</td>
-                          <td className="p-4">{`${(reservoir.currentLevel / reservoir.capacity * 100).toFixed(1)}%`}</td>
-                        </tr>
-                      ))}
-                      {dataType === "allocations" && allocations.map((allocation: any) => (
-                        <tr key={allocation.id} className="border-b">
-                          <td className="p-4">{allocation.id}</td>
-                          <td className="p-4">{`Foydalanuvchi ID: ${allocation.userId}`}</td>
-                          <td className="p-4">{format(new Date(allocation.startDate), "yyyy-MM-dd")}</td>
-                          <td className="p-4">{`${allocation.used}/${allocation.amount}`}</td>
-                        </tr>
-                      ))}
-                      {dataType === "requests" && requests.map((request: any) => (
-                        <tr key={request.id} className="border-b">
-                          <td className="p-4">{request.id}</td>
-                          <td className="p-4">{request.type}</td>
-                          <td className="p-4">{format(new Date(request.requestDate), "yyyy-MM-dd")}</td>
-                          <td className="p-4">{request.status}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+              
+              <TabsContent value="preview" className="pt-4">
+                <div className="border p-4 rounded-md bg-slate-50 overflow-auto">
+                  <p className="text-sm mb-4">
+                    {dataType === "reservoirs" && `Suv omborlari ma'lumotlari (${reservoirs.length})`}
+                    {dataType === "allocations" && `Suv taqsimoti ma'lumotlari (${allocations.length})`}
+                    {dataType === "requests" && `Suv so'rovlari ma'lumotlari (${requests.length})`}
+                  </p>
+                  
+                  {dataType === "reservoirs" && reservoirs.length > 0 && (
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Nomi
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Suv hajmi
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Oxirgi yangilanish
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {filterDataByDate(reservoirs).slice(0, 5).map((reservoir: any, index) => (
+                            <tr key={index}>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                {reservoir.name}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {reservoir.currentLevel}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {reservoir.lastUpdated ? new Date(reservoir.lastUpdated).toLocaleString() : 'N/A'}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {reservoirs.length > 5 && (
+                        <p className="text-center text-gray-500 text-sm mt-2">
+                          Va yana {reservoirs.length - 5} qator...
+                        </p>
+                      )}
+                    </div>
+                  )}
+                  
+                  {dataType === "allocations" && allocations.length > 0 && (
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Fermer
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Ajratilgan miqdor
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Ishlatilgan
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {filterDataByDate(allocations).slice(0, 5).map((allocation: any, index) => (
+                            <tr key={index}>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                {allocation.userId}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {allocation.amount}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {allocation.used}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {allocations.length > 5 && (
+                        <p className="text-center text-gray-500 text-sm mt-2">
+                          Va yana {allocations.length - 5} qator...
+                        </p>
+                      )}
+                    </div>
+                  )}
+                  
+                  {dataType === "requests" && requests.length > 0 && (
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Fermer
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              So'ralgan miqdor
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Holati
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {filterDataByDate(requests).slice(0, 5).map((request: any, index) => (
+                            <tr key={index}>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                {request.userId}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {request.amount}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {request.status}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {requests.length > 5 && (
+                        <p className="text-center text-gray-500 text-sm mt-2">
+                          Va yana {requests.length - 5} qator...
+                        </p>
+                      )}
+                    </div>
+                  )}
+                  
+                  {((dataType === "reservoirs" && reservoirs.length === 0) || 
+                    (dataType === "allocations" && allocations.length === 0) || 
+                    (dataType === "requests" && requests.length === 0)) && (
+                    <div className="text-center py-6">
+                      <p className="text-gray-500">Ma'lumotlar mavjud emas.</p>
+                    </div>
+                  )}
                 </div>
               </TabsContent>
             </Tabs>
