@@ -256,38 +256,79 @@ export default function DataManagement() {
                   </p>
                   
                   <div className="w-full overflow-x-auto mb-4 flex justify-center">
-                    <svg width="800" height="400" viewBox="0 0 800 400">
-                      {/* Algoritm diagrammasi */}
-                      <rect x="300" y="20" width="200" height="60" rx="5" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
-                      <text x="400" y="50" textAnchor="middle" fontWeight="bold" fill="#0f172a">Statistik tahlil algoritmi</text>
-                      <text x="400" y="70" textAnchor="middle" fontSize="12" fill="#64748b">Boshlang'ich nuqta</text>
+                    <svg width="800" height="550" viewBox="0 0 800 550">
+                      {/* Algoritm boshi */}
+                      <ellipse cx="400" cy="30" rx="80" ry="30" fill="#bfdbfe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="35" textAnchor="middle" fontWeight="bold" fill="#0f172a">Boshlash</text>
                       
                       {/* Strelka */}
-                      <line x1="400" y1="80" x2="400" y2="110" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="395,110 405,110 400,120" fill="#64748b" />
+                      <line x1="400" y1="60" x2="400" y2="90" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,90 405,90 400,100" fill="#64748b" />
+                      
+                      {/* Ma'lumotlar manbalari */}
+                      <rect x="300" y="100" width="200" height="60" rx="0" fill="#bfdbfe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="130" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlar manbalarini</text>
+                      <text x="400" y="150" textAnchor="middle" fontWeight="bold" fill="#0f172a">aniqlash</text>
+                      
+                      {/* Strelka */}
+                      <line x1="400" y1="160" x2="400" y2="190" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,190 405,190 400,200" fill="#64748b" />
                       
                       {/* Ma'lumotlarni yig'ish */}
-                      <rect x="300" y="120" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
-                      <text x="400" y="150" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlarni yig'ish va</text>
-                      <text x="400" y="170" textAnchor="middle" fontWeight="bold" fill="#0f172a">normalizatsiya qilish</text>
+                      <rect x="300" y="200" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="230" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlarni yig'ish va</text>
+                      <text x="400" y="250" textAnchor="middle" fontWeight="bold" fill="#0f172a">normalizatsiya qilish</text>
                       
-                      {/* Strelka */}
-                      <line x1="400" y1="180" x2="400" y2="210" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="395,210 405,210 400,220" fill="#64748b" />
+                      {/* Shart tekshirish */}
+                      <polygon points="400,280 325,330 475,330" fill="#bfdbfe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="315" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlar yetarli?</text>
+                      
+                      {/* Strelka yo'q */}
+                      <line x1="325" y1="330" x2="200" y2="330" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="210,325 200,330 210,335" fill="#64748b" />
+                      <text x="260" y="315" textAnchor="middle" fontSize="12" fill="#7f1d1d">Yo'q</text>
+                      
+                      {/* Ma'lumotlarni to'ldirish */}
+                      <rect x="100" y="300" width="100" height="60" rx="0" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="150" y="330" textAnchor="middle" fontWeight="bold" fill="#0f172a">Qo'shimcha</text>
+                      <text x="150" y="350" textAnchor="middle" fontWeight="bold" fill="#0f172a">ma'lumotlar</text>
+                      
+                      {/* Strelka qaytish */}
+                      <line x1="100" y1="330" x2="100" y2="230" stroke="#64748b" strokeWidth="2" />
+                      <line x1="100" y1="230" x2="300" y2="230" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="290,225 300,230 290,235" fill="#64748b" />
+                      
+                      {/* Strelka ha */}
+                      <line x1="400" y1="330" x2="400" y2="360" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,360 405,360 400,370" fill="#64748b" />
+                      <text x="415" y="345" textAnchor="middle" fontSize="12" fill="#15803d">Ha</text>
                       
                       {/* Tahlil qilish */}
-                      <rect x="300" y="220" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
-                      <text x="400" y="250" textAnchor="middle" fontWeight="bold" fill="#0f172a">Statistik modellarni</text>
-                      <text x="400" y="270" textAnchor="middle" fontWeight="bold" fill="#0f172a">qo'llash va tahlil qilish</text>
+                      <rect x="300" y="370" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="400" textAnchor="middle" fontWeight="bold" fill="#0f172a">Statistik modellarni</text>
+                      <text x="400" y="420" textAnchor="middle" fontWeight="bold" fill="#0f172a">qo'llash va tahlil qilish</text>
                       
                       {/* Strelka */}
-                      <line x1="400" y1="280" x2="400" y2="310" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="395,310 405,310 400,320" fill="#64748b" />
+                      <line x1="400" y1="430" x2="400" y2="460" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,460 405,460 400,470" fill="#64748b" />
                       
                       {/* Natijalarni vizualizatsiya qilish */}
-                      <rect x="300" y="320" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
-                      <text x="400" y="350" textAnchor="middle" fontWeight="bold" fill="#0f172a">Natijalarni vizualizatsiya</text>
-                      <text x="400" y="370" textAnchor="middle" fontWeight="bold" fill="#0f172a">qilish va hisobot yaratish</text>
+                      <rect x="300" y="470" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="500" textAnchor="middle" fontWeight="bold" fill="#0f172a">Natijalarni vizualizatsiya</text>
+                      <text x="400" y="520" textAnchor="middle" fontWeight="bold" fill="#0f172a">qilish va hisobot yaratish</text>
+                      
+                      {/* Tugash */}
+                      <line x1="400" y1="530" x2="400" y2="560" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,560 405,560 400,570" fill="#64748b" />
+                      
+                      {/* Algoritm oxiri */}
+                      <ellipse cx="400" cy="590" rx="80" ry="30" fill="#bfdbfe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="595" textAnchor="middle" fontWeight="bold" fill="#0f172a">Yakunlash</text>
+                      
+                      {/* Yon ta'riflar */}
+                      <rect x="550" y="300" width="150" height="80" rx="5" fill="#f5f5f4" stroke="#78716c" strokeWidth="1.5" />
+                      <text x="625" y="330" textAnchor="middle" fontSize="12" fill="#0f172a">LSTM modeli</text>
+                      <text x="625" y="350" textAnchor="middle" fontSize="12" fill="#0f172a">bashorat uchun</text>
                     </svg>
                   </div>
                   
@@ -322,38 +363,64 @@ export default function DataManagement() {
                   </p>
                   
                   <div className="w-full overflow-x-auto mb-4 flex justify-center">
-                    <svg width="800" height="400" viewBox="0 0 800 400">
-                      {/* Algoritm diagrammasi */}
-                      <rect x="300" y="20" width="200" height="60" rx="5" fill="#fee2e2" stroke="#7f1d1d" strokeWidth="2" />
-                      <text x="400" y="50" textAnchor="middle" fontWeight="bold" fill="#0f172a">Xavfsizlik algoritmi</text>
-                      <text x="400" y="70" textAnchor="middle" fontSize="12" fill="#64748b">Boshlang'ich nuqta</text>
+                    <svg width="800" height="500" viewBox="0 0 800 500">
+                      {/* Algoritm boshi */}
+                      <ellipse cx="400" cy="30" rx="80" ry="30" fill="#fee2e2" stroke="#7f1d1d" strokeWidth="2" />
+                      <text x="400" y="35" textAnchor="middle" fontWeight="bold" fill="#0f172a">Boshlash</text>
                       
                       {/* Strelka */}
-                      <line x1="400" y1="80" x2="400" y2="110" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="395,110 405,110 400,120" fill="#64748b" />
+                      <line x1="400" y1="60" x2="400" y2="90" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,90 405,90 400,100" fill="#64748b" />
+                      
+                      {/* Kirish ma'lumotlari */}
+                      <rect x="300" y="100" width="200" height="60" rx="0" fill="#fecaca" stroke="#7f1d1d" strokeWidth="2" />
+                      <text x="400" y="130" textAnchor="middle" fontWeight="bold" fill="#0f172a">Kirish ma'lumotlarini</text>
+                      <text x="400" y="150" textAnchor="middle" fontWeight="bold" fill="#0f172a">qabul qilish</text>
+                      
+                      {/* Strelka */}
+                      <line x1="400" y1="160" x2="400" y2="190" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,190 405,190 400,200" fill="#64748b" />
                       
                       {/* Autentifikatsiya tekshirish */}
-                      <rect x="300" y="120" width="200" height="60" rx="0" fill="#f8fafc" stroke="#7f1d1d" strokeWidth="2" />
-                      <text x="400" y="150" textAnchor="middle" fontWeight="bold" fill="#0f172a">Foydalanuvchi</text>
-                      <text x="400" y="170" textAnchor="middle" fontWeight="bold" fill="#0f172a">autentifikatsiyasi</text>
+                      <rect x="300" y="200" width="200" height="60" rx="0" fill="#f8fafc" stroke="#7f1d1d" strokeWidth="2" />
+                      <text x="400" y="230" textAnchor="middle" fontWeight="bold" fill="#0f172a">Foydalanuvchi</text>
+                      <text x="400" y="250" textAnchor="middle" fontWeight="bold" fill="#0f172a">autentifikatsiyasi</text>
                       
-                      {/* Strelka */}
-                      <line x1="400" y1="180" x2="400" y2="210" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="395,210 405,210 400,220" fill="#64748b" />
+                      {/* Shart tekshirish */}
+                      <polygon points="400,280 325,330 475,330" fill="#fee2e2" stroke="#7f1d1d" strokeWidth="2" />
+                      <text x="400" y="315" textAnchor="middle" fontWeight="bold" fill="#0f172a">Tasdiqlandi?</text>
+                      
+                      {/* Strelka yo'q */}
+                      <line x1="325" y1="330" x2="200" y2="330" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="205,325 195,330 205,335" fill="#64748b" />
+                      <text x="260" y="315" textAnchor="middle" fontSize="12" fill="#7f1d1d">Yo'q</text>
+                      
+                      {/* Xatolik xabari */}
+                      <rect x="100" y="300" width="100" height="60" rx="0" fill="#fecaca" stroke="#7f1d1d" strokeWidth="2" />
+                      <text x="150" y="335" textAnchor="middle" fontWeight="bold" fill="#0f172a">Xatolik</text>
+                      
+                      {/* Strelka qaytish */}
+                      <line x1="150" y1="300" x2="150" y2="130" stroke="#64748b" strokeWidth="2" />
+                      <line x1="150" y1="130" x2="300" y2="130" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="290,125 300,130 290,135" fill="#64748b" />
+                      
+                      {/* Strelka ha */}
+                      <line x1="400" y1="330" x2="400" y2="360" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,360 405,360 400,370" fill="#64748b" />
+                      <text x="415" y="345" textAnchor="middle" fontSize="12" fill="#15803d">Ha</text>
                       
                       {/* Avtorizatsiya */}
-                      <rect x="300" y="220" width="200" height="60" rx="0" fill="#f8fafc" stroke="#7f1d1d" strokeWidth="2" />
-                      <text x="400" y="250" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ruxsat tekshirish</text>
-                      <text x="400" y="270" textAnchor="middle" fontWeight="bold" fill="#0f172a">(Avtorizatsiya)</text>
+                      <rect x="300" y="370" width="200" height="60" rx="0" fill="#f8fafc" stroke="#7f1d1d" strokeWidth="2" />
+                      <text x="400" y="400" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ruxsatlarni tekshirish</text>
+                      <text x="400" y="420" textAnchor="middle" fontWeight="bold" fill="#0f172a">(Avtorizatsiya)</text>
                       
                       {/* Strelka */}
-                      <line x1="400" y1="280" x2="400" y2="310" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="395,310 405,310 400,320" fill="#64748b" />
+                      <line x1="400" y1="430" x2="400" y2="460" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,460 405,460 400,470" fill="#64748b" />
                       
-                      {/* Audit va monitoring */}
-                      <rect x="300" y="320" width="200" height="60" rx="0" fill="#f8fafc" stroke="#7f1d1d" strokeWidth="2" />
-                      <text x="400" y="350" textAnchor="middle" fontWeight="bold" fill="#0f172a">Xavfsizlik auditi</text>
-                      <text x="400" y="370" textAnchor="middle" fontWeight="bold" fill="#0f172a">va monitoring</text>
+                      {/* Algoritm soni */}
+                      <ellipse cx="400" cy="490" rx="80" ry="30" fill="#fee2e2" stroke="#7f1d1d" strokeWidth="2" />
+                      <text x="400" y="495" textAnchor="middle" fontWeight="bold" fill="#0f172a">Yakunlash</text>
                     </svg>
                   </div>
                   
@@ -474,50 +541,96 @@ export default function DataManagement() {
                   </p>
                   
                   <div className="w-full overflow-x-auto mb-4 flex justify-center">
-                    <svg width="800" height="400" viewBox="0 0 800 400">
-                      {/* Algoritm diagrammasi */}
-                      <rect x="300" y="20" width="200" height="60" rx="5" fill="#d8b4fe" stroke="#581c87" strokeWidth="2" />
-                      <text x="400" y="50" textAnchor="middle" fontWeight="bold" fill="#0f172a">WebSocket algoritmi</text>
-                      <text x="400" y="70" textAnchor="middle" fontSize="12" fill="#64748b">Real vaqtda ma'lumot uzatish</text>
+                    <svg width="800" height="600" viewBox="0 0 800 600">
+                      {/* Algoritm boshi */}
+                      <ellipse cx="400" cy="30" rx="80" ry="30" fill="#e9d5ff" stroke="#581c87" strokeWidth="2" />
+                      <text x="400" y="35" textAnchor="middle" fontWeight="bold" fill="#0f172a">Boshlash</text>
                       
                       {/* Strelka */}
-                      <line x1="400" y1="80" x2="400" y2="110" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="395,110 405,110 400,120" fill="#64748b" />
+                      <line x1="400" y1="60" x2="400" y2="90" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,90 405,90 400,100" fill="#64748b" />
+                      
+                      {/* Server ishga tushirish */}
+                      <rect x="300" y="100" width="200" height="60" rx="0" fill="#e9d5ff" stroke="#581c87" strokeWidth="2" />
+                      <text x="400" y="130" textAnchor="middle" fontWeight="bold" fill="#0f172a">WebSocket serverni</text>
+                      <text x="400" y="150" textAnchor="middle" fontWeight="bold" fill="#0f172a">ishga tushirish</text>
+                      
+                      {/* Strelka */}
+                      <line x1="400" y1="160" x2="400" y2="190" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,190 405,190 400,200" fill="#64748b" />
+                      
+                      {/* Mijoz ulangan? */}
+                      <polygon points="400,200 325,250 475,250" fill="#e9d5ff" stroke="#581c87" strokeWidth="2" />
+                      <text x="400" y="235" textAnchor="middle" fontWeight="bold" fill="#0f172a">Mijoz ulangan?</text>
+                      
+                      {/* Strelka yo'q */}
+                      <line x1="325" y1="250" x2="250" y2="250" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="255,245 245,250 255,255" fill="#64748b" />
+                      <text x="300" y="235" textAnchor="middle" fontSize="12" fill="#7f1d1d">Yo'q</text>
+                      
+                      {/* Kutish */}
+                      <rect x="150" y="220" width="100" height="60" rx="0" fill="#f5f5f4" stroke="#78716c" strokeWidth="2" />
+                      <text x="200" y="250" textAnchor="middle" fontWeight="bold" fill="#0f172a">Kutish</text>
+                      
+                      {/* Strelka qaytish */}
+                      <line x1="150" y1="250" x2="100" y2="250" stroke="#64748b" strokeWidth="2" />
+                      <line x1="100" y1="250" x2="100" y2="130" stroke="#64748b" strokeWidth="2" />
+                      <line x1="100" y1="130" x2="300" y2="130" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="290,125 300,130 290,135" fill="#64748b" />
+                      
+                      {/* Strelka ha */}
+                      <line x1="400" y1="250" x2="400" y2="280" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,280 405,280 400,290" fill="#64748b" />
+                      <text x="415" y="265" textAnchor="middle" fontSize="12" fill="#15803d">Ha</text>
                       
                       {/* Ulanishni o'rnatish */}
-                      <rect x="300" y="120" width="200" height="60" rx="0" fill="#f8fafc" stroke="#581c87" strokeWidth="2" />
-                      <text x="400" y="150" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ulanishni o'rnatish</text>
-                      <text x="400" y="170" textAnchor="middle" fontWeight="bold" fill="#0f172a">va autentifikatsiya</text>
+                      <rect x="300" y="290" width="200" height="60" rx="0" fill="#f8fafc" stroke="#581c87" strokeWidth="2" />
+                      <text x="400" y="320" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ulanishni o'rnatish</text>
+                      <text x="400" y="340" textAnchor="middle" fontWeight="bold" fill="#0f172a">va autentifikatsiya</text>
                       
                       {/* Strelka */}
-                      <line x1="400" y1="180" x2="400" y2="210" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="395,210 405,210 400,220" fill="#64748b" />
+                      <line x1="400" y1="350" x2="400" y2="380" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,380 405,380 400,390" fill="#64748b" />
                       
                       {/* Ma'lumotlarni uzatish */}
-                      <rect x="300" y="220" width="200" height="60" rx="0" fill="#f8fafc" stroke="#581c87" strokeWidth="2" />
-                      <text x="400" y="250" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlarni</text>
-                      <text x="400" y="270" textAnchor="middle" fontWeight="bold" fill="#0f172a">uzatish va qabul qilish</text>
+                      <rect x="300" y="390" width="200" height="60" rx="0" fill="#f8fafc" stroke="#581c87" strokeWidth="2" />
+                      <text x="400" y="420" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlarni</text>
+                      <text x="400" y="440" textAnchor="middle" fontWeight="bold" fill="#0f172a">uzatish va qabul qilish</text>
                       
                       {/* Strelka */}
-                      <line x1="400" y1="280" x2="400" y2="310" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="395,310 405,310 400,320" fill="#64748b" />
+                      <line x1="400" y1="450" x2="400" y2="480" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,480 405,480 400,490" fill="#64748b" />
                       
-                      {/* Sinxronizatsiya */}
-                      <rect x="300" y="320" width="200" height="60" rx="0" fill="#f8fafc" stroke="#581c87" strokeWidth="2" />
-                      <text x="400" y="350" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlarni</text>
-                      <text x="400" y="370" textAnchor="middle" fontWeight="bold" fill="#0f172a">sinxronizatsiya qilish</text>
+                      {/* Ulanish uzildi? */}
+                      <polygon points="400,490 325,540 475,540" fill="#e9d5ff" stroke="#581c87" strokeWidth="2" />
+                      <text x="400" y="525" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ulanish uzildi?</text>
+                      
+                      {/* Strelka yo'q (tsikl) */}
+                      <line x1="475" y1="540" x2="600" y2="540" stroke="#64748b" strokeWidth="2" />
+                      <line x1="600" y1="540" x2="600" y2="420" stroke="#64748b" strokeWidth="2" />
+                      <line x1="600" y1="420" x2="500" y2="420" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="510,415 500,420 510,425" fill="#64748b" />
+                      <text x="540" y="525" textAnchor="middle" fontSize="12" fill="#15803d">Yo'q</text>
+                      
+                      {/* Strelka ha */}
+                      <line x1="400" y1="540" x2="400" y2="570" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,570 405,570 400,580" fill="#64748b" />
+                      <text x="385" y="555" textAnchor="middle" fontSize="12" fill="#7f1d1d">Ha</text>
+                      
+                      {/* Algoritm oxiri */}
+                      <ellipse cx="400" cy="600" rx="80" ry="30" fill="#e9d5ff" stroke="#581c87" strokeWidth="2" />
+                      <text x="400" y="605" textAnchor="middle" fontWeight="bold" fill="#0f172a">Yakunlash</text>
                       
                       {/* Yon ta'riflar */}
-                      <rect x="550" y="150" width="150" height="80" rx="5" fill="#f5f5f4" stroke="#78716c" strokeWidth="1.5" />
-                      <text x="625" y="180" textAnchor="middle" fontSize="12" fill="#0f172a">Har 10 soniyada</text>
-                      <text x="625" y="200" textAnchor="middle" fontSize="12" fill="#0f172a">ma'lumot yangilanadi</text>
+                      <rect x="550" y="200" width="150" height="80" rx="5" fill="#f5f5f4" stroke="#78716c" strokeWidth="1.5" />
+                      <text x="625" y="230" textAnchor="middle" fontSize="12" fill="#0f172a">Har 10 soniyada</text>
+                      <text x="625" y="250" textAnchor="middle" fontSize="12" fill="#0f172a">ma'lumot yangilanadi</text>
                       
-                      <rect x="100" y="150" width="150" height="80" rx="5" fill="#f5f5f4" stroke="#78716c" strokeWidth="1.5" />
-                      <text x="175" y="180" textAnchor="middle" fontSize="12" fill="#0f172a">Mijoz tomonidan</text>
-                      <text x="175" y="200" textAnchor="middle" fontSize="12" fill="#0f172a">so'rovlar yuboriladi</text>
+                      <rect x="500" y="300" width="150" height="80" rx="5" fill="#f5f5f4" stroke="#78716c" strokeWidth="1.5" />
+                      <text x="575" y="330" textAnchor="middle" fontSize="12" fill="#0f172a">WebSocket</text>
+                      <text x="575" y="350" textAnchor="middle" fontSize="12" fill="#0f172a">real vaqtda aloqa</text>
                       
-                      <line x1="250" y1="190" x2="300" y2="190" stroke="#78716c" strokeWidth="1.5" strokeDasharray="5,5" />
-                      <line x1="500" y1="190" x2="550" y2="190" stroke="#78716c" strokeWidth="1.5" strokeDasharray="5,5" />
+                      <line x1="500" y1="320" x2="450" y2="320" stroke="#78716c" strokeWidth="1.5" strokeDasharray="5,5" />
                     </svg>
                   </div>
                   
