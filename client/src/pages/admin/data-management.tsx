@@ -183,10 +183,112 @@ export default function DataManagement() {
                     Fragmentatsiya, ma'lumotlarni taqsimlash va birlashtirish algoritmlari diagrammasi
                   </p>
                   
-                  <div className="w-full overflow-x-auto mb-4">
-                    <div className="min-w-[900px] h-[600px]">
-                      <DatabaseAlgorithm />
-                    </div>
+                  <div className="w-full overflow-x-auto mb-4 flex justify-center">
+                    <svg width="800" height="900" viewBox="0 0 800 900">
+                      {/* Algoritm boshi */}
+                      <ellipse cx="350" cy="30" rx="80" ry="30" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="350" y="35" textAnchor="middle" fontWeight="bold" fill="#0f172a">Boshlash</text>
+                      
+                      {/* Strelka */}
+                      <line x1="350" y1="60" x2="350" y2="90" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="345,90 355,90 350,100" fill="#64748b" />
+                      
+                      {/* Ma'lumotlar bazasini tahlil qilish */}
+                      <rect x="250" y="100" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="350" y="130" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlar bazasini</text>
+                      <text x="350" y="150" textAnchor="middle" fontWeight="bold" fill="#0f172a">tahlil qilish</text>
+                      
+                      {/* Strelka */}
+                      <line x1="350" y1="160" x2="350" y2="190" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="345,190 355,190 350,200" fill="#64748b" />
+                      
+                      {/* Bog'liqliklarni aniqlash */}
+                      <rect x="250" y="200" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="350" y="230" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlar orasidagi</text>
+                      <text x="350" y="250" textAnchor="middle" fontWeight="bold" fill="#0f172a">bog'liqliklarni aniqlash</text>
+                      
+                      {/* Strelka */}
+                      <line x1="350" y1="260" x2="350" y2="290" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="345,290 355,290 350,300" fill="#64748b" />
+                      
+                      {/* Jadvallarni bo'lish */}
+                      <rect x="250" y="300" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="350" y="330" textAnchor="middle" fontWeight="bold" fill="#0f172a">Jadvallarni mantiqiy</text>
+                      <text x="350" y="350" textAnchor="middle" fontWeight="bold" fill="#0f172a">qismlarga bo'lish</text>
+                      
+                      {/* Strelka */}
+                      <line x1="350" y1="360" x2="350" y2="390" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="345,390 355,390 350,400" fill="#64748b" />
+                      
+                      {/* Fragmentlash sikli */}
+                      <polygon points="240,400 460,400 400,450 300,450" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="350" y="430" textAnchor="middle" fontWeight="bold" fill="#0f172a">Fragmentlash sikli</text>
+                      
+                      {/* Strelka */}
+                      <line x1="350" y1="450" x2="350" y2="490" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="345,490 355,490 350,500" fill="#64748b" />
+                      
+                      {/* Fragment qo'llash */}
+                      <rect x="250" y="500" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="350" y="530" textAnchor="middle" fontWeight="bold" fill="#0f172a">Fragment qoidalarini</text>
+                      <text x="350" y="550" textAnchor="middle" fontWeight="bold" fill="#0f172a">qo'llash</text>
+                      
+                      {/* Strelka */}
+                      <line x1="350" y1="560" x2="350" y2="590" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="345,590 355,590 350,600" fill="#64748b" />
+                      
+                      {/* Ma'lumotlarni fragmentlash */}
+                      <rect x="250" y="600" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="350" y="630" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlarni</text>
+                      <text x="350" y="650" textAnchor="middle" fontWeight="bold" fill="#0f172a">fragmentlash</text>
+                      
+                      {/* Strelka */}
+                      <line x1="350" y1="660" x2="350" y2="690" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="345,690 355,690 350,700" fill="#64748b" />
+                      
+                      {/* Kalit so'zlar indekslash */}
+                      <rect x="250" y="700" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="350" y="730" textAnchor="middle" fontWeight="bold" fill="#0f172a">Kalit so'zlar bilan</text>
+                      <text x="350" y="750" textAnchor="middle" fontWeight="bold" fill="#0f172a">indekslash</text>
+                      
+                      {/* Strelka */}
+                      <line x1="350" y1="760" x2="350" y2="790" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="345,790 355,790 350,800" fill="#64748b" />
+                      
+                      {/* Fragmentlarni birlashtirish */}
+                      <rect x="250" y="800" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="350" y="830" textAnchor="middle" fontWeight="bold" fill="#0f172a">Fragmentlarni</text>
+                      <text x="350" y="850" textAnchor="middle" fontWeight="bold" fill="#0f172a">birlashtirish</text>
+                      
+                      {/* Tsikl qaytish */}
+                      <path d="M 250,830 L 150,830 L 150,430 L 240,430" stroke="#64748b" strokeWidth="2" fill="none" />
+                      <polygon points="235,425 245,435 235,435" fill="#64748b" />
+                      
+                      {/* Boshqa yo'nalish: Tsikl tugagan */}
+                      <line x1="350" y1="860" x2="350" y2="890" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="345,890 355,890 350,900" fill="#64748b" />
+                      
+                      {/* Yakunlash */}
+                      <ellipse cx="350" cy="930" rx="80" ry="30" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="350" y="935" textAnchor="middle" fontWeight="bold" fill="#0f172a">Yakunlash</text>
+                      
+                      {/* Qo'shimcha: Fragment qoidalar bazasi */}
+                      <rect x="600" y="300" width="150" height="60" rx="0" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="675" y="330" textAnchor="middle" fontWeight="bold" fill="#0f172a">Fragment</text>
+                      <text x="675" y="350" textAnchor="middle" fontWeight="bold" fill="#0f172a">qoidalar bazasi</text>
+                      
+                      {/* Qo'shimcha: Tahlil qoidalar bazasi */}
+                      <rect x="600" y="600" width="150" height="60" rx="0" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="675" y="630" textAnchor="middle" fontWeight="bold" fill="#0f172a">Tahlil</text>
+                      <text x="675" y="650" textAnchor="middle" fontWeight="bold" fill="#0f172a">qoidalar bazasi</text>
+                      
+                      {/* Qo'shimcha yo'nalishlar */}
+                      <line x1="600" y1="330" x2="400" y2="510" stroke="#64748b" strokeWidth="2" strokeDasharray="5,5" />
+                      <polygon points="395,505 405,515 408,508" fill="#64748b" />
+                      
+                      <line x1="600" y1="630" x2="400" y2="730" stroke="#64748b" strokeWidth="2" strokeDasharray="5,5" />
+                      <polygon points="395,725 405,735 408,728" fill="#64748b" />
+                    </svg>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
