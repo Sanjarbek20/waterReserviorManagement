@@ -1,486 +1,239 @@
-import React from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import React from 'react';
 
 export default function IDEF0Model() {
   return (
-    <Card className="shadow-md">
-      <CardHeader className="pb-2">
-        <CardTitle>Suv ombori boshqaruvi tizimi IDEF0 modeli</CardTitle>
-        <CardDescription>
-          Tizimning funksional strukturasi va axborot oqimlarining IDEF0 standartidagi tasviri
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Tabs defaultValue="a0" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="a0">A-0 Diagramma</TabsTrigger>
-            <TabsTrigger value="a0full">A0 Diagramma</TabsTrigger>
-            <TabsTrigger value="a1">A1 Monitorlash</TabsTrigger>
-            <TabsTrigger value="a2">A2 Taqsimot</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="a0" className="space-y-4 mt-4">
-            <div className="border p-4 rounded-md bg-slate-50">
-              <h3 className="text-lg font-medium mb-2 text-center">Tizimning yuqori darajadagi IDEF0 diagrammasi (A-0)</h3>
-              <p className="text-sm text-gray-500 mb-4 text-center">
-                Butun suv ombori boshqaruv tizimining asosiy kirish/chiqish parametrlari
-              </p>
-              
-              <div className="w-full overflow-x-auto mb-4 flex justify-center">
-                <svg width="800" height="500" viewBox="0 0 800 500" className="mx-auto">
-                  {/* Asosiy IDEF0 to'rtburchak */}
-                  <rect x="250" y="150" width="300" height="200" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="3" />
-                  <text x="400" y="250" textAnchor="middle" fontSize="20" fontWeight="bold" fill="#0f172a">
-                    Suv ombori boshqaruvi
-                  </text>
-                  <text x="400" y="280" textAnchor="middle" fontSize="12" fill="#0f172a">A-0</text>
-                  
-                  {/* Kirishlar */}
-                  <line x1="150" y1="200" x2="250" y2="200" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="240,195 250,200 240,205" fill="#0c4a6e" />
-                  <text x="190" y="190" textAnchor="middle" fontSize="12" fill="#0f172a">Sensor ma'lumotlari</text>
-                  
-                  <line x1="150" y1="250" x2="250" y2="250" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="240,245 250,250 240,255" fill="#0c4a6e" />
-                  <text x="190" y="240" textAnchor="middle" fontSize="12" fill="#0f172a">Fermerlar so'rovlari</text>
-                  
-                  <line x1="150" y1="300" x2="250" y2="300" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="240,295 250,300 240,305" fill="#0c4a6e" />
-                  <text x="190" y="290" textAnchor="middle" fontSize="12" fill="#0f172a">Ob-havo ma'lumotlari</text>
-                  
-                  {/* Nazorat (Control) */}
-                  <line x1="320" y1="100" x2="320" y2="150" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="315,140 325,140 320,150" fill="#0c4a6e" />
-                  <text x="320" y="90" textAnchor="middle" fontSize="12" fill="#0f172a">Qonunlar va tartiblar</text>
-                  
-                  <line x1="400" y1="100" x2="400" y2="150" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="395,140 405,140 400,150" fill="#0c4a6e" />
-                  <text x="400" y="90" textAnchor="middle" fontSize="12" fill="#0f172a">Standartlar</text>
-                  
-                  <line x1="480" y1="100" x2="480" y2="150" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="475,140 485,140 480,150" fill="#0c4a6e" />
-                  <text x="480" y="90" textAnchor="middle" fontSize="12" fill="#0f172a">Boshqaruv qarorlari</text>
-                  
-                  {/* Chiqishlar */}
-                  <line x1="550" y1="200" x2="650" y2="200" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="640,195 650,200 640,205" fill="#0c4a6e" />
-                  <text x="600" y="190" textAnchor="middle" fontSize="12" fill="#0f172a">Monitoring hisobotlari</text>
-                  
-                  <line x1="550" y1="250" x2="650" y2="250" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="640,245 650,250 640,255" fill="#0c4a6e" />
-                  <text x="600" y="240" textAnchor="middle" fontSize="12" fill="#0f172a">Suv taqsimoti jadvali</text>
-                  
-                  <line x1="550" y1="300" x2="650" y2="300" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="640,295 650,300 640,305" fill="#0c4a6e" />
-                  <text x="600" y="290" textAnchor="middle" fontSize="12" fill="#0f172a">Bashorat natijasi</text>
-                  
-                  {/* Mexanizm/Resurslar */}
-                  <line x1="320" y1="350" x2="320" y2="400" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="315,360 325,360 320,350" fill="#0c4a6e" />
-                  <text x="320" y="415" textAnchor="middle" fontSize="12" fill="#0f172a">LSTM modellari</text>
-                  
-                  <line x1="400" y1="350" x2="400" y2="400" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="395,360 405,360 400,350" fill="#0c4a6e" />
-                  <text x="400" y="415" textAnchor="middle" fontSize="12" fill="#0f172a">Ma'lumotlar bazasi</text>
-                  
-                  <line x1="480" y1="350" x2="480" y2="400" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="475,360 485,360 480,350" fill="#0c4a6e" />
-                  <text x="480" y="415" textAnchor="middle" fontSize="12" fill="#0f172a">Xodimlar</text>
-                </svg>
-              </div>
-              
-              <div className="prose prose-blue max-w-none">
-                <h4>A-0 yuqori darajali diagramma tushuntirishi:</h4>
-                <p>
-                  Bu diagramma butun suv ombori boshqaruv tizimining asosiy funksiyasini ko'rsatadi. 
-                  Unda quyidagi elementlar mavjud:
-                </p>
-                
-                <ul className="list-disc pl-5">
-                  <li><strong>Kiruvchi ma'lumotlar (Inputs):</strong> Tizimga kirib keluvchi dastlabki ma'lumotlar</li>
-                  <ul className="list-disc pl-5">
-                    <li>Sensorlardan olingan ma'lumotlar</li>
-                    <li>Fermerlarning suv so'rovlari</li>
-                    <li>Ob-havo ma'lumotlari</li>
-                  </ul>
-                  
-                  <li><strong>Nazorat (Controls):</strong> Jarayonni boshqaruvchi ko'rsatmalar va cheklovlar</li>
-                  <ul className="list-disc pl-5">
-                    <li>Qonunlar va tartiblar</li>
-                    <li>Texnik standartlar</li>
-                    <li>Boshqaruv qarorlari</li>
-                  </ul>
-                  
-                  <li><strong>Chiquvchi ma'lumotlar (Outputs):</strong> Tizim ishidan olingan natijalar</li>
-                  <ul className="list-disc pl-5">
-                    <li>Monitoring hisobotlari</li>
-                    <li>Suv taqsimoti jadvali</li>
-                    <li>Bashorat natijasi</li>
-                  </ul>
-                  
-                  <li><strong>Mexanizmlar (Mechanisms):</strong> Ishni bajarish uchun zarur resurslar</li>
-                  <ul className="list-disc pl-5">
-                    <li>LSTM modellar</li>
-                    <li>Ma'lumotlar bazasi</li>
-                    <li>Tizim xodimlari</li>
-                  </ul>
-                </ul>
-              </div>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="a0full" className="space-y-4 mt-4">
-            <div className="border p-4 rounded-md bg-slate-50">
-              <h3 className="text-lg font-medium mb-2 text-center">A0 diagramma - Asosiy funksional bloklar</h3>
-              <p className="text-sm text-gray-500 mb-4 text-center">
-                Suv ombori boshqaruv tizimi asosiy funksiyalari
-              </p>
-              
-              <div className="w-full overflow-x-auto mb-4 flex justify-center">
-                <svg width="800" height="700" viewBox="0 0 800 700" className="mx-auto">
-                  {/* Kirishlar */}
-                  <line x1="50" y1="150" x2="200" y2="150" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="190,145 200,150 190,155" fill="#0c4a6e" />
-                  <text x="125" y="140" textAnchor="middle" fontSize="12" fill="#0f172a">Sensor ma'lumotlari</text>
-                  
-                  <line x1="50" y1="350" x2="200" y2="350" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="190,345 200,350 190,355" fill="#0c4a6e" />
-                  <text x="125" y="340" textAnchor="middle" fontSize="12" fill="#0f172a">Fermerlar so'rovlari</text>
-                  
-                  <line x1="50" y1="450" x2="200" y2="450" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="190,445 200,450 190,455" fill="#0c4a6e" />
-                  <text x="125" y="440" textAnchor="middle" fontSize="12" fill="#0f172a">Ob-havo ma'lumotlari</text>
-                  
-                  {/* Nazorat */}
-                  <line x1="300" y1="50" x2="300" y2="100" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="295,90 305,90 300,100" fill="#0c4a6e" />
-                  <text x="300" y="40" textAnchor="middle" fontSize="12" fill="#0f172a">Qonunlar va standartlar</text>
-                  
-                  <line x1="500" y1="50" x2="500" y2="100" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="495,90 505,90 500,100" fill="#0c4a6e" />
-                  <text x="500" y="40" textAnchor="middle" fontSize="12" fill="#0f172a">Boshqaruv qarorlari</text>
-                  
-                  {/* A1: Monitorlash bloki */}
-                  <rect x="200" y="100" width="200" height="100" rx="0" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
-                  <text x="300" y="140" textAnchor="middle" fontSize="16" fontWeight="bold" fill="#0f172a">
-                    Monitorlash
-                  </text>
-                  <text x="300" y="165" textAnchor="middle" fontSize="12" fill="#0f172a">A1</text>
-                  
-                  {/* A2: Tahlil qilish bloki */}
-                  <rect x="200" y="250" width="200" height="100" rx="0" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
-                  <text x="300" y="290" textAnchor="middle" fontSize="16" fontWeight="bold" fill="#0f172a">
-                    Tahlil qilish
-                  </text>
-                  <text x="300" y="315" textAnchor="middle" fontSize="12" fill="#0f172a">A2</text>
-                  
-                  {/* A3: Taqsimot bloki */}
-                  <rect x="200" y="400" width="200" height="100" rx="0" fill="#e0f2fe" stroke="#0c4a6e" strokeWidth="2" />
-                  <text x="300" y="440" textAnchor="middle" fontSize="16" fontWeight="bold" fill="#0f172a">
-                    Taqsimot
-                  </text>
-                  <text x="300" y="465" textAnchor="middle" fontSize="12" fill="#0f172a">A3</text>
-                  
-                  {/* A4: Bashorat qilish bloki */}
-                  <rect x="450" y="250" width="200" height="100" rx="0" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
-                  <text x="550" y="290" textAnchor="middle" fontSize="16" fontWeight="bold" fill="#0f172a">
-                    Bashorat qilish
-                  </text>
-                  <text x="550" y="315" textAnchor="middle" fontSize="12" fill="#0f172a">A4</text>
-                  
-                  {/* A5: Xavfsizlikni ta'minlash bloki */}
-                  <rect x="450" y="400" width="200" height="100" rx="0" fill="#fee2e2" stroke="#0c4a6e" strokeWidth="2" />
-                  <text x="550" y="440" textAnchor="middle" fontSize="16" fontWeight="bold" fill="#0f172a">
-                    Xavfsizlikni ta'minlash
-                  </text>
-                  <text x="550" y="465" textAnchor="middle" fontSize="12" fill="#0f172a">A5</text>
-                  
-                  {/* Chiqishlar */}
-                  <line x1="400" y1="150" x2="700" y2="150" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="690,145 700,150 690,155" fill="#0c4a6e" />
-                  <text x="550" y="140" textAnchor="middle" fontSize="12" fill="#0f172a">Monitoring hisobotlari</text>
-                  
-                  <line x1="400" y1="450" x2="700" y2="450" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="690,445 700,450 690,455" fill="#0c4a6e" />
-                  <text x="690" y="440" textAnchor="middle" fontSize="12" fill="#0f172a">Suv taqsimoti jadvali</text>
-                  
-                  <line x1="650" y1="300" x2="700" y2="300" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="690,295 700,300 690,305" fill="#0c4a6e" />
-                  <text x="675" y="290" textAnchor="middle" fontSize="12" fill="#0f172a">Bashorat natijasi</text>
-                  
-                  {/* Mexanizmlar */}
-                  <line x1="250" y1="500" x2="250" y2="550" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="245,510 255,510 250,500" fill="#0c4a6e" />
-                  <text x="250" y="565" textAnchor="middle" fontSize="12" fill="#0f172a">Ma'lumotlar bazasi</text>
-                  
-                  <line x1="350" y1="500" x2="350" y2="550" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="345,510 355,510 350,500" fill="#0c4a6e" />
-                  <text x="350" y="565" textAnchor="middle" fontSize="12" fill="#0f172a">LSTM modellar</text>
-                  
-                  <line x1="550" y1="500" x2="550" y2="550" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="545,510 555,510 550,500" fill="#0c4a6e" />
-                  <text x="550" y="565" textAnchor="middle" fontSize="12" fill="#0f172a">Xodimlar</text>
-                  
-                  {/* Ichki bog'lanishlar */}
-                  <line x1="300" y1="200" x2="300" y2="250" stroke="#64748b" strokeWidth="2" />
-                  <polygon points="295,240 305,240 300,250" fill="#64748b" />
-                  <text x="330" y="225" textAnchor="middle" fontSize="12" fill="#475569">Ma'lumotlar</text>
-                  
-                  <line x1="300" y1="350" x2="300" y2="400" stroke="#64748b" strokeWidth="2" />
-                  <polygon points="295,390 305,390 300,400" fill="#64748b" />
-                  <text x="330" y="375" textAnchor="middle" fontSize="12" fill="#475569">Tahlil natijasi</text>
-                  
-                  <line x1="400" y1="300" x2="450" y2="300" stroke="#64748b" strokeWidth="2" />
-                  <polygon points="440,295 450,300 440,305" fill="#64748b" />
-                  <text x="425" y="285" textAnchor="middle" fontSize="12" fill="#475569">Tarixiy ma'lumotlar</text>
-                  
-                  <line x1="550" y1="350" x2="550" y2="400" stroke="#64748b" strokeWidth="2" />
-                  <polygon points="545,390 555,390 550,400" fill="#64748b" />
-                  <text x="580" y="375" textAnchor="middle" fontSize="12" fill="#475569">Toshqin xavfi</text>
-                  
-                  <path d="M 400,440 C 450,440 450,300 400,300" fill="none" stroke="#64748b" strokeWidth="2" />
-                  <polygon points="405,300 400,290 395,300" fill="#64748b" />
-                  <text x="435" y="380" textAnchor="middle" fontSize="12" fill="#475569">So'rov natijalari</text>
-                </svg>
-              </div>
-              
-              <div className="prose prose-blue max-w-none">
-                <h4>A0 diagramma tushuntirishi:</h4>
-                <p>
-                  A0 diagramma suv ombori boshqaruv tizimining asosiy funksional bloklarini ko'rsatadi:
-                </p>
-                
-                <ul className="list-disc pl-5">
-                  <li><strong>A1: Monitorlash</strong> - Suv omboridan sensorlar orqali olingan ma'lumotlarni olish va kuzatish</li>
-                  <li><strong>A2: Tahlil qilish</strong> - Yig'ilgan ma'lumotlarni tahlil qilish va qarorlar uchun tayyorlash</li>
-                  <li><strong>A3: Taqsimot</strong> - Suv resurslarini fermerlar orasida optimal taqsimlash</li>
-                  <li><strong>A4: Bashorat qilish</strong> - LSTM modellar orqali kelajakdagi suv sarfi va sathini bashorat qilish</li>
-                  <li><strong>A5: Xavfsizlikni ta'minlash</strong> - Toshqin va boshqa xavflarni oldini olish</li>
-                </ul>
-                
-                <p>
-                  Diagrammada bloklarning bir-biri bilan bog'liqligi, shuningdek ularning nazorat 
-                  mexanizmlari va foydalaniladigan resurslar ko'rsatilgan.
-                </p>
-              </div>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="a1" className="space-y-4 mt-4">
-            <div className="border p-4 rounded-md bg-slate-50">
-              <h3 className="text-lg font-medium mb-2 text-center">A1 diagramma - Monitorlash jarayoni</h3>
-              <p className="text-sm text-gray-500 mb-4 text-center">
-                Suv omborlarini monitorlash uchun tizim funksiyalari
-              </p>
-              
-              <div className="w-full overflow-x-auto mb-4 flex justify-center">
-                <svg width="800" height="600" viewBox="0 0 800 600" className="mx-auto">
-                  {/* Nazorat */}
-                  <line x1="300" y1="50" x2="300" y2="100" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="295,90 305,90 300,100" fill="#0c4a6e" />
-                  <text x="300" y="40" textAnchor="middle" fontSize="12" fill="#0f172a">Standartlar</text>
-                  
-                  {/* Kirishlar */}
-                  <line x1="50" y1="150" x2="200" y2="150" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="190,145 200,150 190,155" fill="#0c4a6e" />
-                  <text x="125" y="140" textAnchor="middle" fontSize="12" fill="#0f172a">Sensor ma'lumotlari</text>
-                  
-                  {/* A11: Ma'lumotlarni yig'ish bloki */}
-                  <rect x="200" y="100" width="200" height="100" rx="0" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
-                  <text x="300" y="140" textAnchor="middle" fontSize="16" fontWeight="bold" fill="#0f172a">
-                    Ma'lumotlarni yig'ish
-                  </text>
-                  <text x="300" y="165" textAnchor="middle" fontSize="12" fill="#0f172a">A11</text>
-                  
-                  {/* A12: Ma'lumotlarni normalizatsiya qilish */}
-                  <rect x="200" y="250" width="200" height="100" rx="0" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
-                  <text x="300" y="290" textAnchor="middle" fontSize="16" fontWeight="bold" fill="#0f172a">
-                    Ma'lumotlarni normalizatsiya
-                  </text>
-                  <text x="300" y="315" textAnchor="middle" fontSize="12" fill="#0f172a">A12</text>
-                  
-                  {/* A13: Anomaliyalarni aniqlash */}
-                  <rect x="200" y="400" width="200" height="100" rx="0" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
-                  <text x="300" y="440" textAnchor="middle" fontSize="16" fontWeight="bold" fill="#0f172a">
-                    Anomaliyalarni aniqlash
-                  </text>
-                  <text x="300" y="465" textAnchor="middle" fontSize="12" fill="#0f172a">A13</text>
-                  
-                  {/* A14: Hisobotlarni shakllantirish */}
-                  <rect x="500" y="250" width="200" height="100" rx="0" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
-                  <text x="600" y="290" textAnchor="middle" fontSize="16" fontWeight="bold" fill="#0f172a">
-                    Hisobotlarni shakllantirish
-                  </text>
-                  <text x="600" y="315" textAnchor="middle" fontSize="12" fill="#0f172a">A14</text>
-                  
-                  {/* Ichki bog'lanishlar */}
-                  <line x1="300" y1="200" x2="300" y2="250" stroke="#64748b" strokeWidth="2" />
-                  <polygon points="295,240 305,240 300,250" fill="#64748b" />
-                  <text x="330" y="225" textAnchor="middle" fontSize="12" fill="#475569">Xom ma'lumotlar</text>
-                  
-                  <line x1="300" y1="350" x2="300" y2="400" stroke="#64748b" strokeWidth="2" />
-                  <polygon points="295,390 305,390 300,400" fill="#64748b" />
-                  <text x="330" y="375" textAnchor="middle" fontSize="12" fill="#475569">Normalizatsiya qilingan</text>
-                  
-                  <line x1="400" y1="300" x2="500" y2="300" stroke="#64748b" strokeWidth="2" />
-                  <polygon points="490,295 500,300 490,305" fill="#64748b" />
-                  <text x="450" y="285" textAnchor="middle" fontSize="12" fill="#475569">Tayyor ma'lumotlar</text>
-                  
-                  <line x1="400" y1="450" x2="680" y2="450" stroke="#64748b" strokeWidth="2" />
-                  <line x1="680" y1="450" x2="680" y2="300" stroke="#64748b" strokeWidth="2" />
-                  <polygon points="675,310 685,310 680,300" fill="#64748b" />
-                  <text x="680" y="375" textAnchor="middle" fontSize="12" fill="#475569">Anomaliya haqida xabar</text>
-                  
-                  {/* Chiqishlar */}
-                  <line x1="700" y1="300" x2="750" y2="300" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="740,295 750,300 740,305" fill="#0c4a6e" />
-                  <text x="725" y="290" textAnchor="middle" fontSize="12" fill="#0f172a">Monitoring hisobotlari</text>
-                  
-                  {/* Mexanizmlar */}
-                  <line x1="250" y1="500" x2="250" y2="550" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="245,510 255,510 250,500" fill="#0c4a6e" />
-                  <text x="250" y="565" textAnchor="middle" fontSize="12" fill="#0f172a">Sensorlar</text>
-                  
-                  <line x1="350" y1="500" x2="350" y2="550" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="345,510 355,510 350,500" fill="#0c4a6e" />
-                  <text x="350" y="565" textAnchor="middle" fontSize="12" fill="#0f172a">Ma'lumotlar bazasi</text>
-                  
-                  <line x1="550" y1="500" x2="550" y2="550" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="545,510 555,510 550,500" fill="#0c4a6e" />
-                  <text x="550" y="565" textAnchor="middle" fontSize="12" fill="#0f172a">WebSocket server</text>
-                </svg>
-              </div>
-              
-              <div className="prose prose-blue max-w-none">
-                <h4>A1 Monitorlash diagrammasi tushuntirishi:</h4>
-                <p>
-                  Bu diagramma monitorlash jarayonining ichki tuzilishini ko'rsatadi. Monitorlash quyidagi 
-                  asosiy bosqichlardan iborat:
-                </p>
-                
-                <ul className="list-disc pl-5">
-                  <li><strong>A11: Ma'lumotlarni yig'ish</strong> - Suv omboridagi sensorlardan ma'lumotlarni olish</li>
-                  <li><strong>A12: Ma'lumotlarni normalizatsiya</strong> - Xom ma'lumotlarni tozalash va standart formatga keltirish</li>
-                  <li><strong>A13: Anomaliyalarni aniqlash</strong> - Kutilmagan o'zgarishlarni aniqlash va ogohlantirishlar yaratish</li>
-                  <li><strong>A14: Hisobotlarni shakllantirish</strong> - Ma'lumotlar asosida hisobotlar yaratish</li>
-                </ul>
-                
-                <p>
-                  Bu jarayonda real vaqtda ma'lumotlar olinib, tahlil qilinadi va natijalar hisobotlarga
-                  kiritiladi. Anomaliya aniqlanganda, maxsus xabarlar hisobotga qo'shiladi.
-                </p>
-              </div>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="a2" className="space-y-4 mt-4">
-            <div className="border p-4 rounded-md bg-slate-50">
-              <h3 className="text-lg font-medium mb-2 text-center">A2 diagramma - Suv taqsimoti jarayoni</h3>
-              <p className="text-sm text-gray-500 mb-4 text-center">
-                Fermerlar o'rtasida suv resurslarini taqsimlash jarayoni
-              </p>
-              
-              <div className="w-full overflow-x-auto mb-4 flex justify-center">
-                <svg width="800" height="600" viewBox="0 0 800 600" className="mx-auto">
-                  {/* Nazorat */}
-                  <line x1="300" y1="50" x2="300" y2="100" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="295,90 305,90 300,100" fill="#0c4a6e" />
-                  <text x="300" y="40" textAnchor="middle" fontSize="12" fill="#0f172a">Taqsimot qoidalari</text>
-                  
-                  <line x1="500" y1="50" x2="500" y2="100" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="495,90 505,90 500,100" fill="#0c4a6e" />
-                  <text x="500" y="40" textAnchor="middle" fontSize="12" fill="#0f172a">Boshqaruv qarorlari</text>
-                  
-                  {/* Kirishlar */}
-                  <line x1="50" y1="150" x2="200" y2="150" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="190,145 200,150 190,155" fill="#0c4a6e" />
-                  <text x="125" y="140" textAnchor="middle" fontSize="12" fill="#0f172a">Fermerlar so'rovlari</text>
-                  
-                  <line x1="50" y1="300" x2="200" y2="300" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="190,295 200,300 190,305" fill="#0c4a6e" />
-                  <text x="125" y="290" textAnchor="middle" fontSize="12" fill="#0f172a">Monitoring ma'lumotlari</text>
-                  
-                  {/* A21: So'rovlarni qayta ishlash */}
-                  <rect x="200" y="100" width="200" height="100" rx="0" fill="#e0f2fe" stroke="#0c4a6e" strokeWidth="2" />
-                  <text x="300" y="140" textAnchor="middle" fontSize="16" fontWeight="bold" fill="#0f172a">
-                    So'rovlarni qayta ishlash
-                  </text>
-                  <text x="300" y="165" textAnchor="middle" fontSize="12" fill="#0f172a">A21</text>
-                  
-                  {/* A22: Resurslari tekshirish */}
-                  <rect x="200" y="250" width="200" height="100" rx="0" fill="#e0f2fe" stroke="#0c4a6e" strokeWidth="2" />
-                  <text x="300" y="290" textAnchor="middle" fontSize="16" fontWeight="bold" fill="#0f172a">
-                    Mavjud suv resurslarini tekshirish
-                  </text>
-                  <text x="300" y="315" textAnchor="middle" fontSize="12" fill="#0f172a">A22</text>
-                  
-                  {/* A23: Taqsimot algoritmini hisoblash */}
-                  <rect x="500" y="250" width="200" height="100" rx="0" fill="#e0f2fe" stroke="#0c4a6e" strokeWidth="2" />
-                  <text x="600" y="290" textAnchor="middle" fontSize="16" fontWeight="bold" fill="#0f172a">
-                    Taqsimot algoritmini hisoblash
-                  </text>
-                  <text x="600" y="315" textAnchor="middle" fontSize="12" fill="#0f172a">A23</text>
-                  
-                  {/* A24: Taqsimot jadvalini yaratish */}
-                  <rect x="500" y="400" width="200" height="100" rx="0" fill="#e0f2fe" stroke="#0c4a6e" strokeWidth="2" />
-                  <text x="600" y="440" textAnchor="middle" fontSize="16" fontWeight="bold" fill="#0f172a">
-                    Taqsimot jadvalini yaratish
-                  </text>
-                  <text x="600" y="465" textAnchor="middle" fontSize="12" fill="#0f172a">A24</text>
-                  
-                  {/* Ichki bog'lanishlar */}
-                  <line x1="300" y1="200" x2="300" y2="250" stroke="#64748b" strokeWidth="2" />
-                  <polygon points="295,240 305,240 300,250" fill="#64748b" />
-                  <text x="330" y="225" textAnchor="middle" fontSize="12" fill="#475569">So'rov ma'lumotlari</text>
-                  
-                  <line x1="400" y1="300" x2="500" y2="300" stroke="#64748b" strokeWidth="2" />
-                  <polygon points="490,295 500,300 490,305" fill="#64748b" />
-                  <text x="450" y="285" textAnchor="middle" fontSize="12" fill="#475569">Mavjud suv miqdori</text>
-                  
-                  <line x1="600" y1="350" x2="600" y2="400" stroke="#64748b" strokeWidth="2" />
-                  <polygon points="595,390 605,390 600,400" fill="#64748b" />
-                  <text x="630" y="375" textAnchor="middle" fontSize="12" fill="#475569">Taqsimot algoritmi</text>
-                  
-                  {/* Chiqishlar */}
-                  <line x1="700" y1="450" x2="750" y2="450" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="740,445 750,450 740,455" fill="#0c4a6e" />
-                  <text x="725" y="440" textAnchor="middle" fontSize="12" fill="#0f172a">Suv taqsimoti jadvali</text>
-                  
-                  {/* Mexanizmlar */}
-                  <line x1="250" y1="500" x2="250" y2="550" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="245,510 255,510 250,500" fill="#0c4a6e" />
-                  <text x="250" y="565" textAnchor="middle" fontSize="12" fill="#0f172a">Ma'lumotlar bazasi</text>
-                  
-                  <line x1="600" y1="500" x2="600" y2="550" stroke="#0c4a6e" strokeWidth="2" />
-                  <polygon points="595,510 605,510 600,500" fill="#0c4a6e" />
-                  <text x="600" y="565" textAnchor="middle" fontSize="12" fill="#0f172a">Optimizatsiya algoritmlari</text>
-                </svg>
-              </div>
-              
-              <div className="prose prose-blue max-w-none">
-                <h4>A3 Taqsimot diagrammasi tushuntirishi:</h4>
-                <p>
-                  Bu diagramma suv taqsimoti jarayonining ichki tuzilishini ko'rsatadi. Suv taqsimoti 
-                  quyidagi asosiy bosqichlardan iborat:
-                </p>
-                
-                <ul className="list-disc pl-5">
-                  <li><strong>A21: So'rovlarni qayta ishlash</strong> - Fermerlardan keladigan suv so'rovlarini qabul qilish va tekshirish</li>
-                  <li><strong>A22: Mavjud suv resurslarini tekshirish</strong> - Suv omborida mavjud suvlarni hisobga olish</li>
-                  <li><strong>A23: Taqsimot algoritmini hisoblash</strong> - Ekin turlari, maydon hajmi, sug'orish usuli kabi omillarni inobatga olib, optimal suv taqsimotini hisoblash</li>
-                  <li><strong>A24: Taqsimot jadvalini yaratish</strong> - Hisoblangan suv taqsimoti asosida fermerlar uchun suv ajratish jadvalini yaratish</li>
-                </ul>
-                
-                <p>
-                  Bu jarayonda suv ombori tizimi, barcha fermerlarga optimal va adolatli suv taqsimotini hisoblab chiqadi 
-                  va reja asosida suv beriladi. Bu ayniqsa suv tanqis bo'lgan mavsumda muhim hisoblanadi.
-                </p>
-              </div>
-            </div>
-          </TabsContent>
-        </Tabs>
-      </CardContent>
-    </Card>
+    <div className="overflow-x-auto">
+      <svg width="900" height="720" viewBox="0 0 900 720" className="mx-auto">
+        {/* Main Process Block */}
+        <rect x="350" y="300" width="200" height="120" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+        <text x="450" y="340" textAnchor="middle" fontWeight="bold" fill="#0f172a" fontSize="16">
+          Suv resurslari boshqarish
+        </text>
+        <text x="450" y="360" textAnchor="middle" fontWeight="bold" fill="#0f172a" fontSize="16">
+          tizimi
+        </text>
+        <text x="450" y="380" textAnchor="middle" fill="#0f172a" fontSize="12">A0</text>
+
+        {/* Input arrows */}
+        <line x1="100" y1="310" x2="350" y2="310" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="340,305 350,310 340,315" fill="#0c4a6e" />
+        <text x="200" y="300" textAnchor="middle" fill="#0f172a" fontSize="12">Suv ombori ma'lumotlari</text>
+
+        <line x1="100" y1="330" x2="350" y2="330" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="340,325 350,330 340,335" fill="#0c4a6e" />
+        <text x="200" y="350" textAnchor="middle" fill="#0f172a" fontSize="12">Fermerlar talablari</text>
+
+        <line x1="100" y1="350" x2="350" y2="350" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="340,345 350,350 340,355" fill="#0c4a6e" />
+        <text x="200" y="370" textAnchor="middle" fill="#0f172a" fontSize="12">Suv hajmi va sarfiyot</text>
+
+        <line x1="100" y1="390" x2="350" y2="390" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="340,385 350,390 340,395" fill="#0c4a6e" />
+        <text x="200" y="410" textAnchor="middle" fill="#0f172a" fontSize="12">Videonazorat ma'lumotlari</text>
+        
+        {/* Output arrows */}
+        <line x1="550" y1="310" x2="800" y2="310" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="790,305 800,310 790,315" fill="#0c4a6e" />
+        <text x="675" y="300" textAnchor="middle" fill="#0f172a" fontSize="12">Suv taqsimot rejasi</text>
+
+        <line x1="550" y1="340" x2="800" y2="340" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="790,335 800,340 790,345" fill="#0c4a6e" />
+        <text x="675" y="360" textAnchor="middle" fill="#0f172a" fontSize="12">Suv sarfiyoti hisoboti</text>
+
+        <line x1="550" y1="370" x2="800" y2="370" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="790,365 800,370 790,375" fill="#0c4a6e" />
+        <text x="675" y="390" textAnchor="middle" fill="#0f172a" fontSize="12">Bashorat ma'lumotlari</text>
+
+        {/* Control arrows (top) */}
+        <line x1="450" y1="100" x2="450" y2="300" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="445,290 450,300 455,290" fill="#0c4a6e" />
+        <text x="450" y="150" textAnchor="middle" fill="#0f172a" fontSize="12">Qonunchilik va me'yoriy hujjatlar</text>
+
+        <line x1="390" y1="100" x2="390" y2="300" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="385,290 390,300 395,290" fill="#0c4a6e" />
+        <text x="390" y="180" textAnchor="middle" fill="#0f172a" fontSize="12">Ob-havo ma'lumotlari</text>
+
+        <line x1="510" y1="100" x2="510" y2="300" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="505,290 510,300 515,290" fill="#0c4a6e" />
+        <text x="510" y="180" textAnchor="middle" fill="#0f172a" fontSize="12">Xalqaro shartnomalar</text>
+
+        {/* Mechanism arrows (bottom) */}
+        <line x1="390" y1="600" x2="390" y2="420" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="385,430 390,420 395,430" fill="#0c4a6e" />
+        <text x="390" y="550" textAnchor="middle" fill="#0f172a" fontSize="12">Monitoring tizimi</text>
+
+        <line x1="450" y1="600" x2="450" y2="420" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="445,430 450,420 455,430" fill="#0c4a6e" />
+        <text x="450" y="550" textAnchor="middle" fill="#0f172a" fontSize="12">LSTM bashorat modeli</text>
+
+        <line x1="510" y1="600" x2="510" y2="420" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="505,430 510,420 515,430" fill="#0c4a6e" />
+        <text x="510" y="550" textAnchor="middle" fill="#0f172a" fontSize="12">GIS tizimi</text>
+
+        {/* A0 Title */}
+        <text x="450" y="50" textAnchor="middle" fontWeight="bold" fill="#0f172a" fontSize="20">
+          Suv resurslari boshqarish IDEF0 modeli
+        </text>
+        <text x="450" y="75" textAnchor="middle" fontWeight="bold" fill="#0f172a" fontSize="14">
+          A-0 darajasi
+        </text>
+
+        {/* Legend */}
+        <rect x="700" y="600" width="180" height="100" fill="white" stroke="#64748b" strokeWidth="1" />
+        <text x="790" y="620" textAnchor="middle" fontWeight="bold" fill="#0f172a" fontSize="14">
+          Belgilar
+        </text>
+        
+        <line x1="710" y1="640" x2="740" y2="640" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="730,635 740,640 730,645" fill="#0c4a6e" />
+        <text x="765" y="645" textAnchor="start" fill="#0f172a" fontSize="12">Kirishlar</text>
+        
+        <line x1="710" y1="660" x2="740" y2="660" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="730,655 740,660 730,665" fill="#0c4a6e" />
+        <text x="765" y="665" textAnchor="start" fill="#0f172a" fontSize="12">Chiqishlar</text>
+        
+        <line x1="725" y1="680" x2="725" y2="695" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="720,685 725,675 730,685" fill="#0c4a6e" />
+        <text x="765" y="685" textAnchor="start" fill="#0f172a" fontSize="12">Boshqaruv</text>
+        
+        <line x1="725" y1="695" x2="725" y2="680" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="720,690 725,700 730,690" fill="#0c4a6e" />
+        <text x="770" y="705" textAnchor="start" fill="#0f172a" fontSize="12">Mexanizmlar</text>
+      </svg>
+      
+      {/* Decomposition diagram - A0 level */}
+      <svg width="900" height="720" viewBox="0 0 900 720" className="mx-auto mt-10">
+        {/* Title */}
+        <text x="450" y="30" textAnchor="middle" fontWeight="bold" fill="#0f172a" fontSize="20">
+          Suv resurslari boshqarish tizimi tarkibi
+        </text>
+        <text x="450" y="55" textAnchor="middle" fontWeight="bold" fill="#0f172a" fontSize="14">
+          A0 darajasi dekompozitsiyasi
+        </text>
+        
+        {/* Process Block 1 - Monitoring */}
+        <rect x="200" y="150" width="150" height="100" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+        <text x="275" y="180" textAnchor="middle" fontWeight="bold" fill="#0f172a" fontSize="14">
+          Suv omborlari
+        </text>
+        <text x="275" y="200" textAnchor="middle" fontWeight="bold" fill="#0f172a" fontSize="14">
+          monitoringi
+        </text>
+        <text x="275" y="220" textAnchor="middle" fill="#0f172a" fontSize="12">A1</text>
+        
+        {/* Process Block 2 - Analysis */}
+        <rect x="400" y="150" width="150" height="100" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+        <text x="475" y="180" textAnchor="middle" fontWeight="bold" fill="#0f172a" fontSize="14">
+          Ma'lumotlarni
+        </text>
+        <text x="475" y="200" textAnchor="middle" fontWeight="bold" fill="#0f172a" fontSize="14">
+          tahlil qilish
+        </text>
+        <text x="475" y="220" textAnchor="middle" fill="#0f172a" fontSize="12">A2</text>
+        
+        {/* Process Block 3 - Prediction */}
+        <rect x="600" y="150" width="150" height="100" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+        <text x="675" y="180" textAnchor="middle" fontWeight="bold" fill="#0f172a" fontSize="14">
+          Suv sarfiyoti
+        </text>
+        <text x="675" y="200" textAnchor="middle" fontWeight="bold" fill="#0f172a" fontSize="14">
+          bashorati
+        </text>
+        <text x="675" y="220" textAnchor="middle" fill="#0f172a" fontSize="12">A3</text>
+        
+        {/* Process Block 4 - Allocation */}
+        <rect x="200" y="350" width="150" height="100" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+        <text x="275" y="380" textAnchor="middle" fontWeight="bold" fill="#0f172a" fontSize="14">
+          Suv resurslarini
+        </text>
+        <text x="275" y="400" textAnchor="middle" fontWeight="bold" fill="#0f172a" fontSize="14">
+          taqsimlash
+        </text>
+        <text x="275" y="420" textAnchor="middle" fill="#0f172a" fontSize="12">A4</text>
+        
+        {/* Process Block 5 - Control */}
+        <rect x="400" y="350" width="150" height="100" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+        <text x="475" y="380" textAnchor="middle" fontWeight="bold" fill="#0f172a" fontSize="14">
+          Suv sarfiyotini
+        </text>
+        <text x="475" y="400" textAnchor="middle" fontWeight="bold" fill="#0f172a" fontSize="14">
+          nazorat qilish
+        </text>
+        <text x="475" y="420" textAnchor="middle" fill="#0f172a" fontSize="12">A5</text>
+        
+        {/* Process Block 6 - Reporting */}
+        <rect x="600" y="350" width="150" height="100" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+        <text x="675" y="380" textAnchor="middle" fontWeight="bold" fill="#0f172a" fontSize="14">
+          Hisobotlarni
+        </text>
+        <text x="675" y="400" textAnchor="middle" fontWeight="bold" fill="#0f172a" fontSize="14">
+          shakllantirish
+        </text>
+        <text x="675" y="420" textAnchor="middle" fill="#0f172a" fontSize="12">A6</text>
+        
+        {/* Connections between blocks */}
+        <line x1="100" y1="170" x2="200" y2="170" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="190,165 200,170 190,175" fill="#0c4a6e" />
+        <text x="150" y="160" textAnchor="middle" fill="#0f172a" fontSize="10">Suv ombori ma'lumotlari</text>
+        
+        <line x1="350" y1="170" x2="400" y2="170" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="390,165 400,170 390,175" fill="#0c4a6e" />
+        <text x="375" y="160" textAnchor="middle" fill="#0f172a" fontSize="10">Monitoring ma'lumotlari</text>
+        
+        <line x1="550" y1="170" x2="600" y2="170" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="590,165 600,170 590,175" fill="#0c4a6e" />
+        <text x="575" y="160" textAnchor="middle" fill="#0f172a" fontSize="10">Tahlil natijalari</text>
+        
+        <line x1="275" y1="250" x2="275" y2="350" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="270,340 275,350 280,340" fill="#0c4a6e" />
+        <text x="295" y="300" textAnchor="middle" fill="#0f172a" fontSize="10">Suv sathi ma'lumotlari</text>
+        
+        <line x1="675" y1="250" x2="275" y2="350" stroke="#0c4a6e" strokeWidth="2" strokeDasharray="5,5" />
+        <polygon points="275,340 285,350 285,340" fill="#0c4a6e" />
+        <text x="475" y="290" textAnchor="middle" fill="#0f172a" fontSize="10">Bashorat ma'lumotlari</text>
+        
+        <line x1="350" y1="370" x2="400" y2="370" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="390,365 400,370 390,375" fill="#0c4a6e" />
+        <text x="375" y="360" textAnchor="middle" fill="#0f172a" fontSize="10">Taqsimot rejasi</text>
+        
+        <line x1="550" y1="370" x2="600" y2="370" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="590,365 600,370 590,375" fill="#0c4a6e" />
+        <text x="575" y="360" textAnchor="middle" fill="#0f172a" fontSize="10">Nazorat ma'lumotlari</text>
+        
+        <line x1="750" y1="170" x2="800" y2="170" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="790,165 800,170 790,175" fill="#0c4a6e" />
+        <text x="775" y="160" textAnchor="middle" fill="#0f172a" fontSize="10">Bashorat natijalari</text>
+        
+        <line x1="750" y1="370" x2="800" y2="370" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="790,365 800,370 790,375" fill="#0c4a6e" />
+        <text x="775" y="360" textAnchor="middle" fill="#0f172a" fontSize="10">Hisobotlar</text>
+        
+        {/* Control lines (top) */}
+        <line x1="275" y1="100" x2="275" y2="150" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="270,140 275,150 280,140" fill="#0c4a6e" />
+        <text x="275" y="90" textAnchor="middle" fill="#0f172a" fontSize="10">Me'yoriy hujjatlar</text>
+        
+        <line x1="475" y1="100" x2="475" y2="150" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="470,140 475,150 480,140" fill="#0c4a6e" />
+        <text x="475" y="90" textAnchor="middle" fill="#0f172a" fontSize="10">Tahlil algoritmlari</text>
+        
+        <line x1="675" y1="100" x2="675" y2="150" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="670,140 675,150 680,140" fill="#0c4a6e" />
+        <text x="675" y="90" textAnchor="middle" fill="#0f172a" fontSize="10">LSTM model parametrlari</text>
+        
+        {/* Mechanism lines (bottom) */}
+        <line x1="275" y1="500" x2="275" y2="450" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="270,460 275,450 280,460" fill="#0c4a6e" />
+        <text x="275" y="510" textAnchor="middle" fill="#0f172a" fontSize="10">GIS tizimi</text>
+        
+        <line x1="475" y1="500" x2="475" y2="450" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="470,460 475,450 480,460" fill="#0c4a6e" />
+        <text x="475" y="510" textAnchor="middle" fill="#0f172a" fontSize="10">Videonazorat tizimi</text>
+        
+        <line x1="675" y1="500" x2="675" y2="450" stroke="#0c4a6e" strokeWidth="2" />
+        <polygon points="670,460 675,450 680,460" fill="#0c4a6e" />
+        <text x="675" y="510" textAnchor="middle" fill="#0f172a" fontSize="10">Hisobotlar tizimi</text>
+      </svg>
+    </div>
   );
 }
