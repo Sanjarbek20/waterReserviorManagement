@@ -1,7 +1,22 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { Download, Filter, Database, BarChart3, Droplet, LineChart } from "lucide-react";
+import { 
+  Download, 
+  Filter, 
+  Database, 
+  BarChart3, 
+  Droplet, 
+  LineChart, 
+  Settings, 
+  GitBranch, 
+  Layers,
+  Network,
+  Cpu,
+  Lock,
+  BarChart4,
+  Server
+} from "lucide-react";
 
 import DashboardLayout from "@/components/layout/dashboard-layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -134,7 +149,7 @@ export default function DataManagement() {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="database" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-6">
                 <TabsTrigger value="database">
                   <Database className="h-4 w-4 mr-2" />
                   Ma'lumotlar bazasi
@@ -146,6 +161,18 @@ export default function DataManagement() {
                 <TabsTrigger value="analytics">
                   <LineChart className="h-4 w-4 mr-2" />
                   Statistik tahlil
+                </TabsTrigger>
+                <TabsTrigger value="security">
+                  <Lock className="h-4 w-4 mr-2" />
+                  Xavfsizlik
+                </TabsTrigger>
+                <TabsTrigger value="system">
+                  <Cpu className="h-4 w-4 mr-2" />
+                  Tizim arxitekturasi
+                </TabsTrigger>
+                <TabsTrigger value="network">
+                  <Network className="h-4 w-4 mr-2" />
+                  Tarmoq
                 </TabsTrigger>
               </TabsList>
 
@@ -281,6 +308,236 @@ export default function DataManagement() {
                       <h4 className="font-medium mb-2">Vizualizatsiya usullari</h4>
                       <p className="text-gray-600">
                         Ma'lumotlarni grafiklar, diagrammalar va interaktiv ko'rinishda taqdim etish.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="security" className="pt-4">
+                <div className="border p-4 rounded-md bg-slate-50">
+                  <h3 className="text-lg font-medium mb-2 text-center">Xavfsizlik algoritmlari</h3>
+                  <p className="text-sm text-gray-500 mb-4 text-center">
+                    Tizim xavfsizligini ta'minlash uchun qo'llaniladigan algoritmlar
+                  </p>
+                  
+                  <div className="w-full overflow-x-auto mb-4 flex justify-center">
+                    <svg width="800" height="400" viewBox="0 0 800 400">
+                      {/* Algoritm diagrammasi */}
+                      <rect x="300" y="20" width="200" height="60" rx="5" fill="#fee2e2" stroke="#7f1d1d" strokeWidth="2" />
+                      <text x="400" y="50" textAnchor="middle" fontWeight="bold" fill="#0f172a">Xavfsizlik algoritmi</text>
+                      <text x="400" y="70" textAnchor="middle" fontSize="12" fill="#64748b">Boshlang'ich nuqta</text>
+                      
+                      {/* Strelka */}
+                      <line x1="400" y1="80" x2="400" y2="110" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,110 405,110 400,120" fill="#64748b" />
+                      
+                      {/* Autentifikatsiya tekshirish */}
+                      <rect x="300" y="120" width="200" height="60" rx="0" fill="#f8fafc" stroke="#7f1d1d" strokeWidth="2" />
+                      <text x="400" y="150" textAnchor="middle" fontWeight="bold" fill="#0f172a">Foydalanuvchi</text>
+                      <text x="400" y="170" textAnchor="middle" fontWeight="bold" fill="#0f172a">autentifikatsiyasi</text>
+                      
+                      {/* Strelka */}
+                      <line x1="400" y1="180" x2="400" y2="210" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,210 405,210 400,220" fill="#64748b" />
+                      
+                      {/* Avtorizatsiya */}
+                      <rect x="300" y="220" width="200" height="60" rx="0" fill="#f8fafc" stroke="#7f1d1d" strokeWidth="2" />
+                      <text x="400" y="250" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ruxsat tekshirish</text>
+                      <text x="400" y="270" textAnchor="middle" fontWeight="bold" fill="#0f172a">(Avtorizatsiya)</text>
+                      
+                      {/* Strelka */}
+                      <line x1="400" y1="280" x2="400" y2="310" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,310 405,310 400,320" fill="#64748b" />
+                      
+                      {/* Audit va monitoring */}
+                      <rect x="300" y="320" width="200" height="60" rx="0" fill="#f8fafc" stroke="#7f1d1d" strokeWidth="2" />
+                      <text x="400" y="350" textAnchor="middle" fontWeight="bold" fill="#0f172a">Xavfsizlik auditi</text>
+                      <text x="400" y="370" textAnchor="middle" fontWeight="bold" fill="#0f172a">va monitoring</text>
+                    </svg>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div className="bg-white p-3 rounded-md shadow-sm">
+                      <h4 className="font-medium mb-2">Autentifikatsiya algoritmi</h4>
+                      <p className="text-gray-600">
+                        Foydalanuvchi identifikatsiyasi va tasdiqlash jarayonlarini ta'minlash.
+                      </p>
+                    </div>
+                    <div className="bg-white p-3 rounded-md shadow-sm">
+                      <h4 className="font-medium mb-2">Ruxsat boshqaruvi</h4>
+                      <p className="text-gray-600">
+                        Rollar asosida resurslar va ma'lumotlarga ruxsat berish va ruxsatlarni boshqarish.
+                      </p>
+                    </div>
+                    <div className="bg-white p-3 rounded-md shadow-sm">
+                      <h4 className="font-medium mb-2">Xavfsizlik auditi</h4>
+                      <p className="text-gray-600">
+                        Tizim operatsiyalari va foydalanuvchi harakatlarini qayd qilish va tekshirish.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="system" className="pt-4">
+                <div className="border p-4 rounded-md bg-slate-50">
+                  <h3 className="text-lg font-medium mb-2 text-center">Tizim arxitekturasi</h3>
+                  <p className="text-sm text-gray-500 mb-4 text-center">
+                    Tizimning asosiy komponentlari va ularning o'zaro bog'liqligi
+                  </p>
+                  
+                  <div className="w-full overflow-x-auto mb-4 flex justify-center">
+                    <svg width="800" height="500" viewBox="0 0 800 500">
+                      {/* Front-end qismi */}
+                      <rect x="50" y="50" width="200" height="100" rx="5" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="150" y="85" textAnchor="middle" fontWeight="bold" fill="#0f172a">Front-end qismi</text>
+                      <text x="150" y="110" textAnchor="middle" fontSize="12" fill="#64748b">React, TypeScript, Vite</text>
+                      
+                      {/* Back-end qismi */}
+                      <rect x="550" y="50" width="200" height="100" rx="5" fill="#cffafe" stroke="#164e63" strokeWidth="2" />
+                      <text x="650" y="85" textAnchor="middle" fontWeight="bold" fill="#0f172a">Back-end qismi</text>
+                      <text x="650" y="110" textAnchor="middle" fontSize="12" fill="#64748b">Node.js, Express</text>
+                      
+                      {/* Ma'lumotlar bazasi */}
+                      <rect x="550" y="250" width="200" height="100" rx="5" fill="#ecfccb" stroke="#3f6212" strokeWidth="2" />
+                      <text x="650" y="285" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlar bazasi</text>
+                      <text x="650" y="310" textAnchor="middle" fontSize="12" fill="#64748b">PostgreSQL, Drizzle ORM</text>
+                      
+                      {/* AI modellari */}
+                      <rect x="50" y="250" width="200" height="100" rx="5" fill="#fef9c3" stroke="#713f12" strokeWidth="2" />
+                      <text x="150" y="285" textAnchor="middle" fontWeight="bold" fill="#0f172a">AI modellari</text>
+                      <text x="150" y="310" textAnchor="middle" fontSize="12" fill="#64748b">TensorFlow.js, LSTM</text>
+                      
+                      {/* Bog'lanishlar */}
+                      <line x1="250" y1="100" x2="550" y2="100" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="540,95 550,100 540,105" fill="#64748b" />
+                      <polygon points="260,95 250,100 260,105" fill="#64748b" />
+                      <text x="400" y="85" textAnchor="middle" fontSize="12" fill="#64748b">HTTP/WebSocket</text>
+                      
+                      <line x1="650" y1="150" x2="650" y2="250" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="645,160 650,150 655,160" fill="#64748b" />
+                      <polygon points="645,240 650,250 655,240" fill="#64748b" />
+                      <text x="680" y="200" textAnchor="middle" fontSize="12" fill="#64748b">SQL</text>
+                      
+                      <line x1="150" y1="150" x2="150" y2="250" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="145,160 150,150 155,160" fill="#64748b" />
+                      <polygon points="145,240 150,250 155,240" fill="#64748b" />
+                      <text x="180" y="200" textAnchor="middle" fontSize="12" fill="#64748b">JavaScript API</text>
+                      
+                      <line x1="250" y1="300" x2="550" y2="300" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="540,295 550,300 540,305" fill="#64748b" />
+                      <polygon points="260,295 250,300 260,305" fill="#64748b" />
+                      <text x="400" y="285" textAnchor="middle" fontSize="12" fill="#64748b">Ma'lumotlar uzatish</text>
+                      
+                      {/* Umumiy arhitektura */}
+                      <rect x="300" y="400" width="200" height="80" rx="5" fill="#fae8ff" stroke="#701a75" strokeWidth="2" />
+                      <text x="400" y="435" textAnchor="middle" fontWeight="bold" fill="#0f172a">Tizim boshqaruvi</text>
+                      <text x="400" y="455" textAnchor="middle" fontSize="12" fill="#64748b">WebSocket, mikroxizmatlar</text>
+                      
+                      <line x1="150" y1="350" x2="300" y2="430" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="290,425 300,430 290,435" fill="#64748b" />
+                      
+                      <line x1="650" y1="350" x2="500" y2="430" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="510,425 500,430 510,435" fill="#64748b" />
+                    </svg>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div className="bg-white p-3 rounded-md shadow-sm">
+                      <h4 className="font-medium mb-2">Frontend arxitekturasi</h4>
+                      <p className="text-gray-600">
+                        React va TypeScript asosida komponentli tizim, React Query orqali ma'lumotlarni boshqarish.
+                      </p>
+                    </div>
+                    <div className="bg-white p-3 rounded-md shadow-sm">
+                      <h4 className="font-medium mb-2">Backend arxitekturasi</h4>
+                      <p className="text-gray-600">
+                        Express.js, WebSocket serverlar va RESTful API endpointlari, Middleware qatlamlari.
+                      </p>
+                    </div>
+                    <div className="bg-white p-3 rounded-md shadow-sm">
+                      <h4 className="font-medium mb-2">Ma'lumotlar bazasi</h4>
+                      <p className="text-gray-600">
+                        PostgreSQL asosida ma'lumotlar bazasi sxemasi, Drizzle ORM qatlamlari.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="network" className="pt-4">
+                <div className="border p-4 rounded-md bg-slate-50">
+                  <h3 className="text-lg font-medium mb-2 text-center">Tarmoq algoritmlari</h3>
+                  <p className="text-sm text-gray-500 mb-4 text-center">
+                    Ma'lumotlarni uzatish va sinxronizatsiya algoritmlari
+                  </p>
+                  
+                  <div className="w-full overflow-x-auto mb-4 flex justify-center">
+                    <svg width="800" height="400" viewBox="0 0 800 400">
+                      {/* Algoritm diagrammasi */}
+                      <rect x="300" y="20" width="200" height="60" rx="5" fill="#d8b4fe" stroke="#581c87" strokeWidth="2" />
+                      <text x="400" y="50" textAnchor="middle" fontWeight="bold" fill="#0f172a">WebSocket algoritmi</text>
+                      <text x="400" y="70" textAnchor="middle" fontSize="12" fill="#64748b">Real vaqtda ma'lumot uzatish</text>
+                      
+                      {/* Strelka */}
+                      <line x1="400" y1="80" x2="400" y2="110" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,110 405,110 400,120" fill="#64748b" />
+                      
+                      {/* Ulanishni o'rnatish */}
+                      <rect x="300" y="120" width="200" height="60" rx="0" fill="#f8fafc" stroke="#581c87" strokeWidth="2" />
+                      <text x="400" y="150" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ulanishni o'rnatish</text>
+                      <text x="400" y="170" textAnchor="middle" fontWeight="bold" fill="#0f172a">va autentifikatsiya</text>
+                      
+                      {/* Strelka */}
+                      <line x1="400" y1="180" x2="400" y2="210" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,210 405,210 400,220" fill="#64748b" />
+                      
+                      {/* Ma'lumotlarni uzatish */}
+                      <rect x="300" y="220" width="200" height="60" rx="0" fill="#f8fafc" stroke="#581c87" strokeWidth="2" />
+                      <text x="400" y="250" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlarni</text>
+                      <text x="400" y="270" textAnchor="middle" fontWeight="bold" fill="#0f172a">uzatish va qabul qilish</text>
+                      
+                      {/* Strelka */}
+                      <line x1="400" y1="280" x2="400" y2="310" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,310 405,310 400,320" fill="#64748b" />
+                      
+                      {/* Sinxronizatsiya */}
+                      <rect x="300" y="320" width="200" height="60" rx="0" fill="#f8fafc" stroke="#581c87" strokeWidth="2" />
+                      <text x="400" y="350" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlarni</text>
+                      <text x="400" y="370" textAnchor="middle" fontWeight="bold" fill="#0f172a">sinxronizatsiya qilish</text>
+                      
+                      {/* Yon ta'riflar */}
+                      <rect x="550" y="150" width="150" height="80" rx="5" fill="#f5f5f4" stroke="#78716c" strokeWidth="1.5" />
+                      <text x="625" y="180" textAnchor="middle" fontSize="12" fill="#0f172a">Har 10 soniyada</text>
+                      <text x="625" y="200" textAnchor="middle" fontSize="12" fill="#0f172a">ma'lumot yangilanadi</text>
+                      
+                      <rect x="100" y="150" width="150" height="80" rx="5" fill="#f5f5f4" stroke="#78716c" strokeWidth="1.5" />
+                      <text x="175" y="180" textAnchor="middle" fontSize="12" fill="#0f172a">Mijoz tomonidan</text>
+                      <text x="175" y="200" textAnchor="middle" fontSize="12" fill="#0f172a">so'rovlar yuboriladi</text>
+                      
+                      <line x1="250" y1="190" x2="300" y2="190" stroke="#78716c" strokeWidth="1.5" strokeDasharray="5,5" />
+                      <line x1="500" y1="190" x2="550" y2="190" stroke="#78716c" strokeWidth="1.5" strokeDasharray="5,5" />
+                    </svg>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div className="bg-white p-3 rounded-md shadow-sm">
+                      <h4 className="font-medium mb-2">WebSocket protokoli</h4>
+                      <p className="text-gray-600">
+                        Doimiy ulanishni ta'minlash uchun WebSocket protokoli va ma'lumotlarni uzatish algoritmi.
+                      </p>
+                    </div>
+                    <div className="bg-white p-3 rounded-md shadow-sm">
+                      <h4 className="font-medium mb-2">Ma'lumotlarni tarqatish</h4>
+                      <p className="text-gray-600">
+                        Bir vaqtning o'zida ko'p foydalanuvchilarga ma'lumotlarni broadcast qilish algoritmi.
+                      </p>
+                    </div>
+                    <div className="bg-white p-3 rounded-md shadow-sm">
+                      <h4 className="font-medium mb-2">Xatoliklarni bartaraf etish</h4>
+                      <p className="text-gray-600">
+                        Ulanish uzilganda va xatoliklar yuz berganda qayta ulanish va ma'lumotlarni tiklash algoritmi.
                       </p>
                     </div>
                   </div>
