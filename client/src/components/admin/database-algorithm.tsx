@@ -93,9 +93,9 @@ export default function DatabaseAlgorithm() {
             <text x="530" y="950" textAnchor="middle" fontWeight="bold" fill="#0f172a">Umumiy ma'lumotlar</text>
             <text x="530" y="970" textAnchor="middle" fontWeight="bold" fill="#0f172a">bazasini yaratish</text>
 
-            {/* Tamom */}
-            <ellipse cx="700" cy="950" rx="80" ry="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="2" />
-            <text x="700" y="955" textAnchor="middle" fontWeight="bold" fill="#0f172a">Tamom</text>
+            {/* Yakunlash */}
+            <ellipse cx="700" cy="950" rx="80" ry="40" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+            <text x="700" y="955" textAnchor="middle" fontWeight="bold" fill="#0f172a">Yakunlash</text>
 
             {/* Arrows */}
             {/* Boshlash -> Ma'lumotlar bazasi */}

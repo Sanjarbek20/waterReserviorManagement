@@ -455,58 +455,84 @@ export default function DataManagement() {
                   </p>
                   
                   <div className="w-full overflow-x-auto mb-4 flex justify-center">
-                    <svg width="800" height="500" viewBox="0 0 800 500">
+                    <svg width="800" height="600" viewBox="0 0 800 600">
+                      {/* Algoritm boshi */}
+                      <ellipse cx="400" cy="30" rx="80" ry="30" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="35" textAnchor="middle" fontWeight="bold" fill="#0f172a">Boshlash</text>
+                      
+                      {/* Strelka */}
+                      <line x1="400" y1="60" x2="400" y2="90" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,90 405,90 400,100" fill="#64748b" />
+                      
                       {/* Front-end qismi */}
-                      <rect x="50" y="50" width="200" height="100" rx="5" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
-                      <text x="150" y="85" textAnchor="middle" fontWeight="bold" fill="#0f172a">Front-end qismi</text>
-                      <text x="150" y="110" textAnchor="middle" fontSize="12" fill="#64748b">React, TypeScript, Vite</text>
+                      <rect x="50" y="100" width="200" height="80" rx="5" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="150" y="125" textAnchor="middle" fontWeight="bold" fill="#0f172a">Front-end qismi</text>
+                      <text x="150" y="150" textAnchor="middle" fontSize="12" fill="#64748b">React, TypeScript, Vite</text>
+                      
+                      {/* Strelka */}
+                      <line x1="250" y1="140" x2="350" y2="140" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="340,135 350,140 340,145" fill="#64748b" />
+                      
+                      {/* Ma'lumotlar uzatish */}
+                      <rect x="350" y="100" width="100" height="80" rx="0" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="140" textAnchor="middle" fontWeight="bold" fill="#0f172a">HTTP/</text>
+                      <text x="400" y="160" textAnchor="middle" fontWeight="bold" fill="#0f172a">WebSocket</text>
+                      
+                      {/* Strelka */}
+                      <line x1="450" y1="140" x2="550" y2="140" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="540,135 550,140 540,145" fill="#64748b" />
                       
                       {/* Back-end qismi */}
-                      <rect x="550" y="50" width="200" height="100" rx="5" fill="#cffafe" stroke="#164e63" strokeWidth="2" />
-                      <text x="650" y="85" textAnchor="middle" fontWeight="bold" fill="#0f172a">Back-end qismi</text>
-                      <text x="650" y="110" textAnchor="middle" fontSize="12" fill="#64748b">Node.js, Express</text>
-                      
-                      {/* Ma'lumotlar bazasi */}
-                      <rect x="550" y="250" width="200" height="100" rx="5" fill="#ecfccb" stroke="#3f6212" strokeWidth="2" />
-                      <text x="650" y="285" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlar bazasi</text>
-                      <text x="650" y="310" textAnchor="middle" fontSize="12" fill="#64748b">PostgreSQL, Drizzle ORM</text>
+                      <rect x="550" y="100" width="200" height="80" rx="5" fill="#cffafe" stroke="#164e63" strokeWidth="2" />
+                      <text x="650" y="125" textAnchor="middle" fontWeight="bold" fill="#0f172a">Back-end qismi</text>
+                      <text x="650" y="150" textAnchor="middle" fontSize="12" fill="#64748b">Node.js, Express</text>
                       
                       {/* AI modellari */}
-                      <rect x="50" y="250" width="200" height="100" rx="5" fill="#fef9c3" stroke="#713f12" strokeWidth="2" />
-                      <text x="150" y="285" textAnchor="middle" fontWeight="bold" fill="#0f172a">AI modellari</text>
-                      <text x="150" y="310" textAnchor="middle" fontSize="12" fill="#64748b">TensorFlow.js, LSTM</text>
+                      <rect x="150" y="250" width="200" height="80" rx="5" fill="#fef9c3" stroke="#713f12" strokeWidth="2" />
+                      <text x="250" y="285" textAnchor="middle" fontWeight="bold" fill="#0f172a">AI modellari</text>
+                      <text x="250" y="310" textAnchor="middle" fontSize="12" fill="#64748b">TensorFlow.js, LSTM</text>
                       
-                      {/* Bog'lanishlar */}
-                      <line x1="250" y1="100" x2="550" y2="100" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="540,95 550,100 540,105" fill="#64748b" />
-                      <polygon points="260,95 250,100 260,105" fill="#64748b" />
-                      <text x="400" y="85" textAnchor="middle" fontSize="12" fill="#64748b">HTTP/WebSocket</text>
-                      
-                      <line x1="650" y1="150" x2="650" y2="250" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="645,160 650,150 655,160" fill="#64748b" />
-                      <polygon points="645,240 650,250 655,240" fill="#64748b" />
-                      <text x="680" y="200" textAnchor="middle" fontSize="12" fill="#64748b">SQL</text>
-                      
-                      <line x1="150" y1="150" x2="150" y2="250" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="145,160 150,150 155,160" fill="#64748b" />
+                      {/* Strelka */}
+                      <line x1="150" y1="180" x2="150" y2="250" stroke="#64748b" strokeWidth="2" />
+                      <line x1="150" y1="180" x2="150" y2="200" stroke="#64748b" strokeWidth="2" />
                       <polygon points="145,240 150,250 155,240" fill="#64748b" />
-                      <text x="180" y="200" textAnchor="middle" fontSize="12" fill="#64748b">JavaScript API</text>
+                      <text x="110" y="220" textAnchor="middle" fontSize="12" fill="#64748b">JavaScript API</text>
                       
-                      <line x1="250" y1="300" x2="550" y2="300" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="540,295 550,300 540,305" fill="#64748b" />
-                      <polygon points="260,295 250,300 260,305" fill="#64748b" />
-                      <text x="400" y="285" textAnchor="middle" fontSize="12" fill="#64748b">Ma'lumotlar uzatish</text>
+                      {/* Ma'lumotlar bazasi */}
+                      <rect x="450" y="250" width="200" height="80" rx="5" fill="#ecfccb" stroke="#3f6212" strokeWidth="2" />
+                      <text x="550" y="285" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlar bazasi</text>
+                      <text x="550" y="310" textAnchor="middle" fontSize="12" fill="#64748b">PostgreSQL, Drizzle ORM</text>
                       
-                      {/* Umumiy arhitektura */}
+                      {/* Strelka */}
+                      <line x1="650" y1="180" x2="650" y2="250" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="645,240 650,250 655,240" fill="#64748b" />
+                      <text x="680" y="220" textAnchor="middle" fontSize="12" fill="#64748b">SQL</text>
+                      
+                      {/* Strelka */}
+                      <line x1="350" y1="290" x2="450" y2="290" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="440,285 450,290 440,295" fill="#64748b" />
+                      <text x="400" y="275" textAnchor="middle" fontSize="12" fill="#64748b">Ma'lumotlar uzatish</text>
+                      
+                      {/* Tizim boshqaruvi */}
                       <rect x="300" y="400" width="200" height="80" rx="5" fill="#fae8ff" stroke="#701a75" strokeWidth="2" />
                       <text x="400" y="435" textAnchor="middle" fontWeight="bold" fill="#0f172a">Tizim boshqaruvi</text>
                       <text x="400" y="455" textAnchor="middle" fontSize="12" fill="#64748b">WebSocket, mikroxizmatlar</text>
                       
-                      <line x1="150" y1="350" x2="300" y2="430" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="290,425 300,430 290,435" fill="#64748b" />
+                      {/* Strelka */}
+                      <line x1="250" y1="330" x2="320" y2="400" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="313,392 320,400 327,392" fill="#64748b" />
                       
-                      <line x1="650" y1="350" x2="500" y2="430" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="510,425 500,430 510,435" fill="#64748b" />
+                      {/* Strelka */}
+                      <line x1="550" y1="330" x2="480" y2="400" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="473,392 480,400 487,392" fill="#64748b" />
+                      
+                      {/* Strelka */}
+                      <line x1="400" y1="480" x2="400" y2="540" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="395,530 400,540 405,530" fill="#64748b" />
+                      
+                      {/* Algoritm tugashi */}
+                      <ellipse cx="400" cy="570" rx="80" ry="30" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+                      <text x="400" y="575" textAnchor="middle" fontWeight="bold" fill="#0f172a">Yakunlash</text>
                     </svg>
                   </div>
                   
