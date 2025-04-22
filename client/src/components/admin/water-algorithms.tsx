@@ -14,7 +14,7 @@ export default function WaterAlgorithms() {
         <div className="overflow-auto">
           <svg width="900" height="1200" viewBox="0 0 900 1200" className="mx-auto">
             {/* Boshlash */}
-            <ellipse cx="180" cy="50" rx="120" ry="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="2" />
+            <ellipse cx="180" cy="50" rx="120" ry="40" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
             <text x="180" y="55" textAnchor="middle" fontWeight="bold" fill="#0f172a">Boshlash</text>
 
             {/* Ikki asosiy algoritm guruhi */}
@@ -91,6 +91,14 @@ export default function WaterAlgorithms() {
             <rect x="80" y="1120" width="440" height="80" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
             <text x="300" y="1150" textAnchor="middle" fontWeight="bold" fill="#0f172a">Statistik hisobotlar tayyorlash va bildirishnomalar</text>
             <text x="300" y="1170" textAnchor="middle" fontWeight="bold" fill="#0f172a">yuborish algoritmi</text>
+            
+            {/* Yakunlash */}
+            <ellipse cx="680" cy="1120" rx="80" ry="40" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" />
+            <text x="680" y="1125" textAnchor="middle" fontWeight="bold" fill="#0f172a">Yakunlash</text>
+            
+            {/* Statistik hisob -> Yakunlash */}
+            <line x1="520" y1="1160" x2="600" y2="1120" stroke="#ca8a04" strokeWidth="2" />
+            <polygon points="595,1115 605,1125 605,1118" fill="#ca8a04" />
 
             {/* Arrows */}
             {/* Boshlash -> Asosiy algoritm */}
