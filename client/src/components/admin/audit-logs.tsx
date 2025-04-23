@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import {
   Table,
@@ -9,526 +10,421 @@ import {
   TableBody,
   TableCell
 } from "@/components/ui/table";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { 
-  Search, 
-  Calendar, 
-  FileDown, 
-  Activity, 
-  User, 
-  Shield, 
-  Settings, 
-  Database,
-  AlertTriangle,
-  Info,
-  CheckCircle,
-  XCircle,
-  Eye
-} from "lucide-react";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { 
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label";
+import { useQuery } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { Download, Eye, Search, Calendar, Filter, RefreshCw } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+
+interface AuditLog {
+  id: number;
+  userId: number;
+  username: string;
+  action: string;
+  resourceType: string;
+  resourceId: string;
+  details: string;
+  ipAddress: string;
+  createdAt: string;
+}
 
 export default function AuditLogs() {
   const { toast } = useToast();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [moduleFilter, setModuleFilter] = useState('all');
-  const [actionFilter, setActionFilter] = useState('all');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [fromDate, setFromDate] = useState<Date | undefined>(undefined);
-  const [toDate, setToDate] = useState<Date | undefined>(undefined);
-  
-  // Mock data for audit logs
-  const auditLogs = [
-    {
-      id: 1,
-      timestamp: '2023-08-10 14:35:22',
-      user: 'superadmin',
-      module: 'User Management',
-      action: 'CREATE',
-      description: 'Created new user account: "operator1"',
-      status: 'SUCCESS',
-      ipAddress: '192.168.1.10',
-      details: {
-        username: 'operator1',
-        role: 'admin',
-        email: 'operator1@example.com'
-      }
-    },
-    {
-      id: 2,
-      timestamp: '2023-08-10 14:38:17',
-      user: 'admin',
-      module: 'Water Allocation',
-      action: 'UPDATE',
-      description: 'Updated water allocation #123 for farmer "John Doe"',
-      status: 'SUCCESS',
-      ipAddress: '192.168.1.15',
-      details: {
-        allocationId: 123,
-        farmerId: 45,
-        amount: '5000m³',
-        previousAmount: '3000m³'
-      }
-    },
-    {
-      id: 3,
-      timestamp: '2023-08-10 15:05:33',
-      user: 'data_admin',
-      module: 'Reservoir Management',
-      action: 'UPDATE',
-      description: 'Updated water level for reservoir "East Reservoir"',
-      status: 'SUCCESS',
-      ipAddress: '192.168.1.22',
-      details: {
-        reservoirId: 2,
-        newLevel: '320000m³',
-        previousLevel: '310000m³'
-      }
-    },
-    {
-      id: 4,
-      timestamp: '2023-08-10 15:22:41',
-      user: 'admin',
-      module: 'User Management',
-      action: 'DELETE',
-      description: 'Attempted to delete user account "superadmin"',
-      status: 'FAILED',
-      ipAddress: '192.168.1.15',
-      details: {
-        reason: 'Insufficient permissions. Cannot delete superadmin account.'
-      }
-    },
-    {
-      id: 5,
-      timestamp: '2023-08-10 15:30:05',
-      user: 'superadmin',
-      module: 'System Configuration',
-      action: 'UPDATE',
-      description: 'Updated system settings',
-      status: 'SUCCESS',
-      ipAddress: '192.168.1.10',
-      details: {
-        changes: {
-          sessionTimeout: '60 minutes',
-          previousValue: '30 minutes'
-        }
-      }
-    },
-    {
-      id: 6,
-      timestamp: '2023-08-10 15:45:19',
-      user: 'admin',
-      module: 'Reporting',
-      action: 'READ',
-      description: 'Generated water usage report',
-      status: 'SUCCESS',
-      ipAddress: '192.168.1.15',
-      details: {
-        reportType: 'Monthly Water Usage',
-        format: 'PDF',
-        period: 'July 2023'
-      }
-    },
-    {
-      id: 7,
-      timestamp: '2023-08-10 16:10:52',
-      user: 'farmer1',
-      module: 'Water Request',
-      action: 'CREATE',
-      description: 'Submitted new water request',
-      status: 'PENDING',
-      ipAddress: '192.168.1.30',
-      details: {
-        requestId: 234,
-        amount: '2000m³',
-        cropType: 'Wheat',
-        fieldSize: '50 hectares'
-      }
-    },
-    {
-      id: 8,
-      timestamp: '2023-08-10 16:15:33',
-      user: 'data_admin',
-      module: 'Data Management',
-      action: 'EXPORT',
-      description: 'Exported reservoir data',
-      status: 'SUCCESS',
-      ipAddress: '192.168.1.22',
-      details: {
-        format: 'CSV',
-        records: 15,
-        timeframe: 'Last 30 days'
-      }
-    },
-    {
-      id: 9,
-      timestamp: '2023-08-10 16:30:27',
-      user: 'superadmin',
-      module: 'Role Management',
-      action: 'UPDATE',
-      description: 'Updated permissions for role "data_admin"',
-      status: 'SUCCESS',
-      ipAddress: '192.168.1.10',
-      details: {
-        roleId: 3,
-        addedPermissions: ['report.export'],
-        removedPermissions: []
-      }
-    },
-    {
-      id: 10,
-      timestamp: '2023-08-10 16:45:18',
-      user: 'system',
-      module: 'Backup',
-      action: 'CREATE',
-      description: 'Automated system backup executed',
-      status: 'SUCCESS',
-      ipAddress: 'localhost',
-      details: {
-        backupId: 45,
-        size: '256MB',
-        location: '/backups/2023-08-10/'
-      }
-    },
-    {
-      id: 11,
-      timestamp: '2023-08-10 17:00:05',
-      user: 'admin',
-      module: 'Security',
-      action: 'LOGIN',
-      description: 'User login',
-      status: 'SUCCESS',
-      ipAddress: '192.168.1.15',
-      details: {
-        browser: 'Chrome 115.0.0',
-        os: 'Windows 10',
-        loginTime: '2023-08-10 17:00:01'
-      }
-    },
-    {
-      id: 12,
-      timestamp: '2023-08-10 17:15:42',
-      user: 'unknown',
-      module: 'Security',
-      action: 'LOGIN',
-      description: 'Failed login attempt for username "admin"',
-      status: 'FAILED',
-      ipAddress: '192.168.1.100',
-      details: {
-        reason: 'Invalid password',
-        attemptNumber: 3
-      }
-    }
+  const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
+  const [selectedLog, setSelectedLog] = useState<AuditLog | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [actionFilter, setActionFilter] = useState('');
+  const [resourceTypeFilter, setResourceTypeFilter] = useState('');
+  const [dateFilter, setDateFilter] = useState<Date | undefined>(undefined);
+  const [page, setPage] = useState(1);
+  const [perPage] = useState(10);
+
+  // Predefined filter options
+  const actionOptions = [
+    { value: '', label: 'All Actions' },
+    { value: 'CREATE', label: 'Create' },
+    { value: 'UPDATE', label: 'Update' },
+    { value: 'DELETE', label: 'Delete' },
+    { value: 'LOGIN', label: 'Login' },
+    { value: 'LOGOUT', label: 'Logout' },
+    { value: 'VIEW', label: 'View' },
+    { value: 'EXPORT', label: 'Export' },
   ];
 
-  // Get unique modules, actions, statuses for filters
-  const modules = ['all', ...Array.from(new Set(auditLogs.map(log => log.module)))];
-  const actions = ['all', ...Array.from(new Set(auditLogs.map(log => log.action)))];
-  const statuses = ['all', ...Array.from(new Set(auditLogs.map(log => log.status)))];
+  const resourceTypeOptions = [
+    { value: '', label: 'All Resources' },
+    { value: 'USER', label: 'User' },
+    { value: 'ROLE', label: 'Role' },
+    { value: 'PERMISSION', label: 'Permission' },
+    { value: 'RESERVOIR', label: 'Reservoir' },
+    { value: 'WATER_ALLOCATION', label: 'Water Allocation' },
+    { value: 'WATER_REQUEST', label: 'Water Request' },
+    { value: 'SYSTEM_SETTINGS', label: 'System Settings' },
+    { value: 'REPORT', label: 'Report' },
+  ];
 
-  // Apply filters to audit logs
-  const filteredLogs = auditLogs.filter(log => {
-    // Search filter
-    const matchesSearch = !searchQuery || 
-      log.user.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      log.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      log.ipAddress.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    // Module filter
-    const matchesModule = moduleFilter === 'all' || log.module === moduleFilter;
-    
-    // Action filter
-    const matchesAction = actionFilter === 'all' || log.action === actionFilter;
-    
-    // Status filter
-    const matchesStatus = statusFilter === 'all' || log.status === statusFilter;
-    
-    // Date range filter
-    const logDate = new Date(log.timestamp);
-    const matchesFromDate = !fromDate || logDate >= fromDate;
-    const matchesToDate = !toDate || logDate <= new Date(toDate.setHours(23, 59, 59, 999));
-    
-    return matchesSearch && matchesModule && matchesAction && matchesStatus && matchesFromDate && matchesToDate;
+  // Fetch audit logs
+  const {
+    data: auditLogsData = { logs: [], totalCount: 0 },
+    isLoading,
+    refetch
+  } = useQuery({
+    queryKey: ['/api/admin/audit-logs', page, perPage, searchTerm, actionFilter, resourceTypeFilter, dateFilter],
+    queryFn: async () => {
+      try {
+        const params = new URLSearchParams({
+          page: page.toString(),
+          perPage: perPage.toString(),
+        });
+
+        if (searchTerm) params.append('search', searchTerm);
+        if (actionFilter) params.append('action', actionFilter);
+        if (resourceTypeFilter) params.append('resourceType', resourceTypeFilter);
+        if (dateFilter) params.append('date', format(dateFilter, 'yyyy-MM-dd'));
+
+        const res = await apiRequest('GET', `/api/admin/audit-logs?${params.toString()}`);
+        return await res.json();
+      } catch (error) {
+        console.error('Error fetching audit logs:', error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch audit logs",
+          variant: "destructive"
+        });
+        return { logs: [], totalCount: 0 };
+      }
+    }
   });
 
-  // Handle export
-  const handleExport = () => {
-    toast({
-      title: "Export initiated",
-      description: "Audit logs are being exported to CSV file"
-    });
-    // In a real app, you would trigger an API call to generate and download the file
+  const logs = auditLogsData.logs || [];
+  const totalPages = Math.ceil((auditLogsData.totalCount || 0) / perPage);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setPage(1); // Reset to first page on new search
+    refetch();
   };
 
-  // Get icon based on module
-  const getModuleIcon = (module: string) => {
-    switch (module) {
-      case 'User Management':
-        return <User className="h-4 w-4" />;
-      case 'Role Management':
-        return <Shield className="h-4 w-4" />;
-      case 'Water Allocation':
-        return <Activity className="h-4 w-4" />;
-      case 'Reservoir Management':
-        return <Database className="h-4 w-4" />;
-      case 'System Configuration':
-        return <Settings className="h-4 w-4" />;
-      case 'Security':
-        return <Shield className="h-4 w-4" />;
-      case 'Backup':
-        return <Database className="h-4 w-4" />;
-      case 'Data Management':
-        return <Database className="h-4 w-4" />;
-      case 'Reporting':
-        return <FileDown className="h-4 w-4" />;
-      case 'Water Request':
-        return <Activity className="h-4 w-4" />;
-      default:
-        return <Info className="h-4 w-4" />;
+  const handleResetFilters = () => {
+    setSearchTerm('');
+    setActionFilter('');
+    setResourceTypeFilter('');
+    setDateFilter(undefined);
+    setPage(1);
+  };
+
+  const handleViewDetails = (log: AuditLog) => {
+    setSelectedLog(log);
+    setIsDetailsDialogOpen(true);
+  };
+
+  const handleExportLogs = async () => {
+    try {
+      const params = new URLSearchParams();
+      if (searchTerm) params.append('search', searchTerm);
+      if (actionFilter) params.append('action', actionFilter);
+      if (resourceTypeFilter) params.append('resourceType', resourceTypeFilter);
+      if (dateFilter) params.append('date', format(dateFilter, 'yyyy-MM-dd'));
+
+      const res = await apiRequest('GET', `/api/admin/audit-logs/export?${params.toString()}`);
+      const blob = await res.blob();
+      
+      // Create a temporary URL for the blob
+      const url = window.URL.createObjectURL(blob);
+      
+      // Create a link element and trigger download
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `audit-logs-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      
+      // Clean up
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      toast({
+        title: "Success",
+        description: "Audit logs exported successfully",
+      });
+    } catch (error) {
+      console.error('Error exporting audit logs:', error);
+      toast({
+        title: "Error",
+        description: "Failed to export audit logs",
+        variant: "destructive"
+      });
     }
   };
 
-  // Get icon and style based on status
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'SUCCESS':
-        return (
-          <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-            <CheckCircle className="w-3 h-3 mr-1" />
-            Success
-          </Badge>
-        );
-      case 'FAILED':
-        return (
-          <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
-            <XCircle className="w-3 h-3 mr-1" />
-            Failed
-          </Badge>
-        );
-      case 'PENDING':
-        return (
-          <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
-            <AlertTriangle className="w-3 h-3 mr-1" />
-            Pending
-          </Badge>
-        );
-      default:
-        return (
-          <Badge variant="outline">
-            <Info className="w-3 h-3 mr-1" />
-            {status}
-          </Badge>
-        );
-    }
-  };
+  if (isLoading && page === 1) {
+    return <div className="flex items-center justify-center p-8">Loading audit logs...</div>;
+  }
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div>
-          <CardTitle>Audit Logs</CardTitle>
-          <CardDescription>
-            System activity logs for security and compliance
-          </CardDescription>
-        </div>
-        <Button variant="outline" onClick={handleExport}>
-          <FileDown className="mr-2 h-4 w-4" />
-          Export Logs
-        </Button>
-      </CardHeader>
-      <CardContent>
-        {/* Filters */}
-        <div className="flex flex-wrap gap-3 mb-4">
-          <div className="relative">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search logs..."
-              className="w-[200px] pl-8"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+    <div className="space-y-6">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>System Audit Logs</CardTitle>
+            <CardDescription>Track all actions performed in the system</CardDescription>
           </div>
-          
-          <Select value={moduleFilter} onValueChange={setModuleFilter}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filter by module" />
-            </SelectTrigger>
-            <SelectContent>
-              {modules.map(module => (
-                <SelectItem key={module} value={module}>
-                  {module === 'all' ? 'All Modules' : module}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          
-          <Select value={actionFilter} onValueChange={setActionFilter}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filter by action" />
-            </SelectTrigger>
-            <SelectContent>
-              {actions.map(action => (
-                <SelectItem key={action} value={action}>
-                  {action === 'all' ? 'All Actions' : action}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filter by status" />
-            </SelectTrigger>
-            <SelectContent>
-              {statuses.map(status => (
-                <SelectItem key={status} value={status}>
-                  {status === 'all' ? 'All Statuses' : status}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" className="w-[240px] justify-start text-left font-normal">
-                <Calendar className="mr-2 h-4 w-4" />
-                {fromDate && toDate ? (
-                  `${format(fromDate, 'dd/MM/yyyy')} - ${format(toDate, 'dd/MM/yyyy')}`
-                ) : (
-                  <span>Pick date range</span>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <div className="flex space-x-2 p-3">
-                <div className="space-y-1">
-                  <div className="text-xs font-medium">From</div>
-                  <CalendarComponent
-                    mode="single"
-                    selected={fromDate}
-                    onSelect={setFromDate}
-                    initialFocus
-                  />
-                </div>
-                <div className="space-y-1">
-                  <div className="text-xs font-medium">To</div>
-                  <CalendarComponent
-                    mode="single"
-                    selected={toDate}
-                    onSelect={setToDate}
-                    initialFocus
-                    disabled={(date) => date < (fromDate || new Date(0))}
-                  />
-                </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={handleResetFilters}
+              className="flex items-center gap-2"
+            >
+              <RefreshCw className="h-4 w-4" />
+              Reset Filters
+            </Button>
+            <Button 
+              variant="default" 
+              onClick={handleExportLogs}
+              className="flex items-center gap-2"
+            >
+              <Download className="h-4 w-4" />
+              Export Logs
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {/* Search and Filters */}
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
+              <div className="w-full sm:max-w-xs">
+                <form onSubmit={handleSearch} className="flex space-x-2">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+                    <Input
+                      type="search"
+                      placeholder="Search logs..."
+                      className="pl-8"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </div>
+                  <Button type="submit" size="sm">Search</Button>
+                </form>
               </div>
-              <div className="flex justify-end p-3 border-t border-border">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setFromDate(undefined);
-                    setToDate(undefined);
-                  }}
-                  className="mr-2"
-                >
-                  Clear
-                </Button>
-                <Button size="sm">Apply</Button>
+              
+              <div className="flex flex-wrap gap-2 items-center">
+                <div>
+                  <Select value={actionFilter} onValueChange={setActionFilter}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Filter by action" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {actionOptions.map(option => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <Select value={resourceTypeFilter} onValueChange={setResourceTypeFilter}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Filter by resource" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {resourceTypeOptions.map(option => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm" className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4" />
+                      {dateFilter ? format(dateFilter, 'PPP') : 'Pick a date'}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <CalendarComponent
+                      mode="single"
+                      selected={dateFilter}
+                      onSelect={setDateFilter}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
-            </PopoverContent>
-          </Popover>
-        </div>
-
-        <ScrollArea className="h-[500px]">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Timestamp</TableHead>
-                <TableHead>User</TableHead>
-                <TableHead>Module</TableHead>
-                <TableHead>Action</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>IP Address</TableHead>
-                <TableHead className="text-right">Details</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredLogs.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
-                    No audit logs found matching your search criteria
-                  </TableCell>
-                </TableRow>
-              ) : (
-                filteredLogs.map((log) => (
-                  <TableRow key={log.id}>
-                    <TableCell className="whitespace-nowrap">{log.timestamp}</TableCell>
-                    <TableCell>
-                      <span className="font-medium">{log.user}</span>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center">
-                        {getModuleIcon(log.module)}
-                        <span className="ml-2">{log.module}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline">
-                        {log.action}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="max-w-[300px] truncate" title={log.description}>
-                      {log.description}
-                    </TableCell>
-                    <TableCell>
-                      {getStatusBadge(log.status)}
-                    </TableCell>
-                    <TableCell>{log.ipAddress}</TableCell>
-                    <TableCell className="text-right">
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button variant="ghost" size="icon">
+            </div>
+            
+            {/* Audit Logs Table */}
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Timestamp</TableHead>
+                    <TableHead>User</TableHead>
+                    <TableHead>Action</TableHead>
+                    <TableHead>Resource</TableHead>
+                    <TableHead>IP Address</TableHead>
+                    <TableHead className="text-right">Details</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {logs.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center py-4 text-muted-foreground">
+                        No audit logs found
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    logs.map((log: AuditLog) => (
+                      <TableRow key={log.id}>
+                        <TableCell>
+                          {new Date(log.createdAt).toLocaleString()}
+                        </TableCell>
+                        <TableCell>{log.username}</TableCell>
+                        <TableCell>
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            log.action === 'CREATE' 
+                              ? 'bg-green-100 text-green-800'
+                              : log.action === 'UPDATE' 
+                              ? 'bg-blue-100 text-blue-800'
+                              : log.action === 'DELETE'
+                              ? 'bg-red-100 text-red-800'
+                              : log.action === 'LOGIN' || log.action === 'LOGOUT'
+                              ? 'bg-purple-100 text-purple-800'
+                              : 'bg-gray-100 text-gray-800'
+                          }`}>
+                            {log.action}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          {log.resourceType} {log.resourceId ? `#${log.resourceId}` : ''}
+                        </TableCell>
+                        <TableCell>
+                          {log.ipAddress}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleViewDetails(log)}
+                          >
                             <Eye className="h-4 w-4" />
                           </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-[300px]" align="end">
-                          <div className="space-y-2">
-                            <h4 className="font-medium">Event Details</h4>
-                            <div className="text-sm space-y-1">
-                              <div className="bg-muted p-2 rounded-md">
-                                <pre className="text-xs overflow-auto">
-                                  {JSON.stringify(log.details, null, 2)}
-                                </pre>
-                              </div>
-                            </div>
-                          </div>
-                        </PopoverContent>
-                      </Popover>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </ScrollArea>
-      </CardContent>
-    </Card>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+            
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-muted-foreground">
+                  Showing page {page} of {totalPages}
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                    disabled={page === 1}
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                    disabled={page === totalPages}
+                  >
+                    Next
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Log Details Dialog */}
+      {selectedLog && (
+        <Dialog open={isDetailsDialogOpen} onOpenChange={setIsDetailsDialogOpen}>
+          <DialogContent className="sm:max-w-[550px]">
+            <DialogHeader>
+              <DialogTitle>Audit Log Details</DialogTitle>
+              <DialogDescription>
+                Full details of the selected audit log entry
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-start gap-4">
+                <Label className="text-right font-medium">Date & Time:</Label>
+                <div className="col-span-3">
+                  {new Date(selectedLog.createdAt).toLocaleString()}
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-start gap-4">
+                <Label className="text-right font-medium">User:</Label>
+                <div className="col-span-3">
+                  {selectedLog.username} (ID: {selectedLog.userId})
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-start gap-4">
+                <Label className="text-right font-medium">Action:</Label>
+                <div className="col-span-3">
+                  {selectedLog.action}
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-start gap-4">
+                <Label className="text-right font-medium">Resource:</Label>
+                <div className="col-span-3">
+                  {selectedLog.resourceType} {selectedLog.resourceId ? `(ID: ${selectedLog.resourceId})` : ''}
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-start gap-4">
+                <Label className="text-right font-medium">IP Address:</Label>
+                <div className="col-span-3">
+                  {selectedLog.ipAddress}
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-start gap-4">
+                <Label className="text-right font-medium">Details:</Label>
+                <div className="col-span-3">
+                  <ScrollArea className="h-32 rounded-md border p-2">
+                    <pre className="text-xs whitespace-pre-wrap">
+                      {selectedLog.details}
+                    </pre>
+                  </ScrollArea>
+                </div>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button onClick={() => setIsDetailsDialogOpen(false)}>
+                Close
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+    </div>
   );
 }
