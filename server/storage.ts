@@ -100,6 +100,16 @@ export class MemStorage implements IStorage {
       role: "data_admin"
     });
     
+    // Super admin account
+    this.createUser({
+      username: "superadmin",
+      password: "superadmin", // Plain text password for easier testing
+      firstName: "Super",
+      lastName: "Admin",
+      role: "super_admin",
+      permissions: ["all"]
+    });
+    
     // Add the test user with the same password as admin (hashed)
     this.createUser({
       username: "test",
@@ -195,7 +205,13 @@ export class MemStorage implements IStorage {
       ...insertUser, 
       id,
       fieldSize: insertUser.fieldSize || null,
-      cropType: insertUser.cropType || null
+      cropType: insertUser.cropType || null,
+      permissions: insertUser.permissions || null,
+      isActive: insertUser.isActive !== undefined ? insertUser.isActive : true,
+      createdAt: new Date(),
+      lastLogin: null,
+      loginIP: null,
+      deviceInfo: null
     };
     this.users.set(id, user);
     return user;
