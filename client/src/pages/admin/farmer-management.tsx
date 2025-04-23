@@ -1,534 +1,582 @@
-import React, { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import DashboardLayout from "@/components/layout/dashboard-layout";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  Search,
-  PlusSquare,
-  Bell,
-  UserCog,
-  AlertTriangle,
-  Settings,
-  MessageSquare,
-  BarChart,
-  MapPin,
-  Lock,
-  Unlock
-} from "lucide-react";
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Checkbox
+} from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useTranslation } from "react-i18next";
+import Layout from "@/components/layout";
 
-// Sample farmer features that can be enabled/disabled
-const farmerFeatures = [
-  {
-    id: "water_requests",
-    name: "Suv so'rovlarini yuborish",
-    description: "Foydalanuvchi yangi suv so'rovlarini yarata oladi",
-    icon: <Droplet className="h-4 w-4 text-blue-500 mr-2" />
-  },
-  {
-    id: "map_access",
-    name: "Xarita ko'rinish",
-    description: "Umumiy suv resurslari xaritasini ko'rish imkoniyati",
-    icon: <MapPin className="h-4 w-4 text-green-500 mr-2" />
-  },
-  {
-    id: "reports",
-    name: "Hisobotlarni ko'rish",
-    description: "Tizim hisobotlarini ko'rish imkoniyati",
-    icon: <BarChart className="h-4 w-4 text-purple-500 mr-2" />
-  },
-  {
-    id: "water_allocation",
-    name: "Suv taqsimoti",
-    description: "Suv taqsimoti jadvalini ko'rish imkoniyati",
-    icon: <Droplet className="h-4 w-4 text-cyan-500 mr-2" />
-  },
-  {
-    id: "messaging",
-    name: "Xabarlar almashinuvi",
-    description: "Adminlar bilan xabar almashish imkoniyati",
-    icon: <MessageSquare className="h-4 w-4 text-indigo-500 mr-2" />
-  },
-  {
-    id: "settings",
-    name: "Sozlamalar", 
-    description: "Shaxsiy ma'lumotlarni o'zgartirish imkoniyati",
-    icon: <Settings className="h-4 w-4 text-slate-500 mr-2" />
-  }
-];
+// Define the user type
+interface User {
+  id: number;
+  username: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+  fieldSize?: string;
+  cropType?: string;
+}
+
+// Define permissions interface
+interface Permissions {
+  water_requests: boolean;
+  map_access: boolean;
+  reports: boolean;
+  water_allocation: boolean;
+  messaging: boolean;
+  settings: boolean;
+}
+
+const defaultPermissions: Permissions = {
+  water_requests: true,
+  map_access: true,
+  reports: true,
+  water_allocation: true,
+  messaging: true,
+  settings: true
+};
 
 export default function FarmerManagement() {
+  const { t } = useTranslation();
   const { toast } = useToast();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFarmer, setSelectedFarmer] = useState<any>(null);
+  const queryClient = useQueryClient();
+  const [selectedFarmer, setSelectedFarmer] = useState<User | null>(null);
+  const [permissions, setPermissions] = useState<Permissions>(defaultPermissions);
   const [isPermissionsDialogOpen, setIsPermissionsDialogOpen] = useState(false);
-  const [isNotifyDialogOpen, setIsNotifyDialogOpen] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState("");
-  const [notificationType, setNotificationType] = useState<"info" | "warning" | "error">("info");
-  const [features, setFeatures] = useState<Record<string, boolean>>({});
 
-  // Query to fetch all users that have "farmer" role
-  const { data: farmers = [], isLoading } = useQuery<any[]>({
-    queryKey: ["/api/users/farmers"],
-    queryFn: async () => {
-      const response = await apiRequest("GET", "/api/users", {});
-      const data = await response.json();
-      return data.filter((user: any) => user.role === "farmer");
-    }
+  // Get users
+  const { data: users = [], isLoading } = useQuery<User[]>({
+    queryKey: ['/api/users'],
   });
 
-  // Query to fetch farmer permissions
-  const { data: permissions = {}, isLoading: isLoadingPermissions } = useQuery({
-    queryKey: ["/api/farmer-permissions", selectedFarmer?.id],
-    queryFn: async () => {
-      if (!selectedFarmer) return {};
-      try {
-        const response = await apiRequest("GET", `/api/farmer-permissions/${selectedFarmer.id}`, {});
-        return response.json();
-      } catch (error) {
-        // If permissions don't exist yet, return default permissions
-        return farmerFeatures.reduce((acc, feature) => {
-          acc[feature.id] = true;
-          return acc;
-        }, {});
-      }
-    },
-    enabled: !!selectedFarmer,
+  // Get permissions for the selected farmer
+  const getPermissions = async (farmerId: number) => {
+    const response = await fetch(`/api/farmer-permissions/${farmerId}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch permissions');
+    }
+    return response.json();
+  };
+
+  // Update permissions
+  const updatePermissions = async (farmerId: number, permissions: Permissions) => {
+    const response = await fetch(`/api/farmer-permissions/${farmerId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(permissions),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to update permissions');
+    }
+    return response.json();
+  };
+
+  // Permission query
+  const permissionsQuery = useQuery({
+    queryKey: ['/api/farmer-permissions', selectedFarmer?.id],
+    queryFn: () => getPermissions(selectedFarmer?.id as number),
+    enabled: !!selectedFarmer?.id && isPermissionsDialogOpen,
     onSuccess: (data) => {
-      setFeatures(data);
-    }
+      setPermissions(data);
+    },
   });
 
-  // Mutation to update farmer permissions
+  // Update permissions mutation
   const updatePermissionsMutation = useMutation({
-    mutationFn: async (data: { farmerId: number, permissions: Record<string, boolean> }) => {
-      const response = await apiRequest(
-        "PUT",
-        `/api/farmer-permissions/${data.farmerId}`,
-        data.permissions
-      );
-      return response.json();
-    },
+    mutationFn: (permissions: Permissions) => 
+      updatePermissions(selectedFarmer?.id as number, permissions),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/farmer-permissions"] });
       toast({
-        title: "Huquqlar yangilandi",
-        description: "Fermer huquqlari muvaffaqiyatli yangilandi",
+        title: t("Permissions updated"),
+        description: t("The farmer's permissions have been updated successfully."),
       });
       setIsPermissionsDialogOpen(false);
+      queryClient.invalidateQueries({ queryKey: ['/api/farmer-permissions', selectedFarmer?.id] });
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({
+        title: t("Error"),
+        description: (error as Error).message || t("Failed to update permissions"),
         variant: "destructive",
-        title: "Xato",
-        description: error.message || "Huquqlarni yangilashda xatolik yuz berdi",
       });
-    }
-  });
-
-  // Mutation to send notification
-  const sendNotificationMutation = useMutation({
-    mutationFn: async (data: { userId: number, message: string, type: string }) => {
-      const response = await apiRequest(
-        "POST", 
-        "/api/notifications",
-        {
-          userId: data.userId,
-          message: data.message,
-          type: data.type,
-        }
-      );
-      return response.json();
     },
-    onSuccess: () => {
-      toast({
-        title: "Bildirishnoma yuborildi",
-        description: "Bildirishnoma muvaffaqiyatli yuborildi",
-      });
-      setIsNotifyDialogOpen(false);
-      setNotificationMessage("");
-    },
-    onError: (error: any) => {
-      toast({
-        variant: "destructive",
-        title: "Xato",
-        description: error.message || "Bildirishnomani yuborishda xatolik yuz berdi",
-      });
-    }
   });
 
-  // Filter farmers based on search query
-  const filteredFarmers = farmers.filter((farmer) => {
-    if (!searchQuery) return true;
-    
-    const query = searchQuery.toLowerCase();
-    return (
-      farmer.username.toLowerCase().includes(query) ||
-      farmer.firstName.toLowerCase().includes(query) ||
-      farmer.lastName.toLowerCase().includes(query) ||
-      (farmer.cropType && farmer.cropType.toLowerCase().includes(query))
-    );
-  });
+  // Filter for farmers only
+  const farmers = users.filter(user => user.role === 'farmer');
 
-  // Handle opening the permissions dialog
-  const handleOpenPermissions = (farmer: any) => {
+  // Handle permission dialog
+  const handlePermissionClick = (farmer: User) => {
     setSelectedFarmer(farmer);
     setIsPermissionsDialogOpen(true);
   };
 
-  // Handle opening the notification dialog
-  const handleOpenNotify = (farmer: any) => {
-    setSelectedFarmer(farmer);
-    setIsNotifyDialogOpen(true);
+  // Handle permission change
+  const handlePermissionChange = (permission: keyof Permissions) => {
+    setPermissions(prev => ({
+      ...prev,
+      [permission]: !prev[permission]
+    }));
   };
 
-  // Handle toggle all permissions
-  const handleToggleAll = (value: boolean) => {
-    setFeatures(prev => {
-      const newFeatures = { ...prev };
-      farmerFeatures.forEach(feature => {
-        newFeatures[feature.id] = value;
-      });
-      return newFeatures;
-    });
-  };
-
-  // Handle saving the permissions
+  // Handle save permissions
   const handleSavePermissions = () => {
-    if (selectedFarmer) {
-      updatePermissionsMutation.mutate({
-        farmerId: selectedFarmer.id,
-        permissions: features
-      });
-    }
+    updatePermissionsMutation.mutate(permissions);
   };
 
-  // Handle sending the notification
-  const handleSendNotification = () => {
-    if (selectedFarmer && notificationMessage) {
-      sendNotificationMutation.mutate({
-        userId: selectedFarmer.id,
-        message: notificationMessage,
-        type: notificationType
+  // New farmer form schema
+  const formSchema = z.object({
+    username: z.string().min(3, {
+      message: t("Username must be at least 3 characters.")
+    }),
+    password: z.string().min(6, {
+      message: t("Password must be at least 6 characters.")
+    }),
+    firstName: z.string().min(1, {
+      message: t("First name is required.")
+    }),
+    lastName: z.string().min(1, {
+      message: t("Last name is required.")
+    }),
+    cropType: z.string().optional(),
+    fieldSize: z.string().optional(),
+  });
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+      firstName: "",
+      lastName: "",
+      cropType: "",
+      fieldSize: "",
+    },
+  });
+
+  // Create user mutation
+  const createUserMutation = useMutation({
+    mutationFn: async (userData: z.infer<typeof formSchema>) => {
+      const response = await fetch("/api/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...userData,
+          role: "farmer",
+          fieldSize: userData.fieldSize ? parseFloat(userData.fieldSize) : undefined,
+        }),
       });
-    }
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to create user");
+      }
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: t("Farmer created"),
+        description: t("The farmer has been created successfully."),
+      });
+      form.reset();
+      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+    },
+    onError: (error) => {
+      toast({
+        title: t("Error"),
+        description: (error as Error).message || t("Failed to create farmer"),
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Handle form submission
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
+    createUserMutation.mutate(data);
   };
+
+  // Delete user mutation
+  const deleteUserMutation = useMutation({
+    mutationFn: async (userId: number) => {
+      const response = await fetch(`/api/users/${userId}`, {
+        method: "DELETE",
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to delete user");
+      }
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: t("Farmer deleted"),
+        description: t("The farmer has been deleted successfully."),
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+    },
+    onError: (error) => {
+      toast({
+        title: t("Error"),
+        description: (error as Error).message || t("Failed to delete farmer"),
+        variant: "destructive",
+      });
+    },
+  });
 
   return (
-    <DashboardLayout title="Fermerlar huquqlari boshqaruvi">
-      <div className="space-y-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <div>
-              <CardTitle>Fermerlar ro'yxati</CardTitle>
-              <CardDescription>
-                Fermerlar uchun huquqlarini boshqarish va xabarlar yuborish
-              </CardDescription>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Fermer qidirish..."
-                  className="pl-8 w-64"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Foydalanuvchi</TableHead>
-                    <TableHead>Ekin turi</TableHead>
-                    <TableHead>Maydon o'lchami</TableHead>
-                    <TableHead>Huquqlar</TableHead>
-                    <TableHead className="text-right">Amallar</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {isLoading ? (
-                    <TableRow>
-                      <TableCell colSpan={5} className="h-24 text-center">
-                        Ma'lumotlar yuklanmoqda...
-                      </TableCell>
-                    </TableRow>
-                  ) : filteredFarmers.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={5} className="h-24 text-center">
-                        Fermerlar topilmadi
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    filteredFarmers.map((farmer) => (
-                      <TableRow key={farmer.id}>
-                        <TableCell>
-                          <div className="flex items-center">
-                            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-2">
-                              <UserCog className="h-4 w-4 text-blue-600" />
-                            </div>
-                            <div>
-                              <div className="font-medium">{farmer.firstName} {farmer.lastName}</div>
-                              <div className="text-xs text-gray-500">{farmer.username}</div>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          {farmer.cropType ? (
-                            <Badge variant="outline" className="bg-green-50">
-                              {farmer.cropType}
-                            </Badge>
-                          ) : (
-                            <span className="text-gray-400 text-sm">Ko'rsatilmagan</span>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {farmer.fieldSize ? (
-                            <span>{farmer.fieldSize} gektar</span>
-                          ) : (
-                            <span className="text-gray-400 text-sm">Ko'rsatilmagan</span>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center">
-                            {farmer.permissionsStatus === "restricted" ? (
-                              <Badge variant="outline" className="bg-red-50 text-red-700 flex items-center">
-                                <Lock className="h-3 w-3 mr-1" />
-                                Cheklangan
-                              </Badge>
-                            ) : (
-                              <Badge variant="outline" className="bg-green-50 text-green-700 flex items-center">
-                                <Unlock className="h-3 w-3 mr-1" />
-                                To'liq
-                              </Badge>
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end space-x-2">
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={() => handleOpenPermissions(farmer)}
-                            >
-                              <Settings className="h-4 w-4 mr-2" />
-                              Huquqlar
-                            </Button>
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={() => handleOpenNotify(farmer)}
-                            >
-                              <Bell className="h-4 w-4 mr-2" />
-                              Xabar yuborish
-                            </Button>
-                          </div>
-                        </TableCell>
+    <Layout>
+      <div className="container mx-auto p-6">
+        <h1 className="text-3xl font-bold mb-6">{t("Farmer Management")}</h1>
+        
+        <Tabs defaultValue="farmers">
+          <TabsList className="mb-6">
+            <TabsTrigger value="farmers">{t("Farmers")}</TabsTrigger>
+            <TabsTrigger value="add">{t("Add Farmer")}</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="farmers">
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("Farmers List")}</CardTitle>
+                <CardDescription>
+                  {t("View, manage permissions, and delete farmers.")}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <div className="flex justify-center p-10">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                  </div>
+                ) : farmers.length === 0 ? (
+                  <div className="text-center p-6 text-gray-500">
+                    {t("No farmers found.")}
+                  </div>
+                ) : (
+                  <Table>
+                    <TableCaption>{t("List of all farmers in the system.")}</TableCaption>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-[100px]">ID</TableHead>
+                        <TableHead>{t("Name")}</TableHead>
+                        <TableHead>{t("Username")}</TableHead>
+                        <TableHead>{t("Crop Type")}</TableHead>
+                        <TableHead>{t("Field Size")}</TableHead>
+                        <TableHead className="text-right">{t("Actions")}</TableHead>
                       </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {farmers.map((farmer) => (
+                        <TableRow key={farmer.id}>
+                          <TableCell className="font-medium">{farmer.id}</TableCell>
+                          <TableCell>{`${farmer.firstName} ${farmer.lastName}`}</TableCell>
+                          <TableCell>{farmer.username}</TableCell>
+                          <TableCell>{farmer.cropType || "-"}</TableCell>
+                          <TableCell>{farmer.fieldSize ? `${farmer.fieldSize} ha` : "-"}</TableCell>
+                          <TableCell className="text-right space-x-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handlePermissionClick(farmer)}
+                            >
+                              {t("Permissions")}
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => deleteUserMutation.mutate(farmer.id)}
+                            >
+                              {t("Delete")}
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="add">
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("Add New Farmer")}</CardTitle>
+                <CardDescription>
+                  {t("Fill out the form to add a new farmer to the system.")}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="firstName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t("First Name")}</FormLabel>
+                            <FormControl>
+                              <Input placeholder={t("First Name")} {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="lastName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t("Last Name")}</FormLabel>
+                            <FormControl>
+                              <Input placeholder={t("Last Name")} {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="username"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t("Username")}</FormLabel>
+                            <FormControl>
+                              <Input placeholder={t("Username")} {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t("Password")}</FormLabel>
+                            <FormControl>
+                              <Input type="password" placeholder={t("Password")} {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="cropType"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t("Crop Type")}</FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder={t("Select crop type")} />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="cotton">{t("Cotton")}</SelectItem>
+                                <SelectItem value="wheat">{t("Wheat")}</SelectItem>
+                                <SelectItem value="rice">{t("Rice")}</SelectItem>
+                                <SelectItem value="corn">{t("Corn")}</SelectItem>
+                                <SelectItem value="vegetables">{t("Vegetables")}</SelectItem>
+                                <SelectItem value="fruits">{t("Fruits")}</SelectItem>
+                                <SelectItem value="other">{t("Other")}</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="fieldSize"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t("Field Size (ha)")}</FormLabel>
+                            <FormControl>
+                              <Input type="number" placeholder="0" {...field} />
+                            </FormControl>
+                            <FormDescription>
+                              {t("Field size in hectares")}
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <Button type="submit" disabled={createUserMutation.isPending}>
+                      {createUserMutation.isPending ? (
+                        <>
+                          <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-b-transparent"></span>
+                          {t("Creating...")}
+                        </>
+                      ) : (
+                        t("Create Farmer")
+                      )}
+                    </Button>
+                  </form>
+                </Form>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+        
+        {/* Permissions Dialog */}
+        <Dialog open={isPermissionsDialogOpen} onOpenChange={setIsPermissionsDialogOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>
+                {t("Manage Permissions: {{name}}", {
+                  name: selectedFarmer ? `${selectedFarmer.firstName} ${selectedFarmer.lastName}` : ""
+                })}
+              </DialogTitle>
+              <DialogDescription>
+                {t("Control what features this farmer can access.")}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="py-4">
+              {permissionsQuery.isLoading ? (
+                <div className="flex justify-center p-4">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="water_requests" 
+                      checked={permissions.water_requests}
+                      onCheckedChange={() => handlePermissionChange('water_requests')}
+                    />
+                    <Label htmlFor="water_requests">{t("Water Requests")}</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="map_access" 
+                      checked={permissions.map_access}
+                      onCheckedChange={() => handlePermissionChange('map_access')}
+                    />
+                    <Label htmlFor="map_access">{t("Map Access")}</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="reports" 
+                      checked={permissions.reports}
+                      onCheckedChange={() => handlePermissionChange('reports')}
+                    />
+                    <Label htmlFor="reports">{t("Reports")}</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="water_allocation" 
+                      checked={permissions.water_allocation}
+                      onCheckedChange={() => handlePermissionChange('water_allocation')}
+                    />
+                    <Label htmlFor="water_allocation">{t("Water Allocation")}</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="messaging" 
+                      checked={permissions.messaging}
+                      onCheckedChange={() => handlePermissionChange('messaging')}
+                    />
+                    <Label htmlFor="messaging">{t("Messaging")}</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="settings" 
+                      checked={permissions.settings}
+                      onCheckedChange={() => handlePermissionChange('settings')}
+                    />
+                    <Label htmlFor="settings">{t("Settings")}</Label>
+                  </div>
+                </div>
+              )}
             </div>
-          </CardContent>
-        </Card>
+            <DialogFooter>
+              <Button 
+                variant="outline" 
+                onClick={() => setIsPermissionsDialogOpen(false)}
+              >
+                {t("Cancel")}
+              </Button>
+              <Button 
+                onClick={handleSavePermissions}
+                disabled={updatePermissionsMutation.isPending}
+              >
+                {updatePermissionsMutation.isPending ? (
+                  <>
+                    <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-b-transparent"></span>
+                    {t("Saving...")}
+                  </>
+                ) : (
+                  t("Save Changes")
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
-
-      {/* Permissions Dialog */}
-      <Dialog open={isPermissionsDialogOpen} onOpenChange={setIsPermissionsDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Fermer huquqlarini boshqarish</DialogTitle>
-            <DialogDescription>
-              {selectedFarmer && `${selectedFarmer.firstName} ${selectedFarmer.lastName} uchun huquqlarni sozlash`}
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="py-4">
-            <div className="flex justify-between items-center mb-4 pb-2 border-b">
-              <div className="text-sm font-medium">Barcha huquqlar</div>
-              <div className="flex items-center space-x-2">
-                <Switch 
-                  checked={Object.values(features).every(v => v === true)}
-                  onCheckedChange={handleToggleAll}
-                />
-                <Label>Barchasi</Label>
-              </div>
-            </div>
-            
-            <div className="space-y-3">
-              {farmerFeatures.map((feature) => (
-                <div key={feature.id} className="flex justify-between items-center">
-                  <div className="flex items-center">
-                    {feature.icon}
-                    <div>
-                      <div className="text-sm font-medium">{feature.name}</div>
-                      <div className="text-xs text-gray-500">{feature.description}</div>
-                    </div>
-                  </div>
-                  <Switch 
-                    checked={features[feature.id] || false}
-                    onCheckedChange={(checked) => {
-                      setFeatures(prev => ({ ...prev, [feature.id]: checked }));
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-          
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsPermissionsDialogOpen(false)}>
-              Bekor qilish
-            </Button>
-            <Button 
-              onClick={handleSavePermissions}
-              disabled={updatePermissionsMutation.isPending}
-            >
-              {updatePermissionsMutation.isPending ? "Saqlanmoqda..." : "Saqlash"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Notification Dialog */}
-      <Dialog open={isNotifyDialogOpen} onOpenChange={setIsNotifyDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Bildirishnoma yuborish</DialogTitle>
-            <DialogDescription>
-              {selectedFarmer && `${selectedFarmer.firstName} ${selectedFarmer.lastName} ga bildirishnoma yuborish`}
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="py-4">
-            <div className="space-y-4">
-              <div>
-                <Label>Bildirishnoma turi</Label>
-                <div className="flex space-x-4 mt-1">
-                  <div 
-                    className={`
-                      flex-1 border rounded-md p-3 cursor-pointer 
-                      ${notificationType === 'info' ? 'bg-blue-50 border-blue-200' : ''}
-                    `}
-                    onClick={() => setNotificationType('info')}
-                  >
-                    <div className="flex items-center">
-                      <div className="h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center mr-2">
-                        <Bell className="h-3 w-3 text-blue-600" />
-                      </div>
-                      <span className="text-sm font-medium">Ma'lumot</span>
-                    </div>
-                  </div>
-                  <div 
-                    className={`
-                      flex-1 border rounded-md p-3 cursor-pointer 
-                      ${notificationType === 'warning' ? 'bg-amber-50 border-amber-200' : ''}
-                    `}
-                    onClick={() => setNotificationType('warning')}
-                  >
-                    <div className="flex items-center">
-                      <div className="h-6 w-6 rounded-full bg-amber-100 flex items-center justify-center mr-2">
-                        <AlertTriangle className="h-3 w-3 text-amber-600" />
-                      </div>
-                      <span className="text-sm font-medium">Ogohlantirish</span>
-                    </div>
-                  </div>
-                  <div 
-                    className={`
-                      flex-1 border rounded-md p-3 cursor-pointer 
-                      ${notificationType === 'error' ? 'bg-red-50 border-red-200' : ''}
-                    `}
-                    onClick={() => setNotificationType('error')}
-                  >
-                    <div className="flex items-center">
-                      <div className="h-6 w-6 rounded-full bg-red-100 flex items-center justify-center mr-2">
-                        <AlertTriangle className="h-3 w-3 text-red-600" />
-                      </div>
-                      <span className="text-sm font-medium">Muhim</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div>
-                <Label>Xabar matni</Label>
-                <Textarea 
-                  className="mt-1"
-                  placeholder="Bildirishnoma matnini kiriting..."
-                  value={notificationMessage}
-                  onChange={(e) => setNotificationMessage(e.target.value)}
-                  rows={4}
-                />
-              </div>
-            </div>
-            
-            {notificationType === 'warning' && (
-              <Alert className="mt-4 bg-amber-50 text-amber-800 border-amber-200">
-                <AlertTriangle className="h-4 w-4" />
-                <AlertTitle>Ogohlantirish</AlertTitle>
-                <AlertDescription>
-                  Bu xabar foydalanuvchi uchun ogohlantirish sifatida ko'rsatiladi.
-                </AlertDescription>
-              </Alert>
-            )}
-            
-            {notificationType === 'error' && (
-              <Alert className="mt-4 bg-red-50 text-red-800 border-red-200">
-                <AlertTriangle className="h-4 w-4" />
-                <AlertTitle>Muhim</AlertTitle>
-                <AlertDescription>
-                  Bu xabar foydalanuvchi uchun muhim bildirishnoma sifatida ko'rsatiladi.
-                </AlertDescription>
-              </Alert>
-            )}
-          </div>
-          
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsNotifyDialogOpen(false)}>
-              Bekor qilish
-            </Button>
-            <Button 
-              onClick={handleSendNotification}
-              disabled={sendNotificationMutation.isPending || !notificationMessage}
-            >
-              {sendNotificationMutation.isPending ? "Yuborilmoqda..." : "Yuborish"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </DashboardLayout>
-  );
-}
-
-function Droplet(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
-      {...props}
-    >
-      <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
-    </svg>
+    </Layout>
   );
 }
