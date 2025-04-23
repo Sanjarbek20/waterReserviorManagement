@@ -13,6 +13,7 @@ import AdminDashboard from "@/pages/admin/dashboard";
 import AdminReservoirs from "@/pages/admin/reservoirs";
 import AdminAllocation from "@/pages/admin/allocation";
 import AdminUsers from "@/pages/admin/users";
+import UserManagementPage from "@/pages/admin/user-management";
 import AdminDataManagement from "@/pages/admin/data-management";
 import AdminSurveillance from "@/pages/admin/surveillance";
 import AdminReports from "@/pages/admin/reports";
