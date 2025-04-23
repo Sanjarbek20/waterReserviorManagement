@@ -168,9 +168,21 @@ export default function Sidebar() {
     }
   ];
 
+  // Add super admin specific items
+  const superAdminNavItems = [
+    ...adminNavItems,
+    { 
+      name: "System Management", 
+      path: "/admin/system-management", 
+      icon: <Settings className="h-4 w-4 mr-3" /> 
+    }
+  ];
+
   // Select navigation items based on user role
   let navItems;
-  if (user?.role === "admin") {
+  if (user?.role === "super_admin") {
+    navItems = superAdminNavItems;
+  } else if (user?.role === "admin") {
     navItems = adminNavItems;
   } else if (user?.role === "data_admin") {
     navItems = dataAdminNavItems;
@@ -215,7 +227,8 @@ export default function Sidebar() {
               {user ? `${user.firstName} ${user.lastName}` : "User"}
             </p>
             <p className="text-xs text-gray-500 capitalize">
-              {user?.role === "admin" ? t("users.admin") : 
+              {user?.role === "super_admin" ? "Super Admin" :
+               user?.role === "admin" ? t("users.admin") : 
                user?.role === "data_admin" ? t("users.data_admin") : 
                user?.role === "farmer" ? t("users.farmer") : "User"}
             </p>

@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/lib/auth";
-import { DataTable } from "@/components/ui/data-table";
+// import { DataTable } from "@/components/ui/data-table";
 import {
   Table,
   TableHeader,
@@ -52,7 +52,7 @@ export default function SystemManagement() {
   // Super admin check
   if (user?.role !== "super_admin") {
     return (
-      <DashboardLayout>
+      <DashboardLayout title="Access Denied">
         <div className="container mx-auto p-4">
           <Card className="border-destructive">
             <CardHeader>
@@ -71,7 +71,7 @@ export default function SystemManagement() {
   }
 
   return (
-    <DashboardLayout>
+    <DashboardLayout title="System Management">
       <div className="container mx-auto p-4">
         <div className="flex justify-between items-center mb-6">
           <div>
