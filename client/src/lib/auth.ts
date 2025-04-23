@@ -9,9 +9,10 @@ type User = {
   username: string;
   firstName: string;
   lastName: string;
-  role: "admin" | "data_admin" | "farmer";
+  role: "super_admin" | "admin" | "data_admin" | "farmer";
   fieldSize?: string;
   cropType?: string;
+  permissions?: string[];
 };
 
 type LoginData = {
@@ -24,9 +25,10 @@ type RegisterData = {
   password: string;
   firstName: string;
   lastName: string;
-  role: "admin" | "data_admin" | "farmer";
+  role: "super_admin" | "admin" | "data_admin" | "farmer";
   fieldSize?: string;
   cropType?: string;
+  permissions?: string[];
 };
 
 type AuthContextType = {
