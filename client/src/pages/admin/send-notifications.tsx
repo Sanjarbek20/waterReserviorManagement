@@ -42,7 +42,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Radio, RadioGroup } from "@/components/ui/radio-group";
+import { RadioGroup } from "@/components/ui/radio-group";
+import { Radio } from "@/components/ui/radio";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
