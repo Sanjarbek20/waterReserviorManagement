@@ -133,7 +133,7 @@ function Router() {
         <ProtectedRoute component={AdminUsers} adminOnly={true} />
       </Route>
       <Route path="/admin/data-management">
-        <ProtectedRoute component={AdminDataManagement} adminOnly={true} dataAdminAllowed={true} />
+        <ProtectedRoute component={AdminDataManagement} superAdminOnly={true} />
       </Route>
       <Route path="/admin/surveillance">
         <ProtectedRoute component={AdminSurveillance} adminOnly={true} dataAdminAllowed={true} />
@@ -195,7 +195,8 @@ function Router() {
           if (!user) return <Redirect to="/login" />;
           if (user.role === "super_admin" || user.role === "admin" || user.role === "data_admin") {
             if (user.role === "data_admin") {
-              return <Redirect to="/admin/data-management" />;
+              // Data admin cannot access data-management page anymore, redirect to reservoir monitoring
+              return <Redirect to="/admin/reservoir-live-monitoring" />;
             } else {
               return <Redirect to="/admin/dashboard" />;
             }
@@ -214,7 +215,7 @@ function Router() {
           } else if (user.role === "admin") {
             return <Redirect to="/admin/dashboard" />;
           } else if (user.role === "data_admin") {
-            return <Redirect to="/admin/data-management" />;
+            return <Redirect to="/admin/reservoir-live-monitoring" />;
           } else {
             return <Redirect to="/farmer/dashboard" />;
           }

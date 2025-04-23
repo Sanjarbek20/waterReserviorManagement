@@ -11,6 +11,15 @@ import {
   TableCell
 } from "@/components/ui/table";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -21,310 +30,280 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Eye, EyeOff, Edit, Trash, UserPlus, Shield, User } from "lucide-react";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from "@/components/ui/select";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { Eye, EyeOff, Edit, Trash, UserPlus, Shield, User, Check, X } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+interface User {
+  id: number;
+  username: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+  email: string;
+  active: boolean;
+  lastLogin?: string;
+  createdAt?: string;
+}
 
 export default function UsersManagement() {
   const { toast } = useToast();
-  const [isAddUserDialogOpen, setIsAddUserDialogOpen] = useState(false);
-  const [isEditUserDialogOpen, setIsEditUserDialogOpen] = useState(false);
-  const [isDeleteUserDialogOpen, setIsDeleteUserDialogOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const queryClient = useQueryClient();
+  const [showPassword, setShowPassword] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   
-  // Mock data - in a real app, fetch from API
-  const users = [
-    { 
-      id: 1, 
-      username: 'superadmin', 
-      firstName: 'Super', 
-      lastName: 'Admin',
-      role: 'super_admin',
-      email: 'superadmin@example.com',
-      isActive: true,
-      lastLogin: '2023-08-10 14:30',
-      permissions: ['all']
-    },
-    { 
-      id: 2, 
-      username: 'admin', 
-      firstName: 'Admin', 
-      lastName: 'User',
-      role: 'admin',
-      email: 'admin@example.com',
-      isActive: true,
-      lastLogin: '2023-08-09 09:15',
-      permissions: ['read', 'write', 'manage_users']
-    },
-    { 
-      id: 3, 
-      username: 'data_admin', 
-      firstName: 'Data', 
-      lastName: 'Manager',
-      role: 'data_admin',
-      email: 'dataadmin@example.com',
-      isActive: true,
-      lastLogin: '2023-08-08 16:45',
-      permissions: ['read', 'write_data']
-    },
-    { 
-      id: 4, 
-      username: 'farmer1', 
-      firstName: 'John', 
-      lastName: 'Doe',
-      role: 'farmer',
-      email: 'john.doe@example.com',
-      isActive: true,
-      lastLogin: '2023-08-07 11:20',
-      permissions: ['read_own']
-    }
-  ];
-
-  // Role options for the select input
-  const roleOptions = [
-    { value: 'super_admin', label: 'Super Administrator' },
-    { value: 'admin', label: 'Administrator' },
-    { value: 'data_admin', label: 'Data Administrator' },
-    { value: 'farmer', label: 'Farmer' }
-  ];
-
-  // Form state for add/edit user
-  const [formData, setFormData] = useState({
+  const [newUser, setNewUser] = useState({
     username: '',
     password: '',
     firstName: '',
     lastName: '',
     email: '',
-    role: 'farmer',
-    isActive: true,
+    role: 'farmer'
   });
 
-  // Handle form input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+  // Fetch users
+  const { data: users = [], isLoading } = useQuery({
+    queryKey: ['/api/admin/users'],
+    queryFn: async () => {
+      try {
+        const res = await apiRequest('GET', '/api/admin/users');
+        return await res.json();
+      } catch (error) {
+        console.error('Error fetching users:', error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch users",
+          variant: "destructive"
+        });
+        return [];
+      }
+    }
+  });
 
-  // Handle role selection
-  const handleRoleChange = (value: string) => {
-    setFormData(prev => ({ ...prev, role: value }));
-  };
-
-  // Handle active status change
-  const handleActiveChange = (checked: boolean) => {
-    setFormData(prev => ({ ...prev, isActive: checked }));
-  };
-
-  // Reset form data
-  const resetForm = () => {
-    setFormData({
-      username: '',
-      password: '',
-      firstName: '',
-      lastName: '',
-      email: '',
-      role: 'farmer',
-      isActive: true,
-    });
-  };
-
-  // Set up form for editing a user
-  const setupEditForm = (user: any) => {
-    setSelectedUser(user);
-    setFormData({
-      username: user.username,
-      password: '', // Don't set password for editing
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email || '',
-      role: user.role,
-      isActive: user.isActive,
-    });
-    setIsEditUserDialogOpen(true);
-  };
-
-  // Add user handler
-  const handleAddUser = () => {
-    // Validation
-    if (!formData.username || !formData.password || !formData.firstName || !formData.lastName) {
+  // Create user mutation
+  const createUserMutation = useMutation({
+    mutationFn: async (userData: typeof newUser) => {
+      const res = await apiRequest('POST', '/api/admin/users', userData);
+      return await res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
       toast({
-        variant: "destructive",
-        title: "Missing required fields",
-        description: "Please fill in all required fields."
+        title: "Success",
+        description: "User created successfully",
+      });
+      setIsAddDialogOpen(false);
+      setNewUser({
+        username: '',
+        password: '',
+        firstName: '',
+        lastName: '',
+        email: '',
+        role: 'farmer'
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to create user",
+        variant: "destructive"
+      });
+    }
+  });
+
+  // Update user mutation
+  const updateUserMutation = useMutation({
+    mutationFn: async (userData: Partial<User>) => {
+      const { id, ...data } = userData;
+      const res = await apiRequest('PUT', `/api/admin/users/${id}`, data);
+      return await res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
+      toast({
+        title: "Success",
+        description: "User updated successfully",
+      });
+      setIsEditDialogOpen(false);
+      setSelectedUser(null);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update user",
+        variant: "destructive"
+      });
+    }
+  });
+
+  // Delete user mutation
+  const deleteUserMutation = useMutation({
+    mutationFn: async (userId: number) => {
+      const res = await apiRequest('DELETE', `/api/admin/users/${userId}`);
+      return await res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
+      toast({
+        title: "Success",
+        description: "User deleted successfully",
+      });
+      setIsDeleteDialogOpen(false);
+      setUserToDelete(null);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete user",
+        variant: "destructive"
+      });
+    }
+  });
+
+  const handleCreateUser = () => {
+    if (!newUser.username || !newUser.password || !newUser.firstName || !newUser.lastName || !newUser.role) {
+      toast({
+        title: "Validation Error",
+        description: "Please fill all required fields",
+        variant: "destructive"
       });
       return;
     }
-
-    // In a real app, you would make an API call here
-    console.log('Adding user:', formData);
-    
-    toast({
-      title: "User added",
-      description: `User ${formData.username} has been created successfully.`
-    });
-    
-    resetForm();
-    setIsAddUserDialogOpen(false);
+    createUserMutation.mutate(newUser);
   };
 
-  // Edit user handler
-  const handleEditUser = () => {
-    // Validation
-    if (!formData.username || !formData.firstName || !formData.lastName) {
-      toast({
-        variant: "destructive",
-        title: "Missing required fields",
-        description: "Please fill in all required fields."
-      });
-      return;
-    }
-
-    // In a real app, you would make an API call here
-    console.log('Editing user:', selectedUser.id, formData);
+  const handleUpdateUser = () => {
+    if (!selectedUser) return;
     
-    toast({
-      title: "User updated",
-      description: `User ${formData.username} has been updated successfully.`
-    });
-    
-    resetForm();
-    setIsEditUserDialogOpen(false);
+    updateUserMutation.mutate(selectedUser);
   };
 
-  // Delete user handler
   const handleDeleteUser = () => {
-    // In a real app, you would make an API call here
-    console.log('Deleting user:', selectedUser.id);
+    if (!userToDelete) return;
     
-    toast({
-      title: "User deleted",
-      description: `User ${selectedUser.username} has been deleted successfully.`
-    });
-    
-    setIsDeleteUserDialogOpen(false);
+    deleteUserMutation.mutate(userToDelete.id);
   };
+
+  const openEditDialog = (user: User) => {
+    setSelectedUser(user);
+    setIsEditDialogOpen(true);
+  };
+
+  const openDeleteDialog = (user: User) => {
+    setUserToDelete(user);
+    setIsDeleteDialogOpen(true);
+  };
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center p-8">Loading users...</div>;
+  }
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div>
-          <CardTitle>User Management</CardTitle>
-          <CardDescription>
-            Manage users and their access to the system
-          </CardDescription>
-        </div>
-        <Button onClick={() => {
-          resetForm();
-          setIsAddUserDialogOpen(true);
-        }} className="ml-auto">
-          <UserPlus className="mr-2 h-4 w-4" />
-          Add User
-        </Button>
-      </CardHeader>
-      <CardContent>
-        <ScrollArea className="h-[500px]">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Username</TableHead>
-                <TableHead>Full Name</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Last Login</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {users.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell className="font-medium">{user.username}</TableCell>
-                  <TableCell>{`${user.firstName} ${user.lastName}`}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center">
-                      {user.role === 'super_admin' && (
-                        <Shield className="mr-1 h-4 w-4 text-red-500" />
-                      )}
-                      {user.role === 'admin' && (
-                        <Shield className="mr-1 h-4 w-4 text-blue-500" />
-                      )}
-                      {user.role === 'data_admin' && (
-                        <Shield className="mr-1 h-4 w-4 text-green-500" />
-                      )}
-                      {user.role === 'farmer' && (
-                        <User className="mr-1 h-4 w-4 text-gray-500" />
-                      )}
-                      {(() => {
-                        switch(user.role) {
-                          case 'super_admin':
-                            return 'Super Administrator';
-                          case 'admin':
-                            return 'Administrator';
-                          case 'data_admin':
-                            return 'Data Administrator';
-                          case 'farmer':
-                            return 'Farmer';
-                          default:
-                            return user.role;
-                        }
-                      })()}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {user.isActive ? (
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        Active
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                        Inactive
-                      </span>
-                    )}
-                  </TableCell>
-                  <TableCell>{user.lastLogin}</TableCell>
-                  <TableCell className="text-right">
-                    <Button variant="ghost" size="icon" onClick={() => setupEditForm(user)}>
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      className="text-destructive"
-                      disabled={user.role === 'super_admin'} // Prevent deleting super admin
-                      onClick={() => {
-                        setSelectedUser(user);
-                        setIsDeleteUserDialogOpen(true);
-                      }}
-                    >
-                      <Trash className="h-4 w-4" />
-                    </Button>
-                  </TableCell>
+    <div className="space-y-6">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>System Users</CardTitle>
+            <CardDescription>Manage all users in the system</CardDescription>
+          </div>
+          <Button 
+            variant="default" 
+            onClick={() => setIsAddDialogOpen(true)}
+            className="flex items-center gap-2"
+          >
+            <UserPlus className="h-4 w-4" />
+            Add User
+          </Button>
+        </CardHeader>
+        <CardContent>
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Username</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Role</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </ScrollArea>
-      </CardContent>
+              </TableHeader>
+              <TableBody>
+                {users.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-4 text-muted-foreground">
+                      No users found
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  users.map((user: User) => (
+                    <TableRow key={user.id}>
+                      <TableCell className="font-medium">{user.username}</TableCell>
+                      <TableCell>{user.firstName} {user.lastName}</TableCell>
+                      <TableCell>
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          user.role === 'super_admin' 
+                            ? 'bg-purple-100 text-purple-800'
+                            : user.role === 'admin' 
+                            ? 'bg-blue-100 text-blue-800'
+                            : user.role === 'data_admin'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-gray-100 text-gray-800'
+                        }`}>
+                          {user.role === 'super_admin' ? 'Super Admin' : 
+                           user.role === 'admin' ? 'Admin' :
+                           user.role === 'data_admin' ? 'Data Admin' : 'Farmer'}
+                        </span>
+                      </TableCell>
+                      <TableCell>{user.email || 'N/A'}</TableCell>
+                      <TableCell>
+                        {user.active ? (
+                          <span className="inline-flex items-center text-green-500">
+                            <Check className="h-4 w-4 mr-1" /> Active
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center text-red-500">
+                            <X className="h-4 w-4 mr-1" /> Inactive
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openEditDialog(user)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => openDeleteDialog(user)}
+                            disabled={user.role === 'super_admin'} // Cannot delete super admin
+                          >
+                            <Trash className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Add User Dialog */}
-      <Dialog open={isAddUserDialogOpen} onOpenChange={setIsAddUserDialogOpen}>
+      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Add New User</DialogTitle>
@@ -335,171 +314,57 @@ export default function UsersManagement() {
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="username" className="text-right">
-                Username*
+                Username
               </Label>
               <Input
                 id="username"
-                name="username"
-                value={formData.username}
-                onChange={handleInputChange}
+                value={newUser.username}
+                onChange={(e) => setNewUser({...newUser, username: e.target.value})}
                 className="col-span-3"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="password" className="text-right">
-                Password*
-              </Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                className="col-span-3"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="firstName" className="text-right">
-                First Name*
-              </Label>
-              <Input
-                id="firstName"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleInputChange}
-                className="col-span-3"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="lastName" className="text-right">
-                Last Name*
-              </Label>
-              <Input
-                id="lastName"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleInputChange}
-                className="col-span-3"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="email" className="text-right">
-                Email
-              </Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                className="col-span-3"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="role" className="text-right">
-                Role*
-              </Label>
-              <Select value={formData.role} onValueChange={handleRoleChange}>
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Select a role" />
-                </SelectTrigger>
-                <SelectContent>
-                  {roleOptions.map(option => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="isActive" className="text-right">
-                Active Status
-              </Label>
-              <div className="flex items-center space-x-2 col-span-3">
-                <Checkbox 
-                  id="isActive" 
-                  checked={formData.isActive}
-                  onCheckedChange={handleActiveChange}
-                />
-                <label
-                  htmlFor="isActive"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  User is active
-                </label>
-              </div>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setIsAddUserDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button type="button" onClick={handleAddUser}>
-              Create User
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Edit User Dialog */}
-      <Dialog open={isEditUserDialogOpen} onOpenChange={setIsEditUserDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Edit User</DialogTitle>
-            <DialogDescription>
-              Update the user details
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="username" className="text-right">
-                Username*
-              </Label>
-              <Input
-                id="username"
-                name="username"
-                value={formData.username}
-                onChange={handleInputChange}
-                className="col-span-3"
-                disabled={selectedUser?.role === 'super_admin'}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="password" className="text-right">
                 Password
               </Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                placeholder="Leave blank to keep current password"
-                value={formData.password}
-                onChange={handleInputChange}
-                className="col-span-3"
-              />
+              <div className="relative col-span-3">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={newUser.password}
+                  onChange={(e) => setNewUser({...newUser, password: e.target.value})}
+                  className="pr-10"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </Button>
+              </div>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="firstName" className="text-right">
-                First Name*
+                First Name
               </Label>
               <Input
                 id="firstName"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleInputChange}
+                value={newUser.firstName}
+                onChange={(e) => setNewUser({...newUser, firstName: e.target.value})}
                 className="col-span-3"
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="lastName" className="text-right">
-                Last Name*
+                Last Name
               </Label>
               <Input
                 id="lastName"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleInputChange}
+                value={newUser.lastName}
+                onChange={(e) => setNewUser({...newUser, lastName: e.target.value})}
                 className="col-span-3"
               />
             </div>
@@ -509,83 +374,184 @@ export default function UsersManagement() {
               </Label>
               <Input
                 id="email"
-                name="email"
                 type="email"
-                value={formData.email}
-                onChange={handleInputChange}
+                value={newUser.email}
+                onChange={(e) => setNewUser({...newUser, email: e.target.value})}
                 className="col-span-3"
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="role" className="text-right">
-                Role*
+                Role
               </Label>
               <Select 
-                value={formData.role} 
-                onValueChange={handleRoleChange}
-                disabled={selectedUser?.role === 'super_admin'} // Can't change superadmin role
+                value={newUser.role} 
+                onValueChange={(value) => setNewUser({...newUser, role: value})}
               >
                 <SelectTrigger className="col-span-3">
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
                 <SelectContent>
-                  {roleOptions.map(option => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
+                  <SelectItem value="super_admin">Super Admin</SelectItem>
+                  <SelectItem value="admin">Admin</SelectItem>
+                  <SelectItem value="data_admin">Data Admin</SelectItem>
+                  <SelectItem value="farmer">Farmer</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="isActive" className="text-right">
-                Active Status
-              </Label>
-              <div className="flex items-center space-x-2 col-span-3">
-                <Checkbox 
-                  id="isActive" 
-                  checked={formData.isActive}
-                  onCheckedChange={handleActiveChange}
-                  disabled={selectedUser?.role === 'super_admin'} // Can't disable superadmin
-                />
-                <label
-                  htmlFor="isActive"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  User is active
-                </label>
-              </div>
-            </div>
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setIsEditUserDialogOpen(false)}>
+            <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
               Cancel
             </Button>
-            <Button type="button" onClick={handleEditUser}>
-              Update User
+            <Button 
+              onClick={handleCreateUser}
+              disabled={createUserMutation.isPending}
+            >
+              {createUserMutation.isPending ? "Creating..." : "Create User"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Delete User Confirmation */}
-      <AlertDialog open={isDeleteUserDialogOpen} onOpenChange={setIsDeleteUserDialogOpen}>
+      {/* Edit User Dialog */}
+      {selectedUser && (
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Edit User</DialogTitle>
+              <DialogDescription>
+                Update user information
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="edit-username" className="text-right">
+                  Username
+                </Label>
+                <Input
+                  id="edit-username"
+                  value={selectedUser.username}
+                  onChange={(e) => setSelectedUser({...selectedUser, username: e.target.value})}
+                  className="col-span-3"
+                  disabled
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="edit-firstName" className="text-right">
+                  First Name
+                </Label>
+                <Input
+                  id="edit-firstName"
+                  value={selectedUser.firstName}
+                  onChange={(e) => setSelectedUser({...selectedUser, firstName: e.target.value})}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="edit-lastName" className="text-right">
+                  Last Name
+                </Label>
+                <Input
+                  id="edit-lastName"
+                  value={selectedUser.lastName}
+                  onChange={(e) => setSelectedUser({...selectedUser, lastName: e.target.value})}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="edit-email" className="text-right">
+                  Email
+                </Label>
+                <Input
+                  id="edit-email"
+                  type="email"
+                  value={selectedUser.email || ''}
+                  onChange={(e) => setSelectedUser({...selectedUser, email: e.target.value})}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="edit-role" className="text-right">
+                  Role
+                </Label>
+                <Select 
+                  value={selectedUser.role} 
+                  onValueChange={(value) => setSelectedUser({...selectedUser, role: value})}
+                  disabled={selectedUser.role === 'super_admin'} // Cannot change super admin role
+                >
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Select a role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="super_admin">Super Admin</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="data_admin">Data Admin</SelectItem>
+                    <SelectItem value="farmer">Farmer</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="edit-status" className="text-right">
+                  Status
+                </Label>
+                <Select 
+                  value={selectedUser.active ? "active" : "inactive"} 
+                  onValueChange={(value) => setSelectedUser({
+                    ...selectedUser, 
+                    active: value === "active"
+                  })}
+                  disabled={selectedUser.role === 'super_admin'} // Cannot deactivate super admin
+                >
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleUpdateUser}
+                disabled={updateUserMutation.isPending}
+              >
+                {updateUserMutation.isPending ? "Updating..." : "Update User"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Delete User Dialog */}
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>Delete User</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the user account
-              for <strong>{selectedUser?.username}</strong> and remove their data from our servers.
+              Are you sure you want to delete {userToDelete?.firstName} {userToDelete?.lastName}? 
+              This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteUser} className="bg-destructive text-destructive-foreground">
-              Delete
+            <AlertDialogCancel onClick={() => setIsDeleteDialogOpen(false)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleDeleteUser}
+              className="bg-red-600 hover:bg-red-700 text-white"
+              disabled={deleteUserMutation.isPending}
+            >
+              {deleteUserMutation.isPending ? "Deleting..." : "Delete"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </Card>
+    </div>
   );
 }
