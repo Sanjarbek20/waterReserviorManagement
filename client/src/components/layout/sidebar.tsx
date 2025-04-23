@@ -75,11 +75,7 @@ export default function Sidebar() {
       path: "/admin/users", 
       icon: <Users className="h-4 w-4 mr-3" /> 
     },
-    { 
-      name: "Data Management", 
-      path: "/admin/data-management", 
-      icon: <Database className="h-4 w-4 mr-3" /> 
-    },
+    // Moved Data Management to superadmin only
     { 
       name: "Reports", 
       path: "/admin/reports", 
@@ -171,6 +167,11 @@ export default function Sidebar() {
   // Add super admin specific items
   const superAdminNavItems = [
     ...adminNavItems,
+    { 
+      name: "Data Management", 
+      path: "/admin/data-management", 
+      icon: <Database className="h-4 w-4 mr-3" /> 
+    },
     { 
       name: "System Management", 
       path: "/admin/system-management", 
