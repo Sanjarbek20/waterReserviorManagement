@@ -149,7 +149,7 @@ export default function DataManagement() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="database" className="w-full">
+            <Tabs defaultValue="idef0model" className="w-full">
               <TabsList className="grid w-full grid-cols-7">
                 <TabsTrigger value="database">
                   <Database className="h-4 w-4 mr-2" />
