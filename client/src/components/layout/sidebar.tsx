@@ -75,7 +75,12 @@ export default function Sidebar() {
       path: "/admin/users", 
       icon: <Users className="h-4 w-4 mr-3" /> 
     },
-    // Moved Data Management to superadmin only
+    // Added User Management for admins
+    { 
+      name: "User Management", 
+      path: "/admin/user-management", 
+      icon: <Users className="h-4 w-4 mr-3" /> 
+    },
     { 
       name: "Reports", 
       path: "/admin/reports", 

@@ -132,6 +132,9 @@ function Router() {
       <Route path="/admin/users">
         <ProtectedRoute component={AdminUsers} adminOnly={true} />
       </Route>
+      <Route path="/admin/user-management">
+        <ProtectedRoute component={UserManagementPage} adminOnly={true} />
+      </Route>
       <Route path="/admin/data-management">
         <ProtectedRoute component={AdminDataManagement} superAdminOnly={true} />
       </Route>
