@@ -37,11 +37,13 @@ function ProtectedRoute({
   component: Component, 
   adminOnly = false,
   dataAdminAllowed = false,
+  superAdminOnly = false,
   ...rest 
 }: { 
   component: React.ComponentType<any>, 
   adminOnly?: boolean,
   dataAdminAllowed?: boolean,
+  superAdminOnly?: boolean,
   [x: string]: any 
 }) {
   const { user, isLoading, isAuthChecked } = useAuth();
@@ -61,9 +63,17 @@ function ProtectedRoute({
     return null; // Redirect will happen via useEffect
   }
   
-  if (adminOnly) {
+  if (superAdminOnly && user.role !== "super_admin") {
+    return <Redirect to="/dashboard" />;
+  }
+  
+  if (adminOnly && !superAdminOnly) {
+    // Super admins can access all admin pages
+    if (user.role === "super_admin") {
+      // Allow super admins to access admin pages
+    }
     // Allow data admins if specified
-    if (dataAdminAllowed && user.role === "data_admin") {
+    else if (dataAdminAllowed && user.role === "data_admin") {
       // Data admins can access this page
     } else if (user.role !== "admin") {
       return <Redirect to="/dashboard" />;
@@ -176,11 +186,28 @@ function Router() {
       </Route>
       
       {/* Common Routes */}
+      <Route path="/admin">
+        {() => {
+          if (!user) return <Redirect to="/login" />;
+          if (user.role === "super_admin" || user.role === "admin" || user.role === "data_admin") {
+            if (user.role === "data_admin") {
+              return <Redirect to="/admin/data-management" />;
+            } else {
+              return <Redirect to="/admin/dashboard" />;
+            }
+          } else {
+            return <Redirect to="/dashboard" />;
+          }
+        }}
+      </Route>
+      
       <Route path="/dashboard">
         {() => {
           if (!user) return <Redirect to="/login" />;
           
-          if (user.role === "admin") {
+          if (user.role === "super_admin") {
+            return <Redirect to="/admin/dashboard" />;
+          } else if (user.role === "admin") {
             return <Redirect to="/admin/dashboard" />;
           } else if (user.role === "data_admin") {
             return <Redirect to="/admin/data-management" />;
