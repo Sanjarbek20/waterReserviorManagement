@@ -7,14 +7,9 @@ import passport from "passport";
 import { WebSocketServer, WebSocket } from "ws";
 import { setupAuth, hashPassword } from "./auth";
 
-import { initAdminUser } from "./admin-init";
-
 export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication
   setupAuth(app);
-  
-  // Initialize admin user with admin_admin/admin123 credentials
-  await initAdminUser();
   
   // Auth middleware
   const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
