@@ -20,7 +20,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   };
   
   const isAdmin = (req: Request, res: Response, next: NextFunction) => {
-    if (req.isAuthenticated() && req.user && (req.user as any).role === 'admin') {
+    if (req.isAuthenticated() && req.user && 
+        ((req.user as any).role === 'admin' || (req.user as any).role === 'super_admin')) {
       return next();
     }
     res.status(403).json({ message: 'Forbidden' });
@@ -28,7 +29,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   const isAdminOrDataAdmin = (req: Request, res: Response, next: NextFunction) => {
     if (req.isAuthenticated() && req.user && 
-       ((req.user as any).role === 'admin' || (req.user as any).role === 'data_admin')) {
+       ((req.user as any).role === 'admin' || (req.user as any).role === 'data_admin' || (req.user as any).role === 'super_admin')) {
       return next();
     }
     res.status(403).json({ message: 'Forbidden' });
