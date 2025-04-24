@@ -13,12 +13,14 @@ export function setupAuth(app: Express) {
   app.use(session({
     secret: process.env.SESSION_SECRET || "water-management-secret",
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     store: new SessionStore({
       checkPeriod: 86400000 // prune expired entries every 24h
     }),
     cookie: {
-      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      sameSite: 'lax',
+      secure: false // Replit environment
     }
   }));
 
