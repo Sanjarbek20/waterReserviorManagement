@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useAuth } from "@/lib/auth";
+import { useLocation } from "wouter";
 import { 
   Download, 
   Filter, 
@@ -36,6 +37,19 @@ export default function DataManagement() {
   const [dataType, setDataType] = useState<string>("reservoirs");
   const { toast } = useToast();
   const { user } = useAuth();
+  const [, setLocation] = useLocation();
+  
+  // Tekshirish: faqat superadmin uchun
+  useEffect(() => {
+    if (user && user.role !== "super_admin") {
+      toast({
+        variant: "destructive",
+        title: "Faqat superadmin uchun",
+        description: "Ushbu sahifaga kirish huquqingiz yo'q."
+      });
+      setLocation("/dashboard");
+    }
+  }, [user, setLocation, toast]);
 
   const { data: reservoirs = [] } = useQuery<any[]>({
     queryKey: ["/api/reservoirs"],
