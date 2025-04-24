@@ -153,15 +153,19 @@ export default function DataManagement() {
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="idef0model" className="w-full">
-              <TabsList className="grid w-full grid-cols-7">
-                <TabsTrigger value="database">
-                  <Database className="h-4 w-4 mr-2" />
-                  Ma'lumotlar bazasi
-                </TabsTrigger>
-                <TabsTrigger value="water">
-                  <Droplet className="h-4 w-4 mr-2" />
-                  Suv monitoringi
-                </TabsTrigger>
+              <TabsList className="grid w-full grid-cols-5">
+                {user?.role === "super_admin" && (
+                  <TabsTrigger value="database">
+                    <Database className="h-4 w-4 mr-2" />
+                    Ma'lumotlar bazasi
+                  </TabsTrigger>
+                )}
+                {user?.role === "super_admin" && (
+                  <TabsTrigger value="water">
+                    <Droplet className="h-4 w-4 mr-2" />
+                    Suv monitoringi
+                  </TabsTrigger>
+                )}
                 <TabsTrigger value="analytics">
                   <LineChart className="h-4 w-4 mr-2" />
                   Statistik tahlil
@@ -184,13 +188,17 @@ export default function DataManagement() {
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="database" className="pt-4">
-                <DatabaseAlgorithm />
-              </TabsContent>
+              {user?.role === "super_admin" && (
+                <TabsContent value="database" className="pt-4">
+                  <DatabaseAlgorithm />
+                </TabsContent>
+              )}
 
-              <TabsContent value="water" className="pt-4">
-                <WaterAlgorithms />
-              </TabsContent>
+              {user?.role === "super_admin" && (
+                <TabsContent value="water" className="pt-4">
+                  <WaterAlgorithms />
+                </TabsContent>
+              )}
 
               <TabsContent value="analytics" className="pt-4">
                 <div className="border p-4 rounded-md bg-slate-50 overflow-auto">
