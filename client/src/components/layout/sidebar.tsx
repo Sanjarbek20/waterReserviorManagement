@@ -101,7 +101,7 @@ export default function Sidebar() {
   const dataAdminNavItems = [
     { 
       name: "Download Reports", 
-      path: "/admin/data-management", 
+      path: "/admin/reports", 
       icon: <Download className="h-4 w-4 mr-3" /> 
     },
     { 
