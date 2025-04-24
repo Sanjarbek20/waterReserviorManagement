@@ -215,35 +215,7 @@ export default function Sidebar() {
         </ul>
       </nav>
       
-      <div className="border-t p-4">
-        <div className="flex items-center">
-          <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white">
-            {user && user.firstName && user.lastName 
-              ? `${user.firstName[0]}${user.lastName[0]}`
-              : "U"
-            }
-          </div>
-          <div className="ml-2">
-            <p className="text-sm font-medium text-gray-800">
-              {user ? `${user.firstName} ${user.lastName}` : "User"}
-            </p>
-            <p className="text-xs text-gray-500 capitalize">
-              {user?.role === "super_admin" ? "Super Admin" :
-               user?.role === "admin" ? t("users.admin") : 
-               user?.role === "data_admin" ? t("users.data_admin") : 
-               user?.role === "farmer" ? t("users.farmer") : "User"}
-            </p>
-          </div>
-          <Button 
-            variant="ghost" 
-            size="icon"
-            className="ml-auto text-gray-500 hover:text-red-500"
-            onClick={handleLogout}
-          >
-            <LogOut className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
+
     </div>
   );
 }
