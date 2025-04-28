@@ -4,6 +4,7 @@ import DashboardLayout from "@/components/layout/dashboard-layout";
 import { apiRequest } from "@/lib/queryClient";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/lib/auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,7 @@ import { useTranslation } from "react-i18next";
 export default function AdminReservoirs() {
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { user } = useAuth();
   const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false); 
@@ -183,10 +185,12 @@ export default function AdminReservoirs() {
                 <RefreshCw className="h-4 w-4 mr-2" />
                 {t("common.refresh")}
               </Button>
-              <Button size="sm" onClick={() => setOpenAddDialog(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                {t("common.add_reservoir")}
-              </Button>
+              {user?.role === "super_admin" && (
+                <Button size="sm" onClick={() => setOpenAddDialog(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  {t("common.add_reservoir")}
+                </Button>
+              )}
             </div>
           </div>
           
@@ -215,23 +219,25 @@ export default function AdminReservoirs() {
                     <CardHeader className="pb-2">
                       <CardTitle className="flex justify-between items-center">
                         <span>{reservoir.name}</span>
-                        <div className="flex space-x-1">
-                          <Button 
-                            variant="ghost" 
-                            size="icon"
-                            onClick={() => openEditDialog(reservoir)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="icon"
-                            onClick={() => handleDeleteReservoir(reservoir)}
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            <Trash className="h-4 w-4" />
-                          </Button>
-                        </div>
+                        {user?.role === "super_admin" && (
+                          <div className="flex space-x-1">
+                            <Button 
+                              variant="ghost" 
+                              size="icon"
+                              onClick={() => openEditDialog(reservoir)}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="icon"
+                              onClick={() => handleDeleteReservoir(reservoir)}
+                              className="text-red-500 hover:text-red-700"
+                            >
+                              <Trash className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        )}
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -318,25 +324,27 @@ export default function AdminReservoirs() {
                             {format(new Date(reservoir.lastUpdated), 'MMM d, yyyy h:mm a')}
                           </TableCell>
                           <TableCell>
-                            <div className="flex space-x-2">
-                              <Button 
-                                variant="ghost" 
-                                size="sm"
-                                onClick={() => openEditDialog(reservoir)}
-                              >
-                                <Edit className="h-4 w-4 mr-1" />
-                                {t("reservoirs.update")}
-                              </Button>
-                              <Button 
-                                variant="ghost" 
-                                size="sm"
-                                onClick={() => handleDeleteReservoir(reservoir)}
-                                className="text-red-500 hover:text-red-700"
-                              >
-                                <Trash className="h-4 w-4 mr-1" />
-                                {t("common.delete")}
-                              </Button>
-                            </div>
+                            {user?.role === "super_admin" && (
+                              <div className="flex space-x-2">
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  onClick={() => openEditDialog(reservoir)}
+                                >
+                                  <Edit className="h-4 w-4 mr-1" />
+                                  {t("reservoirs.update")}
+                                </Button>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  onClick={() => handleDeleteReservoir(reservoir)}
+                                  className="text-red-500 hover:text-red-700"
+                                >
+                                  <Trash className="h-4 w-4 mr-1" />
+                                  {t("common.delete")}
+                                </Button>
+                              </div>
+                            )}
                           </TableCell>
                         </TableRow>
                       );
