@@ -21,7 +21,8 @@ import {
   Activity,
   GaugeCircle,
   Map,
-  CloudSun
+  CloudSun,
+  ShieldCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -179,6 +180,11 @@ export default function Sidebar() {
       name: "System Management", 
       path: "/admin/system-management", 
       icon: <Settings className="h-4 w-4 mr-3" /> 
+    },
+    { 
+      name: "Admin Huquqlari", 
+      path: "/admin/admin-roles-config", 
+      icon: <ShieldCheck className="h-4 w-4 mr-3" /> 
     }
   ];
 
