@@ -100,12 +100,22 @@ export class MemStorage implements IStorage {
       role: "data_admin"
     });
     
-    // Super admin account
+    // Super admin account with plain text password
     this.createUser({
       username: "superadmin",
       password: "superadmin", // Plain text password for easier testing
       firstName: "Super",
       lastName: "Admin",
+      role: "super_admin",
+      permissions: ["all"]
+    });
+    
+    // New super admin account with plain text password
+    this.createUser({
+      username: "super",
+      password: "super123", // Plain text password for easier testing
+      firstName: "Super",
+      lastName: "Administrator",
       role: "super_admin",
       permissions: ["all"]
     });
