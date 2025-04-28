@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, Bell, HelpCircle, CheckCheck } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import LanguageSelector from "@/components/ui/language-selector";
 import { Notification } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -160,11 +161,13 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
               </PopoverContent>
             </Popover>
 
+            <LanguageSelector />
+            
+            <ThemeToggle />
+            
             <Button variant="ghost" size="icon">
               <HelpCircle className="h-5 w-5" />
             </Button>
-            
-            <ThemeToggle />
 
             <div className="lg:hidden">
               <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white">

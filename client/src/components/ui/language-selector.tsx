@@ -34,8 +34,13 @@ export function LanguageSelector() {
     // Log the language change
     console.log(`Changing language to ${value}`);
     
-    // Force page reload for complete language update
-    window.location.reload();
+    // Log current path before reload
+    const currentPath = window.location.pathname;
+    console.log(`Current path before language change: ${currentPath}`);
+    
+    // Force page reload for complete language update 
+    // Adding timestamp to prevent cache issues
+    window.location.href = currentPath + '?t=' + new Date().getTime();
   };
 
   return (
