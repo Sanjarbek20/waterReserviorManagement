@@ -55,11 +55,6 @@ export default function Sidebar() {
       icon: <Droplet className="h-4 w-4 mr-3" /> 
     },
     { 
-      name: "Suv omborlari monitoringi", 
-      path: "/admin/reservoir-live-monitoring", 
-      icon: <GaugeCircle className="h-4 w-4 mr-3" /> 
-    },
-    { 
       name: t("dashboard.water_allocation"), 
       path: "/admin/allocation", 
       icon: <Share2 className="h-4 w-4 mr-3" /> 
@@ -68,11 +63,6 @@ export default function Sidebar() {
       name: t("water_prediction.title"), 
       path: "/water-predictions", 
       icon: <LineChart className="h-4 w-4 mr-3" /> 
-    },
-    { 
-      name: "Reservoir Forecasting", 
-      path: "/reservoir-forecasting", 
-      icon: <BarChart3 className="h-4 w-4 mr-3" /> 
     },
     { 
       name: "Video Surveillance", 
@@ -165,6 +155,16 @@ export default function Sidebar() {
   // Add super admin specific items
   const superAdminNavItems: NavItem[] = [
     ...adminNavItems,
+    { 
+      name: "Suv omborlari monitoringi", 
+      path: "/admin/reservoir-live-monitoring", 
+      icon: <GaugeCircle className="h-4 w-4 mr-3" /> 
+    },
+    { 
+      name: "Reservoir Forecasting", 
+      path: "/reservoir-forecasting", 
+      icon: <BarChart3 className="h-4 w-4 mr-3" /> 
+    },
     { 
       name: "User Management", 
       path: "/admin/user-management", 
