@@ -2,6 +2,7 @@ import { Link, useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+import { ReactNode } from "react";
 import {
   Home,
   Droplet,
@@ -25,6 +26,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
+// Define NavItem interface with optional subItems
+interface NavItem {
+  name: string;
+  path: string;
+  icon: ReactNode;
+  subItems?: NavItem[];
+}
+
 export default function Sidebar() {
   const [location] = useLocation();
   const { user, logout } = useAuth();
@@ -34,7 +43,7 @@ export default function Sidebar() {
     logout();
   };
 
-  const adminNavItems = [
+  const adminNavItems: NavItem[] = [
     { 
       name: t("general.dashboard"), 
       path: "/admin/dashboard", 
@@ -75,12 +84,6 @@ export default function Sidebar() {
       path: "/admin/users", 
       icon: <Users className="h-4 w-4 mr-3" /> 
     },
-    // Added User Management for admins
-    { 
-      name: "User Management", 
-      path: "/admin/user-management", 
-      icon: <Users className="h-4 w-4 mr-3" /> 
-    },
     { 
       name: "Reports", 
       path: "/admin/reports", 
@@ -100,7 +103,7 @@ export default function Sidebar() {
     }
   ];
 
-  const dataAdminNavItems = [
+  const dataAdminNavItems: NavItem[] = [
     { 
       name: "Download Reports", 
       path: "/admin/reports", 
@@ -133,7 +136,7 @@ export default function Sidebar() {
     }
   ];
 
-  const farmerNavItems = [
+  const farmerNavItems: NavItem[] = [
     { 
       name: t("general.dashboard"), 
       path: "/farmer/dashboard", 
@@ -162,8 +165,13 @@ export default function Sidebar() {
   ];
 
   // Add super admin specific items
-  const superAdminNavItems = [
+  const superAdminNavItems: NavItem[] = [
     ...adminNavItems,
+    { 
+      name: "User Management", 
+      path: "/admin/user-management", 
+      icon: <Users className="h-4 w-4 mr-3" /> 
+    },
     { 
       name: "Data Management", 
       path: "/admin/data-management", 
@@ -177,7 +185,7 @@ export default function Sidebar() {
   ];
 
   // Select navigation items based on user role
-  let navItems;
+  let navItems: NavItem[];
   if (user?.role === "super_admin") {
     navItems = superAdminNavItems;
   } else if (user?.role === "admin") {
@@ -211,7 +219,7 @@ export default function Sidebar() {
               {/* Sub-items */}
               {item.subItems && (
                 <ul className="ml-8 mt-1">
-                  {item.subItems.map((subItem) => (
+                  {item.subItems.map((subItem: NavItem) => (
                     <li className="mb-1" key={subItem.path}>
                       <Link href={subItem.path}>
                         <div className={cn(
