@@ -89,12 +89,14 @@ export default function Sidebar() {
     { 
       name: t("general.settings"), 
       path: "/admin/settings", 
-      icon: <Settings className="h-4 w-4 mr-3" /> 
-    },
-    { 
-      name: t("general.settings"),
-      path: "/settings", 
-      icon: <Globe className="h-4 w-4 mr-3" /> 
+      icon: <Settings className="h-4 w-4 mr-3" /> ,
+      subItems: [
+        {
+          name: t("general.settings") + " (Global)",
+          path: "/settings",
+          icon: <Globe className="h-4 w-4 mr-3" />
+        }
+      ]
     }
   ];
 
@@ -128,11 +130,6 @@ export default function Sidebar() {
       name: t("general.reservoirs"), 
       path: "/admin/reservoirs", 
       icon: <Droplet className="h-4 w-4 mr-3" /> 
-    },
-    { 
-      name: t("general.settings"),
-      path: "/settings", 
-      icon: <Globe className="h-4 w-4 mr-3" /> 
     }
   ];
 
@@ -210,6 +207,25 @@ export default function Sidebar() {
                   {item.name}
                 </div>
               </Link>
+              
+              {/* Sub-items */}
+              {item.subItems && (
+                <ul className="ml-8 mt-1">
+                  {item.subItems.map((subItem) => (
+                    <li className="mb-1" key={subItem.path}>
+                      <Link href={subItem.path}>
+                        <div className={cn(
+                          "flex items-center px-4 py-2 text-xs hover:bg-blue-50 hover:text-blue-800 rounded-lg mx-2 cursor-pointer",
+                          location === subItem.path ? "bg-blue-50 text-blue-800 font-medium" : "text-gray-600"
+                        )}>
+                          {subItem.icon}
+                          {subItem.name}
+                        </div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </li>
           ))}
         </ul>
