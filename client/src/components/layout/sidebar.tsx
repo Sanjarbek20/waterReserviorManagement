@@ -92,14 +92,12 @@ export default function Sidebar() {
     { 
       name: t("general.settings"), 
       path: "/admin/settings", 
-      icon: <Settings className="h-4 w-4 mr-3" /> ,
-      subItems: [
-        {
-          name: t("general.settings") + " (Global)",
-          path: "/settings",
-          icon: <Globe className="h-4 w-4 mr-3" />
-        }
-      ]
+      icon: <Settings className="h-4 w-4 mr-3" /> 
+    },
+    { 
+      name: t("general.settings") + " (Global)", 
+      path: "/settings", 
+      icon: <Globe className="h-4 w-4 mr-3" /> 
     }
   ];
 
