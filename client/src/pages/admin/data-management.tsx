@@ -31,6 +31,7 @@ import DatabaseAlgorithm from "@/components/admin/database-algorithm";
 import WaterAlgorithms from "@/components/admin/water-algorithms";
 import IDEF0Model from "@/components/admin/idef0-model";
 import WaterManagementAlgorithm from "@/components/admin/suv-algorithm";
+import AllAlgorithms from "@/components/admin/all-algorithms";
 
 export default function DataManagement() {
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
@@ -579,7 +580,7 @@ export default function DataManagement() {
               </TabsContent>
               
               <TabsContent value="algorithm" className="pt-4">
-                <WaterManagementAlgorithm />
+                <AllAlgorithms />
               </TabsContent>
 
               <TabsContent value="network" className="pt-4">
