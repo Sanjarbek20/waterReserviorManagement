@@ -30,6 +30,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DatabaseAlgorithm from "@/components/admin/database-algorithm";
 import WaterAlgorithms from "@/components/admin/water-algorithms";
 import IDEF0Model from "@/components/admin/idef0-model";
+import WaterManagementAlgorithm from "@/components/admin/suv-algorithm";
 
 export default function DataManagement() {
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
@@ -195,6 +196,10 @@ export default function DataManagement() {
                 <TabsTrigger value="idef0model">
                   <GitBranch className="h-4 w-4 mr-2" />
                   IDEF0 model
+                </TabsTrigger>
+                <TabsTrigger value="algorithm">
+                  <Cpu className="h-4 w-4 mr-2" />
+                  Suv algoritm
                 </TabsTrigger>
                 <TabsTrigger value="network">
                   <Network className="h-4 w-4 mr-2" />
@@ -571,6 +576,10 @@ export default function DataManagement() {
 
               <TabsContent value="idef0model" className="pt-4">
                 <IDEF0Model />
+              </TabsContent>
+              
+              <TabsContent value="algorithm" className="pt-4">
+                <WaterManagementAlgorithm />
               </TabsContent>
 
               <TabsContent value="network" className="pt-4">
