@@ -32,6 +32,7 @@ import WaterAlgorithms from "@/components/admin/water-algorithms";
 import IDEF0Model from "@/components/admin/idef0-model";
 import WaterManagementAlgorithm from "@/components/admin/suv-algorithm";
 import AllAlgorithms from "@/components/admin/all-algorithms";
+import SystemAlgorithm from "@/components/admin/system-algorithm";
 
 export default function DataManagement() {
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
@@ -168,7 +169,7 @@ export default function DataManagement() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="idef0model" className="w-full">
+              <Tabs defaultValue="system" className="w-full">
               <TabsList className="grid w-full grid-cols-5">
                 {user?.role === "super_admin" && (
                   <TabsTrigger value="database">
@@ -379,23 +380,23 @@ export default function DataManagement() {
                       <line x1="600" y1="370" x2="600" y2="400" stroke="#64748b" strokeWidth="2" />
                       <polygon points="595,400 605,400 600,410" fill="#64748b" />
                       
-                      {/* Bloklash */}
+                      {/* Urinishlar soni tekshirish */}
                       <polygon points="100,410 300,410 280,470 120,470" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
-                      <text x="200" y="440" textAnchor="middle" fontWeight="bold" fill="#0f172a">Urinishlar soni 5 dan ko&apos;pmi?</text>
+                      <text x="200" y="440" textAnchor="middle" fontWeight="bold" fill="#0f172a">Urinishlar soni 3 dan ko&apos;pmi?</text>
                       
-                      {/* Foydalanuvchi huquqlarini tekshirish */}
+                      {/* Ruxsatlarni tekshirish */}
                       <rect x="500" y="410" width="200" height="60" rx="0" fill="#f8fafc" stroke="#0c4a6e" strokeWidth="2" />
                       <text x="600" y="440" textAnchor="middle" fontWeight="bold" fill="#0f172a">Foydalanuvchi</text>
-                      <text x="600" y="460" textAnchor="middle" fontWeight="bold" fill="#0f172a">huquqlarini tekshirish</text>
+                      <text x="600" y="460" textAnchor="middle" fontWeight="bold" fill="#0f172a">ruxsatlarini tekshirish</text>
                       
-                      {/* Strelkalar */}
-                      <line x1="120" y1="470" x2="120" y2="500" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="115,500 125,500 120,510" fill="#64748b" />
-                      <text x="130" y="490" textAnchor="middle" fill="#0f172a">Ha</text>
+                      {/* Strelkalar - tarmoqlanish */}
+                      <line x1="280" y1="440" x2="380" y2="440" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="375,435 385,445 385,435" fill="#64748b" />
+                      <text x="330" y="430" textAnchor="middle" fill="#0f172a">Yo'q</text>
                       
-                      <line x1="280" y1="470" x2="350" y2="520" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="345,515 355,525 355,515" fill="#64748b" />
-                      <text x="300" y="490" textAnchor="middle" fill="#0f172a">Yo'q</text>
+                      <line x1="200" y1="470" x2="200" y2="500" stroke="#64748b" strokeWidth="2" />
+                      <polygon points="195,500 205,500 200,510" fill="#64748b" />
+                      <text x="170" y="490" textAnchor="middle" fill="#0f172a">Ha</text>
                       
                       <line x1="600" y1="470" x2="600" y2="500" stroke="#64748b" strokeWidth="2" />
                       <polygon points="595,500 605,500 600,510" fill="#64748b" />
@@ -436,143 +437,7 @@ export default function DataManagement() {
               </TabsContent>
 
               <TabsContent value="system" className="pt-4">
-                <div className="border p-4 rounded-md bg-slate-50 overflow-auto">
-                  <h3 className="text-lg font-medium mb-2 text-center">Tizim arxitekturasi algoritmi</h3>
-                  <p className="text-sm text-gray-500 mb-4 text-center">
-                    Suv resurslarini boshqarish tizimining arxitekturaviy tuzilishi
-                  </p>
-                  
-                  <div className="w-full overflow-x-auto mb-4 flex justify-center">
-                    <svg width="800" height="600" viewBox="0 0 800 600">
-                      {/* Tizim arxitekturasi */}
-                      <rect x="0" y="0" width="800" height="600" fill="#f8fafc" rx="0" />
-                      
-                      {/* Frontend qismi */}
-                      <rect x="50" y="50" width="300" height="200" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" rx="5" />
-                      <text x="200" y="70" textAnchor="middle" fontWeight="bold" fill="#0f172a">Frontend qismi</text>
-                      
-                      {/* Ma'lumotlar qismi */}
-                      <rect x="50" y="350" width="300" height="200" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" rx="5" />
-                      <text x="200" y="370" textAnchor="middle" fontWeight="bold" fill="#0f172a">Ma'lumotlar qismi</text>
-                      
-                      {/* Backend qismi */}
-                      <rect x="450" y="50" width="300" height="500" fill="#dbeafe" stroke="#0c4a6e" strokeWidth="2" rx="5" />
-                      <text x="600" y="70" textAnchor="middle" fontWeight="bold" fill="#0f172a">Backend qismi</text>
-                      
-                      {/* Frontend komponentlari */}
-                      <rect x="70" y="90" width="120" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="130" y="115" textAnchor="middle" fill="#0f172a">React UI</text>
-                      
-                      <rect x="70" y="140" width="120" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="130" y="165" textAnchor="middle" fill="#0f172a">Dashboardlar</text>
-                      
-                      <rect x="70" y="190" width="120" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="130" y="215" textAnchor="middle" fill="#0f172a">Grafiklar</text>
-                      
-                      <rect x="210" y="90" width="120" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="270" y="115" textAnchor="middle" fill="#0f172a">State boshqaruvi</text>
-                      
-                      <rect x="210" y="140" width="120" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="270" y="165" textAnchor="middle" fill="#0f172a">WebSocket mijozi</text>
-                      
-                      <rect x="210" y="190" width="120" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="270" y="215" textAnchor="middle" fill="#0f172a">REST API mijozi</text>
-                      
-                      {/* Ma'lumotlar modullar */}
-                      <rect x="70" y="390" width="120" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="130" y="415" textAnchor="middle" fill="#0f172a">PostgreSQL</text>
-                      
-                      <rect x="70" y="440" width="120" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="130" y="465" textAnchor="middle" fill="#0f172a">Redis kesh</text>
-                      
-                      <rect x="70" y="490" width="120" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="130" y="515" textAnchor="middle" fill="#0f172a">Vaqtincha saqlash</text>
-                      
-                      <rect x="210" y="390" width="120" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="270" y="415" textAnchor="middle" fill="#0f172a">Ma'lumotlar saqlash</text>
-                      
-                      <rect x="210" y="440" width="120" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="270" y="465" textAnchor="middle" fill="#0f172a">Rezerv nusxalash</text>
-                      
-                      <rect x="210" y="490" width="120" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="270" y="515" textAnchor="middle" fill="#0f172a">Tarixiy ma'lumotlar</text>
-                      
-                      {/* Backend komponentlari */}
-                      <rect x="470" y="90" width="120" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="530" y="115" textAnchor="middle" fill="#0f172a">Node.js server</text>
-                      
-                      <rect x="470" y="140" width="120" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="530" y="165" textAnchor="middle" fill="#0f172a">Express API</text>
-                      
-                      <rect x="470" y="190" width="120" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="530" y="215" textAnchor="middle" fill="#0f172a">WebSocket server</text>
-                      
-                      <rect x="470" y="240" width="120" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="530" y="265" textAnchor="middle" fill="#0f172a">Xavfsizlik moduli</text>
-                      
-                      <rect x="470" y="290" width="120" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="530" y="315" textAnchor="middle" fill="#0f172a">ML modellar</text>
-                      
-                      <rect x="610" y="90" width="120" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="670" y="115" textAnchor="middle" fill="#0f172a">Routing</text>
-                      
-                      <rect x="610" y="140" width="120" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="670" y="165" textAnchor="middle" fill="#0f172a">Middleware</text>
-                      
-                      <rect x="610" y="190" width="120" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="670" y="215" textAnchor="middle" fill="#0f172a">Autentifikatsiya</text>
-                      
-                      <rect x="610" y="240" width="120" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="670" y="265" textAnchor="middle" fill="#0f172a">Avtorizatsiya</text>
-                      
-                      <rect x="610" y="290" width="120" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="670" y="315" textAnchor="middle" fill="#0f172a">Bashorat moduli</text>
-
-                      <rect x="470" y="340" width="260" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="600" y="365" textAnchor="middle" fill="#0f172a">Ma'lumotlar bazasi adapteri</text>
-                      
-                      <rect x="470" y="390" width="260" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="600" y="415" textAnchor="middle" fill="#0f172a">ORM modellari</text>
-                      
-                      <rect x="470" y="440" width="260" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="600" y="465" textAnchor="middle" fill="#0f172a">Logging tizimi</text>
-                      
-                      <rect x="470" y="490" width="260" height="40" fill="#f1f5f9" stroke="#0c4a6e" strokeWidth="1" rx="3" />
-                      <text x="600" y="515" textAnchor="middle" fill="#0f172a">Qidirish indekslari</text>
-                      
-                      {/* Aloqalar */}
-                      <line x1="200" y1="250" x2="200" y2="350" stroke="#64748b" strokeWidth="2" strokeDasharray="5,5" />
-                      <polygon points="195,345 205,345 200,350" fill="#64748b" />
-                      
-                      <line x1="350" y1="150" x2="450" y2="150" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="445,145 455,155 455,145" fill="#64748b" />
-                      
-                      <line x1="350" y1="450" x2="450" y2="450" stroke="#64748b" strokeWidth="2" />
-                      <polygon points="445,445 455,455 455,445" fill="#64748b" />
-                    </svg>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                    <div className="bg-white p-3 rounded-md shadow-sm">
-                      <h4 className="font-medium mb-2">Ma'lumotlar modeli</h4>
-                      <p className="text-gray-600">
-                        Tizimning ma'lumotlar modeli, bog'lanishlar va ularning o'zaro munosabati.
-                      </p>
-                    </div>
-                    <div className="bg-white p-3 rounded-md shadow-sm">
-                      <h4 className="font-medium mb-2">Mikroservislar</h4>
-                      <p className="text-gray-600">
-                        Alohida vazifalarni bajarishga mo'ljallangan mikroservislar arxitekturasi.
-                      </p>
-                    </div>
-                    <div className="bg-white p-3 rounded-md shadow-sm">
-                      <h4 className="font-medium mb-2">MVC tuzilishi</h4>
-                      <p className="text-gray-600">
-                        Model-View-Controller arxitektura asosidagi tizim tuzilishi.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                <SystemAlgorithm />
               </TabsContent>
 
               <TabsContent value="idef0model" className="pt-4">
@@ -694,7 +559,7 @@ export default function DataManagement() {
                   </div>
                 </div>
               </TabsContent>
-            </Tabs>
+              </Tabs>
             </CardContent>
           </Card>
         )}
@@ -784,7 +649,7 @@ export default function DataManagement() {
                           </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                          {filterDataByDate(reservoirs).slice(0, 5).map((reservoir: any, index) => (
+                          {reservoirs.map((reservoir, index) => (
                             <tr key={index}>
                               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                 {reservoir.name}
@@ -793,17 +658,12 @@ export default function DataManagement() {
                                 {reservoir.currentLevel}
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {reservoir.lastUpdated ? new Date(reservoir.lastUpdated).toLocaleString() : 'N/A'}
+                                {reservoir.lastUpdated ? format(new Date(reservoir.lastUpdated), "yyyy-MM-dd HH:mm") : "Ma'lumot yo'q"}
                               </td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
-                      {reservoirs.length > 5 && (
-                        <p className="text-center text-gray-500 text-sm mt-2">
-                          Va yana {reservoirs.length - 5} qator...
-                        </p>
-                      )}
                     </div>
                   )}
                   
@@ -813,18 +673,21 @@ export default function DataManagement() {
                         <thead className="bg-gray-50">
                           <tr>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Fermer
+                              Foydalanuvchi
                             </th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Ajratilgan miqdor
+                              Suv hajmi
                             </th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                               Ishlatilgan
                             </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Sana
+                            </th>
                           </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                          {filterDataByDate(allocations).slice(0, 5).map((allocation: any, index) => (
+                          {allocations.map((allocation, index) => (
                             <tr key={index}>
                               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                 {allocation.userId}
@@ -835,15 +698,13 @@ export default function DataManagement() {
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {allocation.used}
                               </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {format(new Date(allocation.createdAt), "yyyy-MM-dd")}
+                              </td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
-                      {allocations.length > 5 && (
-                        <p className="text-center text-gray-500 text-sm mt-2">
-                          Va yana {allocations.length - 5} qator...
-                        </p>
-                      )}
                     </div>
                   )}
                   
@@ -853,18 +714,21 @@ export default function DataManagement() {
                         <thead className="bg-gray-50">
                           <tr>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Fermer
+                              Foydalanuvchi
                             </th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              So'ralgan miqdor
+                              Suv hajmi
                             </th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Holati
+                              Status
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              So'rov sanasi
                             </th>
                           </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                          {filterDataByDate(requests).slice(0, 5).map((request: any, index) => (
+                          {requests.map((request, index) => (
                             <tr key={index}>
                               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                 {request.userId}
@@ -873,25 +737,17 @@ export default function DataManagement() {
                                 {request.amount}
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {request.status}
+                                <span className={`px-2 py-1 rounded text-xs font-medium ${request.status === 'approved' ? 'bg-green-100 text-green-800' : request.status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                                  {request.status}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {format(new Date(request.requestDate), "yyyy-MM-dd")}
                               </td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
-                      {requests.length > 5 && (
-                        <p className="text-center text-gray-500 text-sm mt-2">
-                          Va yana {requests.length - 5} qator...
-                        </p>
-                      )}
-                    </div>
-                  )}
-                  
-                  {((dataType === "reservoirs" && reservoirs.length === 0) || 
-                    (dataType === "allocations" && allocations.length === 0) || 
-                    (dataType === "requests" && requests.length === 0)) && (
-                    <div className="text-center py-6">
-                      <p className="text-gray-500">Ma'lumotlar mavjud emas.</p>
                     </div>
                   )}
                 </div>
