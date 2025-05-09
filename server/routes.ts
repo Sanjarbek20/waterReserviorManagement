@@ -1,11 +1,12 @@
 import express, { type Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { PgStorage  } from "./pgStorage";
 import { insertUserSchema, insertWaterRequestSchema, insertReservoirSchema, type User } from "@shared/schema";
 import { z } from "zod";
 import passport from "passport";
 import { WebSocketServer, WebSocket } from "ws";
 import { setupAuth, hashPassword } from "./auth";
+export const storage = new PgStorage();
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication
@@ -708,9 +709,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       if (ws.readyState === WebSocket.OPEN) {
         const reservoirs = await storage.getAllReservoirs();
+       
+        ws.send(JSON.stringify(reservoirs));
         const users = await storage.getAllUsers();
         const allAllocations = await storage.getAllocations();
         const farmerCount = users.filter(user => user.role === 'farmer').length;
+        
+        
         
         // Calculate reservoir statistics
         let totalCapacity = 0;
@@ -720,6 +725,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           currentLevel += parseInt(reservoir.currentLevel);
         });
         
+
         // Calculate real allocation data from farmers' crop types
         // Group by crop type
         const cropAllocations = new Map<string, number>();
@@ -782,10 +788,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // If no data, use defaults
         if (allocations.length === 0) {
           allocations.push(
-            { name: "Sholi maydonlari", value: 45, color: "bg-blue-500" },
+            { name: "Sholi maydonlari", value: 40, color: "bg-blue-500" },
             { name: "Sabzavot fermalari", value: 30, color: "bg-green-500" },
-            { name: "Bug'doy maydonlari", value: 15, color: "bg-blue-300" },
-            { name: "Boshqa ekinlar", value: 10, color: "bg-amber-500" }
+            { name: "Bug'doy maydonlari", value: 18, color: "bg-blue-300" },
+            { name: "Boshqa ekinlar", value: 12, color: "bg-amber-500" }
           );
         }
         

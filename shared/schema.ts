@@ -88,6 +88,7 @@ export const waterRequests = pgTable("water_requests", {
   requestDate: timestamp("request_date").notNull(),
   responseDate: timestamp("response_date"),
   notes: text("notes"),
+   reservoirId: integer("reservoir_id").notNull(),
 });
 
 // Notification model

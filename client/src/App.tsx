@@ -35,6 +35,7 @@ import { ThemeProvider } from "@/lib/theme-provider";
 import { useEffect, Suspense, lazy } from "react";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./lib/i18n";
+import AdminERModelPage from "@/pages/admin/er_model";
 
 function ProtectedRoute({ 
   component: Component, 
@@ -234,6 +235,12 @@ function Router() {
       <Route path="/">
         {!user ? <Redirect to="/login" /> : <Redirect to="/dashboard" />}
       </Route>
+
+      
+
+        <Route path="/admin/er_model">
+        <ProtectedRoute component={AdminERModelPage} adminOnly={true} />
+      </Route>
       
       {/* Fallback to 404 */}
       <Route component={NotFound} />
@@ -249,6 +256,7 @@ function App() {
           <ThemeProvider defaultTheme="light">
             <AuthProvider>
               <Router />
+            
               <Toaster />
             </AuthProvider>
           </ThemeProvider>
@@ -257,5 +265,8 @@ function App() {
     </QueryClientProvider>
   );
 }
+
+
+
 
 export default App;

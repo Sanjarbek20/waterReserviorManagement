@@ -52,12 +52,14 @@ export default function ReservoirStatus() {
       socket.addEventListener('message', (event) => {
         try {
           const message = JSON.parse(event.data);
-          
+           // Update React Query cache with the latest data
           if (message.type === 'reservoir_data') {
-            // Update React Query cache with the latest data
             queryClient.setQueryData(['/api/reservoirs'], message.data);
             setLastUpdated(new Date());
-            
+             const now = new Date();
+    if (!isNaN(now.getTime())) {
+      setLastUpdated(now);
+    }
             // Show toast for updates occasionally (not on every update to avoid spam)
             if (Math.random() < 0.3) { // Show toast ~30% of the time
               toast({
@@ -134,7 +136,7 @@ export default function ReservoirStatus() {
       currentLevel: "750000",
       capacity: "1000000",
       lastUpdated: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
-      location: "North Basin"
+      location: "North "
     },
     {
       id: 2,
@@ -142,7 +144,7 @@ export default function ReservoirStatus() {
       currentLevel: "320000",
       capacity: "500000",
       lastUpdated: new Date(Date.now() - 1000 * 60 * 15), // 15 minutes ago
-      location: "South Basin"
+      location: "South "
     },
     {
       id: 3,
@@ -150,7 +152,7 @@ export default function ReservoirStatus() {
       currentLevel: "98000",
       capacity: "100000",
       lastUpdated: new Date(Date.now() - 1000 * 60 * 45), // 45 minutes ago
-      location: "East Basin"
+      location: "East"
     }
   ];
   
@@ -259,7 +261,9 @@ export default function ReservoirStatus() {
                   <h3 className="text-lg font-medium truncate max-w-full">{reservoir.name}</h3>
                   <div className="flex items-center text-muted-foreground text-sm mt-1">
                     <MapPin className="h-3.5 w-3.5 mr-1 flex-shrink-0" />
-                    <span className="truncate">{reservoir.location || t('common.unknown_location')}</span>
+                      <span>{t('common.last_updated')}:{lastUpdated && !isNaN(new Date(lastUpdated).getTime())? formatRelativeTime(lastUpdated): t('common.unknown_time')}
+                      </span>
+                    {/* <span className="truncate">{reservoir.location || t('common.unknown_location')}</span> */}
                   </div>
                 </div>
                 <Badge 
